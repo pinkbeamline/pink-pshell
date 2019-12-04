@@ -341,8 +341,8 @@ class PINKCLASS():
     #### Internal Functions ############################################################
     ####################################################################################
 
-    def __ge_setup_file(self, fname="ge"):
-        set_exec_pars(open=False, name=fname, reset=True)
+#    def __ge_setup_file(self, fname="ge"):
+#        set_exec_pars(open=False, name=fname, reset=True)
 
-    def __publish_status(self, message):
-        set_status(message)
+#    def __publish_status(self, message):
+#        set_status(message)

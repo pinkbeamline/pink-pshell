@@ -11,4 +11,5 @@ bpm = BPM()
 pink = PINKCLASS()
 blade = BLADEFUNC()
 
+print("PShell v12 - New Pink refactored version")
 print("OK")
