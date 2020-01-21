@@ -1,59 +1,51 @@
+## Scan functions
+class DETEC():
+    def greateyes(self):
+        return "ge"
+    def eiger(self):
+        return "eiger"
+    def mythen(self):
+        return "mythen"
+    def greateyes_eiger(self):
+        return "ge+eiger"
+    def greateyes_mythen(self):
+        return "ge+mythen"
+
 class SCANFUNC():
-    def __init__(self):
-        pass
 
-############################################
-### Blade scan
-############################################
+    def spot(self, detector, exposure=1, images=1, sample=''):
+        if isinstance(detector, DETEC):
+            print("!! Please use detector. to see list of detectors !!")
+            return
+        if detector=="ge":
+            run("plib/scan/spot_ge.py")
+            myscan = SPOTGE()
+            myscan.scan(exposure, images, sample)
+            del myscan
+            print("OK")
+            return
+        if detector=="mythen":
+            run("plib/scan/spot_mythen.py")
+            myscan = SPOTMYTHEN()
+            myscan.scan(exposure, images, sample)
+            del myscan
+            print("OK")
+            return
 
-    def Blade__Diagnostic_Chamber(self, start=0, end=0, step=0, exposure=0.0):
-        """Blade scan on diagnostic chamber
-        Args:
-            start:    start position
-              end:    end position
-             step:    (int) number of steps or (float) step distance 
-         exposure:    settling time after position reached
-        """
-        ## Variables
-        
-        run("plib/blade_scan.py")
-        bladescan = BLADESCAN()
-        bladescan.run_diag_scan(start, end, step, exposure)
-        print("OK")
+    def line(self, detector):
+        if isinstance(detector, DETEC):
+            print("!! Please use detector. to see list of detectors !!")
+            return
+        print("Line scan " + detector)
 
-    def Blade__Sample_Chamber(self, start=0, end=0, step=0, exposure=0.0):
-        """Blade scan on sample env chamber
-        Args:
-            start:    start position
-              end:    end position
-             step:    (int) number of steps or (float) step distance 
-         exposure:    settling time after position reached
-        """
-        ## Variables
-        
-        run("plib/blade_scan.py")
-        bladescan = BLADESCAN()
-        bladescan.run_sec_scan(start, end, step, exposure)
-        print("OK")
+    def zigzag(self, detector):
+        if isinstance(detector, DETEC):
+            print("!! Please use detector. to see list of detectors !!")
+            return
+        print("zigzag scan " + detector)
 
-############################################
-### Gap scan
-############################################
-
-    def gap____without_fitting(self, start=0, end=0, step=0, exposure=0.0):
-        run("plib/gap_scans.py")
-        gap = GAPSCAN()
-        gap.scan(start, end, step, exposure, fit=None)
-        print("OK")
-        
-    def gap____linear_background(self, start=0, end=0, step=0, exposure=0.0):
-        run("plib/gap_scans.py")
-        gap = GAPSCAN()
-        gap.scan(start, end, step, exposure, fit="linear")
-        print("OK")
-
-    def gap____exponential_background(self, start=0, end=0, step=0, exposure=0.0):
-        run("plib/gap_scans.py")
-        gap = GAPSCAN()
-        gap.scan(start, end, step, exposure, fit="exp")
-        print("OK")        
+    def continuous(self, detector):
+        if isinstance(detector, DETEC):
+            print("!! Please use detector. to see list of detectors !!")
+            return
+        print("continuous scan " + detector)

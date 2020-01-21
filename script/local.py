@@ -5,13 +5,14 @@
 run("plib/bpm_class.py")
 run("plib/pink_extra.py")
 run("plib/pink_class.py")
-#run("plib/blade_func.py")
+run("plib/blade_func.py")
 run("plib/scan_func.py")
 
 bpm = BPM()
 pink = PINKCLASS()
-#blade = BLADEFUNC()
+blade = BLADEFUNC()
 scan = SCANFUNC()
+detector = DETEC()
 
 print("PShell v13 - New Pink refactored version")
 print("OK")
