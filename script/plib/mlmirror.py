@@ -2,26 +2,28 @@ class MLMIRROR():
 
     def set(self, energy=0):
         log("{mlmirror.py} set")
+        
         #check input
         try:
             energy = int(energy)
         except:
             print("Invalid energy input")
             return
+            
         ## load lines from file
         try:
             fp = open("pink-pshell/script/config/mirror.py")
             lines = fp.readlines()
             fp.close()
         except:
-            print("error reading file")
+            print("error reading configuration file: {pink-pshell/script/config/mirror.py}")
             return
 
         ## set variables
         matched = False
         params = {}
 
-        ## look for energy settings
+        ## look for energy settings and parse settings
         for line in lines:
             lpars = [x.split() for x in line.split('=')]
             if matched:
@@ -53,4 +55,15 @@ class MLMIRROR():
 
     def __movemirror(self, params):
         log("{mlmirror.py} __movemirror")
+
+        #channels
+
+        #Simulation channels
+        MGROUP = create_channel_device("PINK:MSIM2:m1")
+        MTX = create_channel_device("PINK:MSIM2:m1")
+        MTY = create_channel_device("PINK:MSIM2:m2")
+        MTX = create_channel_device("PINK:MSIM2:m1")
+        #continue        
+        
+        
         print(params)

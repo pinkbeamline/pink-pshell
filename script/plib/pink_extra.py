@@ -8,7 +8,7 @@ def pink_save_bl_snapshot():
             pval = caget(dat[1])
         except:
             print("PV is unreachable: " + dat[1])
-            pval = 0
+            pval = "----"
         save_dataset(dat[0], pval)
 
 def linspace(start, end, step):

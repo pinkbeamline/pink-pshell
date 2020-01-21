@@ -30,8 +30,16 @@ class PINKCLASS():
         for i, row in enumerate(temprow):
             rows[i].append(row.ljust(colmaxwidth+1))
         header.append('Device'.ljust(colmaxwidth+1))
+ 
         for i, item in enumerate(pvl):
-            val = caget(item[1])
+            #print(item[1])
+            pvdisconnected=False
+            try:
+                val = caget(item[1])
+            except:
+                pvdisconnected=True
+                ##print("PV does not respond >>  " + item[1])
+            if pvdisconnected: val = unicode('-----')
             if isinstance(val, unicode):
                 rows[i].append(val)
             else:
@@ -168,51 +176,51 @@ class PINKCLASS():
             gapval = caget("U17IT6R:BasePmGap.A")
             print("Undulator U17 gap: " + str(gapval))
             return
+        else:
+            pos = float(val[0])
 
-        print("Needs testing")
-
-        if self.__undulator_locked():
-            print("Undulator U17 is locked!")
+        lockstatus=caget("U17IT6R:BaseCmdHmLock")
+        ## 0:free / 1:locked
+        if lockstatus>0:
+            print("Abort: Undulator is locked")
             return
 
-        ## set variables
-        prec=0.005
-        
-        ## create channels
-        U17_Gap_RBV = create_channel_device("U17IT6R:BasePmGap.A")
-        U17_Gap_RBV.setMonitored(True)
-        
-        U17_Gap_Set = create_channel_device("U17IT6R:BaseParGapsel.B")
-        U17_Gap_Set.setMonitored(True)
-        
-        U17_Gap_Status = create_channel_device("U17IT6R:BaseStatISLbl")
-        U17_Gap_Status.setMonitored(True)
+        ##channels
+        #MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
+        #MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
+        #MOTOR_RBV = create_channel_device("U17IT6R::BasePmGap.A")
+        #MOTOR_RBV.setMonitored(True)   
+        #motor_deadband = 2.0
 
-        try:
-            #caput("U17IT6R:BaseParGapsel.B", ugap)
-            U17_Gap_Set.write(gap)
-            caput("U17IT6R:BaseCmdCalc.PROC", 1)
-            lwait=1
-            print("Moving undulator...")
-            while(lwait):
-                err=abs(U17_Gap_RBV.take()- U17_Gap_Set.take())
-                if (err<=prec) & (U17_Gap_Status.take()==1):
-                    lwait=0
-                print("Gap: " + str(U17_Gap_RBV.take()))
-                sleep(1)
-            print("Undulator gap in position. OK")
-        except:
-            print("Error moving gap")
+        ## simulated channels
+        MOTOR = create_channel_device("PINK:GAPSIM:gapset")
+        MOTOR_SET = create_channel_device("PINK:GAPSIM:gapexec.PROC")
+        MOTOR_RBV = create_channel_device("PINK:GAPSIM:m1.RBV")
+        MOTOR_RBV.setMonitored(True)   
+        motor_deadband = 0.1
 
-    def __undulator_locked(self):
-        #Wake up U17 Gap monitor
-        stat=caget("U17IT6R:BaseCmdHmLock")
-        if stat==0:
-            ## not locked
-            return 0
-        else:
-            ## locked
-            return 1
+        ## variables
+        verbose = True
+        start=float(MOTOR_RBV.read())
+        end=pos
+        sensor = []
+
+        ## plot setup
+        if verbose: print("Setup plot")
+        [p1] = plot(None, "Gap", title="Gap Motion")
+        #p1.getAxis(p1.AxisId.X).setRange(min(start, end),max(start,end))
+        p1.getAxis(p1.AxisId.Y).setRange(min(start, end),max(start,end))
+        sensor.append(MOTOR_RBV.take())
+        MOTOR.write(pos)
+        MOTOR_SET.write(1)
+        while(abs(pos-MOTOR_RBV.take()) > motor_deadband):
+            #mystat = "Gap: " + str(MOTOR_RBV.take())
+            ##set_status(mystat)
+            sensor.append(MOTOR_RBV.take())
+            p1.getSeries(0).setData(sensor, sensor)
+            sleep(0.5)
+
+        return
 
     #### Multi player mirror positioning  ############################################################
     def ml_2300ev(self):
