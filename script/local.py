@@ -13,6 +13,7 @@ pink = PINKCLASS()
 blade = BLADEFUNC()
 scan = SCANFUNC()
 detector = DETEC()
+slit = SLITS()
 
 print("PShell v13 - New Pink refactored version")
 print("OK")

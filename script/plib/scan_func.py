@@ -13,9 +13,9 @@ class DETEC():
 
 class SCANFUNC():
 
-    def spot(self, detector, exposure=1, images=1, sample=''):
+    def spot(self, detector, exposure=1, images=1, sample=""):
         if isinstance(detector, DETEC):
-            print("!! Please use detector. to see list of detectors !!")
+            print("!! Please use detector[dot] to see list of detectors !!")
             return
         if detector=="ge":
             run("plib/scan/spot_ge.py")
@@ -24,28 +24,54 @@ class SCANFUNC():
             del myscan
             print("OK")
             return
-        if detector=="mythen":
+        elif detector=="mythen":
             run("plib/scan/spot_mythen.py")
             myscan = SPOTMYTHEN()
             myscan.scan(exposure, images, sample)
             del myscan
             print("OK")
             return
+        else:
+            print("Not yet coded")
 
-    def line(self, detector):
+    def line(self, detector, exposure=1, Y0=0, dY=100, Ypoints=1, passes=1, sample=""):
         if isinstance(detector, DETEC):
             print("!! Please use detector. to see list of detectors !!")
             return
-        print("Line scan " + detector)
+        if detector=="ge":
+            run("plib/scan/line_ge.py")
+            myscan = LINEGE()
+            myscan.scan(exposure, Y0, dY, Ypoints, passes, sample)
+            del myscan
+            print("OK")
+            return
+        else:
+            print("Not yet coded")
 
-    def zigzag(self, detector):
+    def zigzag(self, detector, exposure=1, X0=0, dX=100, Xpoints=1, Y0=0, dY=100, Ypoints=1, passes=1, sample="", linedelay=0):
         if isinstance(detector, DETEC):
             print("!! Please use detector. to see list of detectors !!")
             return
-        print("zigzag scan " + detector)
+        if detector=="ge":
+            run("plib/scan/zigzag_ge.py")
+            myscan = ZIGZAGGE()
+            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
+            del myscan
+            print("OK")
+            return
+        else:
+            print("Not yet coded")
 
-    def continuous(self, detector):
+    def continuous(self, detector, det_exposure=1, sample_exposure=1, X0=0, X1=1000, dX=500, Y0=0, Y1=1000, passes=1, sample="", linedelay=0):
         if isinstance(detector, DETEC):
             print("!! Please use detector. to see list of detectors !!")
             return
-        print("continuous scan " + detector)
+        if detector=="ge":
+            run("plib/scan/continuous_ge.py")
+            myscan = CONTGE()
+            myscan.scan(det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay)
+            del myscan
+            print("OK")
+            return
+        else:
+            print("Not yet coded")

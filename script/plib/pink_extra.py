@@ -3,7 +3,7 @@
 def pink_save_bl_snapshot():
     import config.bl_snapshot_config as pcfg
 
-    for dat in pcfg.pvlist:
+    for dat in pcfg.snapshot_pvlist:
         try:
             pval = caget(dat[1])
         except:

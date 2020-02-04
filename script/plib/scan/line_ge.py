@@ -1,8 +1,8 @@
-## spot scan for greateyes
-class SPOTGE():
+## line scan for greateyes
+class LINEGE():
 
-    def scan(self, exposure, images, sample):
-        print("spot scan for greateyes...")
+    def scan(self, exposure,  Y0, dY, Ypoints, passes, sample):
+        print("Line scan for greateyes...")
 
         ## variables
         DEBUG=0
@@ -45,11 +45,19 @@ class SPOTGE():
         Progress = create_channel_device("PINK:GEYES:Scan:progress")
         Ring_current = create_channel_device("MDIZ3T5G:current", type='d')
         Ring_current.setMonitored(True)
-        Sec_el_x = create_channel_device("PINK:SMA01:m10.RBV", type='d')
-        Sec_el_x.setMonitored(True)
-        Sec_el_y = create_channel_device("PINK:SMA01:m9.RBV", type='d')
-        Sec_el_y.setMonitored(True)
-
+        ### positioners
+        ## sec el x
+        #Sec_el_x = create_channel_device("PINK:SMA01:m10.VAL", type='d')
+        Sec_el_x_RBV = create_channel_device("PINK:SMA01:m10.RBV", type='d')
+        Sec_el_x_RBV.setMonitored(True)
+        #Sec_el_x_DMOV = create_channel_device("PINK:SMA01:m10.DMOV", type='d')
+        #Sec_el_x_DMOV.setMonitored(True)
+        ## sec el y
+        Sec_el_y = create_channel_device("PINK:SMA01:m9.VAL", type='d')
+        Sec_el_y_RBV = create_channel_device("PINK:SMA01:m9.RBV", type='d')
+        Sec_el_y_RBV.setMonitored(True)
+        Sec_el_y_DMOV = create_channel_device("PINK:SMA01:m9.DMOV", type='d')
+        Sec_el_y_DMOV.setMonitored(True)
 
         ## create pressure channels
         run("config/pressure_devices.py")
@@ -77,9 +85,9 @@ class SPOTGE():
         ## save initial scan data
         save_dataset("scan/sample", sample)
         save_dataset("scan/start_time", time.ctime())
-        save_dataset("scan/type", "spot")
-        save_dataset("scan/num_passes", 1)
-        save_dataset("scan/num_images_pass", images)
+        save_dataset("scan/type", "line")
+        save_dataset("scan/num_passes", passes)
+        save_dataset("scan/num_images_pass", Ypoints)
 
         ## Saving detectors settings
         save_dataset("detector/d_ccd/exposure", exposure)
@@ -112,105 +120,120 @@ class SPOTGE():
         caput("PINK:CAE2:TriggerMode", 1) ## ext trigger
         caputq("PINK:CAE2:Acquire", 1)
 
-        ## Setup delay generator
-        ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
-        ## [trigger mode] [5:single shot] [1: Ext rising edge]
-        self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
-
-        caput("PINK:GEYES:Scan:progress", 0) # Reset pass progress
-
-        ## take GE background image
-        self.save_GE_BG(exposure)
-
-        ## Setup delay generator
-        ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
-        ## [trigger mode] [5:single shot] [1: Ext rising edge]
-        self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
-
-        caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
-        caput("PINK:GEYES:specsum_reset", 0) # clean spectrum sum
-        caput("PINK:GEYES:specsum_reset", 1) # enable spectrum sum
-
-        Display_status.write("Spot scan running...")
-
-        ## eta_calc(exposure, Ypoints, Xpoints, passes, linedelay)
-        self.eta_calc(exposure, images, 1, 1, 0)
-
-        initial_frame = GE_frameID.read()
-
-        ## save pre scan data
-        save_dataset("passes/pass01/detector/d_ccd/raw/bg_image", Convert.reshape(GE_raw_array.read(), GE_Y, GE_X))
-        save_dataset("passes/pass01/detector/d_ccd/processed/bg_spectrum", GE_Spectra.read())
-        save_dataset("passes/pass01/positioners/sec_el_x", Sec_el_x.take())
-        save_dataset("passes/pass01/positioners/sec_el_y", Sec_el_y.take())
-
-        ## create dataset
-        create_dataset("passes/pass01/detector/d_ccd/raw/image", 'd', False, (0, GE_Y, GE_X), features=data_compression)
-        create_dataset("passes/pass01/detector/d_ccd/processed/image", 'd', False, (0, GE_ROI_Y, GE_ROI_X), features=data_compression)
-        create_dataset("passes/pass01/detector/d_ccd/processed/spectrum", 'd', False, (0, GE_ROI_X))
-        create_dataset("passes/pass01/detector/d_ccd/raw/temperature", 'd', False)
-        create_dataset("passes/pass01/detector/d_ccd/raw/frame_id", 'd', False)
-        create_dataset("passes/pass01/station/izero_profile", 'd', False, (0, profile_size))
-        create_dataset("passes/pass01/station/izero", 'd', False)
-        create_dataset("passes/pass01/station/tfy_profile", 'd', False, (0, profile_size))
-        create_dataset("passes/pass01/station/tfy", 'd', False)
-        create_dataset("passes/pass01/station/ring_current", 'd', False)
-        create_dataset("passes/pass01/timestamps", 'd', False)
-        ##create_dataset("passes/pass01/positioners/sec_el_x", 'd', False)
-        ##create_dataset("passes/pass01/positioners/sec_el_y", 'd', False)
-
-        ## create pressure dataset
-        for pd in pdev:
-            datasetpath = "passes/pass01/station/pressure/"+pd[0]
-            create_dataset(datasetpath, 'd', False)
-            set_attribute(datasetpath, "DESC", pd[2])
-
-        ## setup greateyes
-        caput("PINK:GEYES:cam1:AcquireTime", exposure)
-        caput("PINK:GEYES:cam1:ImageMode", 1) # multiple num_images_pass
-        caput("PINK:GEYES:cam1:NumImages", images)
-        GE_acquire.write(1)
+        ## create dataset for pass spectrum for greateyes
+        create_dataset("detector/d_ccd/processed/spectrum_sum", 'd', False, (0, GE_ROI_X))
 
         try:
-            for i in range(int(images)):
-                Frame_countdown.write(100) # Initiate frame countdown
-                #GE_acquire.write(1)
-                GE_Spectra.waitCacheChange(int((exposure*1000)+10000))
-                sleep(0.01)
-                ## append to dataset
-                append_dataset("passes/pass01/detector/d_ccd/raw/image", Convert.reshape(GE_raw_array.take(), GE_Y, GE_X))
-                append_dataset("passes/pass01/detector/d_ccd/processed/image", Convert.reshape(GE_roi_array.take(), GE_ROI_Y, GE_ROI_X))
-                append_dataset("passes/pass01/detector/d_ccd/processed/spectrum", GE_Spectra.take())
-                append_dataset("passes/pass01/detector/d_ccd/raw/temperature", GE_temperature.take())
-                append_dataset("passes/pass01/detector/d_ccd/raw/frame_id", GE_frameID.take())
-                append_dataset("passes/pass01/station/izero_profile", IZero_profile.take())
-                append_dataset("passes/pass01/station/izero", IZero.take())
-                append_dataset("passes/pass01/station/tfy_profile", TFY_profile.take())
-                append_dataset("passes/pass01/station/tfy", TFY.take())
-                append_dataset("passes/pass01/station/ring_current", Ring_current.take())
-                append_dataset("passes/pass01/timestamps", GE_frameID.getTimestampNanos())
-                ##append_dataset("passes/pass01/positioners/sec_el_x", Sec_el_x.take())
-                ##append_dataset("passes/pass01/positioners/sec_el_y", Sec_el_y.take())
-                ## append to pressure devices
-                for pd in pdev:
-                    datasetpath = "passes/pass01/station/pressure/"+pd[0]
-                    append_dataset(datasetpath, pd[1].take())
 
-                Progress.write(self.calc_progress(initial_frame, GE_frameID.take(), images))
+            ### Pass loop
+            while pass_id <= passes:
+                passpath = "pass"+'{:02d}'.format(pass_id)
+
+                ## Setup delay generator
+                ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
+                ## [trigger mode] [5:single shot] [1: Ext rising edge]
+                self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
+
+                caput("PINK:GEYES:Scan:progress", 0) # Reset pass progress
+
+                ## take GE background image
+                self.save_GE_BG(exposure)
+
+                ## Setup delay generator
+                ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
+                ## [trigger mode] [5:single shot] [1: Ext rising edge]
+                self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
+
+                caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
+                caput("PINK:GEYES:specsum_reset", 0) # clean spectrum sum
+                caput("PINK:GEYES:specsum_reset", 1) # enable spectrum sum
+
+                Display_status.write("Line scan pass "+ '{:02d}'.format(pass_id) +" / "+ '{:02d}'.format(passes))
+
+                ## eta_calc(exposure, Ypoints, Xpoints, passes, linedelay)
+                self.eta_calc(exposure, Ypoints, 1, passes, 0)
+
+                initial_frame = GE_frameID.read()
+
+                ## save pre scan data
+                save_dataset("passes/"+passpath+"/detector/d_ccd/raw/bg_image", Convert.reshape(GE_raw_array.read(), GE_Y, GE_X))
+                save_dataset("passes/"+passpath+"/detector/d_ccd/processed/bg_spectrum", GE_Spectra.read())
+                save_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.read())
+
+                ## create dataset for passes
+                create_dataset("passes/"+passpath+"/detector/d_ccd/raw/image", 'd', False, (0, GE_Y, GE_X), features=data_compression)
+                create_dataset("passes/"+passpath+"/detector/d_ccd/processed/image", 'd', False, (0, GE_ROI_Y, GE_ROI_X), features=data_compression)
+                create_dataset("passes/"+passpath+"/detector/d_ccd/processed/spectrum", 'd', False, (0, GE_ROI_X))
+                create_dataset("passes/"+passpath+"/detector/d_ccd/raw/temperature", 'd', False)
+                create_dataset("passes/"+passpath+"/detector/d_ccd/raw/frame_id", 'd', False)
+                create_dataset("passes/"+passpath+"/station/izero_profile", 'd', False, (0, profile_size))
+                create_dataset("passes/"+passpath+"/station/izero", 'd', False)
+                create_dataset("passes/"+passpath+"/station/tfy_profile", 'd', False, (0, profile_size))
+                create_dataset("passes/"+passpath+"/station/tfy", 'd', False)
+                create_dataset("passes/"+passpath+"/station/ring_current", 'd', False)
+                create_dataset("passes/"+passpath+"/timestamps", 'd', False)
+                #create_dataset("passes/"+passpath+"/positioners/sec_el_x", 'd', False)
+                create_dataset("passes/"+passpath+"/positioners/sec_el_y", 'd', False)
+
+                ## create pressure dataset
+                for pd in pdev:
+                    datasetpath = "passes/"+passpath+"/station/pressure/"+pd[0]
+                    create_dataset(datasetpath, 'd', False)
+                    set_attribute(datasetpath, "DESC", pd[2])
+
+                ## setup greateyes
+                caput("PINK:GEYES:cam1:AcquireTime", exposure)
+                caput("PINK:GEYES:cam1:ImageMode", 0) # single image
+
+                for point_id in range(int(Ypoints)):
+                    # move sample to position
+                    Sec_el_y.write(Y0+(point_id*dY))
+                    sleep(0.1)
+                    Sec_el_y_DMOV.waitValueInRange(1, 0.1, 60000)
+                    Frame_countdown.write(100) # Initiate frame countdown
+                    GE_acquire.write(1)
+                    GE_Spectra.waitCacheChange(int((exposure*1000)+10000))
+                    sleep(0.01)
+                    ## append to dataset
+                    append_dataset("passes/"+passpath+"/detector/d_ccd/raw/image", Convert.reshape(GE_raw_array.take(), GE_Y, GE_X))
+                    append_dataset("passes/"+passpath+"/detector/d_ccd/processed/image", Convert.reshape(GE_roi_array.take(), GE_ROI_Y, GE_ROI_X))
+                    append_dataset("passes/"+passpath+"/detector/d_ccd/processed/spectrum", GE_Spectra.take())
+                    append_dataset("passes/"+passpath+"/detector/d_ccd/raw/temperature", GE_temperature.take())
+                    append_dataset("passes/"+passpath+"/detector/d_ccd/raw/frame_id", GE_frameID.take())
+                    append_dataset("passes/"+passpath+"/station/izero_profile", IZero_profile.take())
+                    append_dataset("passes/"+passpath+"/station/izero", IZero.take())
+                    append_dataset("passes/"+passpath+"/station/tfy_profile", TFY_profile.take())
+                    append_dataset("passes/"+passpath+"/station/tfy", TFY.take())
+                    append_dataset("passes/"+passpath+"/station/ring_current", Ring_current.take())
+                    append_dataset("passes/"+passpath+"/timestamps", GE_frameID.getTimestampNanos())
+                    #append_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.take())
+                    append_dataset("passes/"+passpath+"/positioners/sec_el_y", Sec_el_y_RBV.take())
+                    ## append to pressure devices
+                    for pd in pdev:
+                        datasetpath = "passes/"+passpath+"/station/pressure/"+pd[0]
+                        append_dataset(datasetpath, pd[1].take())
+
+                    Progress.write(self.calc_progress(initial_frame, GE_frameID.take(), Ypoints))
+
+                    ## save after scan data
+                    save_dataset("passes/"+passpath+"/detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.read())
+
+                ## save after pass data
+                append_dataset("detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.take())
+
+                ## save spec filename
+                self.save_specfile(pass_id, extrafname="", spectrum=GE_Spectra_sum.take())
+
+                ## increment pass counter
+                pass_id = pass_id+1
+
         except:
             tnow = time.ctime()
             scan_abort = True
             print("scan aborted [ " + tnow + " ]")
-
-        ## save after scan data
-        save_dataset("passes/pass01/detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.read())
-        save_dataset("detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.read())
-
-        ## save spec filename
-        self.save_specfile(pass_id, extrafname="", spectrum=GE_Spectra_sum.take())
-
-        ## stop detectors
-        GE_acquire.write(0)
+            ## save after scan data
+            save_dataset("passes/"+passpath+"/detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.read())
+            append_dataset("detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.take())
 
         ## save beamline/station snapshot
         Display_status.write("Saving beamline snapshot...")
@@ -230,9 +253,8 @@ class SPOTGE():
             Display_status.write("scan aborted - " + tnow)
             save_dataset("scan/status", "aborted")
         else:
-            Display_status.write("Spot scan completed. OK")
-            save_dataset("scan/status", "ok")
-            print("Spot scan completed. OK")
+            Display_status.write("Line scan completed. OK")
+            print("Line scan completed.")
 
     ################################################################################################
     ### GE save background image function

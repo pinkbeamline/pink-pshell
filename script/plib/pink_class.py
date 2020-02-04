@@ -3,7 +3,7 @@ class PINKCLASS():
     #### SHOW BL SNAPSHOT   ############################################################
     def bl_snapshot_print(self):
         import config.bl_snapshot_config as pcfg
-        pvl = pcfg.pvlist
+        pvl = pcfg.snapshot_pvlist
         header = []
         rows = []
         temprow = []

@@ -2,4 +2,4 @@
 class SPOTMYTHEN():
 
     def scan(self, exposure, images, sample):
-        print("spot scan for mythen")
+        print("spot scan for mythen v2")

@@ -1,4 +1,4 @@
-pvlist = [
+snapshot_pvlist = [
 ["beamline/ring_current", "MDIZ3T5G:current"],
 ["beamline/U17_Gap", "U17IT6R:BasePmGap.A"],
 ["beamline/AU1_Top", "WAUY02U012L:rdPosM1"],
@@ -27,6 +27,9 @@ pvlist = [
 ["beamline/M2_Rx", "HEX2OS12L:hexapod:getReadPoseA"],
 ["beamline/M2_Ry", "HEX2OS12L:hexapod:getReadPoseB"],
 ["beamline/M2_Rz", "HEX2OS12L:hexapod:getReadPoseC"],
+["beamline/M2_T1", "MIRROR02Y01U112L:T1"],
+["beamline/M2_T2", "MIRROR02Y01U112L:T2"],
+["beamline/M2_T3", "MIRROR02Y01U112L:T3"],
 ["station/Table_Tx", "PINK:TBL:pinkX"],
 ["station/Table_Ty", "PINK:TBL:pinkY"],
 ["station/Table_Rx", "PINK:TBL.EAX"],
@@ -65,5 +68,12 @@ pvlist = [
 ["station/SEC_cryo_P_int", "PINK:MAXC:S1Measure"],
 ["station/SEC_cryo_P_ins", "PINK:MAXD:S3Measure"],
 ["station/SEC_el_P_int", "PINK:MAXB:S3Measure"],
+["station/BPM1_cross_x", "PINK:PG01:Over1:5:CenterX_RBV"],
+["station/BPM1_cross_y", "PINK:PG01:Over1:5:CenterY_RBV"],
+["station/BPM2_cross_x", "PINK:PG04:Over1:5:CenterX_RBV"],
+["station/BPM2_cross_y", "PINK:PG04:Over1:5:CenterY_RBV"],
+["station/BPM3_cross_x", "PINK:PG03:Over1:5:CenterX_RBV"],
+["station/BPM3_cross_y", "PINK:PG03:Over1:5:CenterY_RBV"],
+["station/BPM4_cross_x", "PINK:PG02:Over1:5:CenterX_RBV"],
+["station/BPM4_cross_y", "PINK:PG02:Over1:5:CenterY_RBV"],
 ]
-
