@@ -31,6 +31,13 @@ class SCANFUNC():
             del myscan
             print("OK")
             return
+        elif detector=="eiger":
+            run("plib/scan/spot_eiger.py")
+            myscan = SPOTEIGER()
+            myscan.scan(exposure, images, sample)
+            del myscan
+            print("OK")
+            return
         else:
             print("Not yet coded")
 
@@ -41,6 +48,13 @@ class SCANFUNC():
         if detector=="ge":
             run("plib/scan/line_ge.py")
             myscan = LINEGE()
+            myscan.scan(exposure, Y0, dY, Ypoints, passes, sample)
+            del myscan
+            print("OK")
+            return
+        if detector=="eiger":
+            run("plib/scan/line_eiger.py")
+            myscan = LINEEIGER()
             myscan.scan(exposure, Y0, dY, Ypoints, passes, sample)
             del myscan
             print("OK")
@@ -59,6 +73,13 @@ class SCANFUNC():
             del myscan
             print("OK")
             return
+        if detector=="eiger":
+            run("plib/scan/zigzag_eiger.py")
+            myscan = ZIGZAGEIGER()
+            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
+            del myscan
+            print("OK")
+            return
         else:
             print("Not yet coded")
 
@@ -69,6 +90,13 @@ class SCANFUNC():
         if detector=="ge":
             run("plib/scan/continuous_ge.py")
             myscan = CONTGE()
+            myscan.scan(det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay)
+            del myscan
+            print("OK")
+            return
+        if detector=="eiger":
+            run("plib/scan/continuous_eiger.py")
+            myscan = CONTEIGER()
             myscan.scan(det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay)
             del myscan
             print("OK")
