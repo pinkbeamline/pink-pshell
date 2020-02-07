@@ -1,8 +1,8 @@
-## spot scan for eiger
-class SPOTMYTHEN():
+## line scan for greateyes
+class LINEMYTHEN():
 
-    def scan(self, exposure, images, sample):
-        print("spot scan for mythen...")
+    def scan(self, exposure,  Y0, dY, Ypoints, passes, sample):
+        print("Line scan for mythen...")
 
         ## variables
         DEBUG=0
@@ -37,10 +37,19 @@ class SPOTMYTHEN():
         Progress = create_channel_device("PINK:GEYES:Scan:progress")
         Ring_current = create_channel_device("MDIZ3T5G:current", type='d')
         Ring_current.setMonitored(True)
-        Sec_el_x = create_channel_device("PINK:SMA01:m10.RBV", type='d')
-        Sec_el_x.setMonitored(True)
-        Sec_el_y = create_channel_device("PINK:SMA01:m9.RBV", type='d')
-        Sec_el_y.setMonitored(True)
+        ### positioners
+        ## sec el x
+        #Sec_el_x = create_channel_device("PINK:SMA01:m10.VAL", type='d')
+        Sec_el_x_RBV = create_channel_device("PINK:SMA01:m10.RBV", type='d')
+        Sec_el_x_RBV.setMonitored(True)
+        #Sec_el_x_DMOV = create_channel_device("PINK:SMA01:m10.DMOV", type='d')
+        #Sec_el_x_DMOV.setMonitored(True)
+        ## sec el y
+        Sec_el_y = create_channel_device("PINK:SMA01:m9.VAL", type='d')
+        Sec_el_y_RBV = create_channel_device("PINK:SMA01:m9.RBV", type='d')
+        Sec_el_y_RBV.setMonitored(True)
+        Sec_el_y_DMOV = create_channel_device("PINK:SMA01:m9.DMOV", type='d')
+        Sec_el_y_DMOV.setMonitored(True)
 
         ## create pressure channels
         run("config/pressure_devices.py")
@@ -68,9 +77,9 @@ class SPOTMYTHEN():
         ## save initial scan data
         save_dataset("scan/sample", sample)
         save_dataset("scan/start_time", time.ctime())
-        save_dataset("scan/type", "spot")
-        save_dataset("scan/num_passes", 1)
-        save_dataset("scan/num_images_pass", images)
+        save_dataset("scan/type", "line")
+        save_dataset("scan/num_passes", passes)
+        save_dataset("scan/num_images_pass", Ypoints)
 
         ## Saving detectors settings
         save_dataset("detector/d_mythen/exposure", exposure)
@@ -84,10 +93,9 @@ class SPOTMYTHEN():
 
         ## setup mythen
         caput("PINK:MYTHEN:cam1:AcquireTime", exposure)
-        caput("PINK:MYTHEN:cam1:NumFrames", images)
+        caput("PINK:MYTHEN:cam1:NumFrames", 1)
         # Mythen image mode 0:single 1:multiple
         caput("PINK:MYTHEN:cam1:ImageMode", 1)
-        #caput("PINK:MYTHEN:cam1:DelayTime", 0.001)
 
         ## setup caenels 1 and 2
         if DEBUG: log("Setup CAE1", data_file = False)
@@ -108,80 +116,96 @@ class SPOTMYTHEN():
         ## Setup delay generator
         ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
         ## [trigger mode] [5:single shot] [1: Ext rising edge]
-        self.setup_delaygen(1, [0, (images*exposure)-0.02], [0, 0], [0, 0], [0, 0])
+        self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, 0], [0, 0])
 
-        caput("PINK:GEYES:Scan:progress", 0) # Reset pass progress
-        caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
-        caput("PINK:MYTHEN:specsum_enable", 0) # clean spectrum sum
-        caput("PINK:MYTHEN:specsum_enable", 1) # enable spectrum sum
+        ## create dataset for pass spectrum for mythen
+        create_dataset("detector/d_mythen/processed/spectrum_sum", 'd', False, (0, Mythen_X))
 
-        Display_status.write("Spot scan running...")
-
-        ## eta_calc(exposure, Ypoints, Xpoints, passes, linedelay)
-        self.eta_calc(exposure, images, 1, 1, 0)
-
-        initial_frame = Mythen_frameID.read()
-
-        ## save pre scan data
-        save_dataset("passes/pass01/positioners/sec_el_x", Sec_el_x.take())
-        save_dataset("passes/pass01/positioners/sec_el_y", Sec_el_y.take())
-
-        ## create dataset
-        create_dataset("passes/pass01/detector/d_mythen/processed/spectrum", 'd', False, (0, Mythen_X))
-        create_dataset("passes/pass01/detector/d_mythen/raw/frame_id", 'd', False)
-        create_dataset("passes/pass01/station/izero_profile", 'd', False, (0, profile_size))
-        create_dataset("passes/pass01/station/izero", 'd', False)
-        create_dataset("passes/pass01/station/tfy_profile", 'd', False, (0, profile_size))
-        create_dataset("passes/pass01/station/tfy", 'd', False)
-        create_dataset("passes/pass01/station/ring_current", 'd', False)
-        create_dataset("passes/pass01/timestamps", 'd', False)
-        ##create_dataset("passes/pass01/positioners/sec_el_x", 'd', False)
-        ##create_dataset("passes/pass01/positioners/sec_el_y", 'd', False)
-
-        ## create pressure dataset
-        for pd in pdev:
-            datasetpath = "passes/pass01/station/pressure/"+pd[0]
-            create_dataset(datasetpath, 'd', False)
-            set_attribute(datasetpath, "DESC", pd[2])
-
-        ## start acquisition
-        Mythen_acquire.write(1)
         try:
-            for i in range(int(images)):
-                Frame_countdown.write(100) # Initiate frame countdown
-                Mythen_Spectra.waitCacheChange(int((exposure*1000)+10000))
-                sleep(0.05)
-                ## append to dataset
-                append_dataset("passes/pass01/detector/d_mythen/processed/spectrum", Mythen_Spectra.take())
-                append_dataset("passes/pass01/detector/d_mythen/raw/frame_id", Mythen_frameID.take())
-                append_dataset("passes/pass01/station/izero_profile", IZero_profile.take())
-                append_dataset("passes/pass01/station/izero", IZero.take())
-                append_dataset("passes/pass01/station/tfy_profile", TFY_profile.take())
-                append_dataset("passes/pass01/station/tfy", TFY.take())
-                append_dataset("passes/pass01/station/ring_current", Ring_current.take())
-                append_dataset("passes/pass01/timestamps", Mythen_frameID.getTimestampNanos())
-                ##append_dataset("passes/pass01/positioners/sec_el_x", Sec_el_x.take())
-                ##append_dataset("passes/pass01/positioners/sec_el_y", Sec_el_y.take())
-                ## append to pressure devices
-                for pd in pdev:
-                    datasetpath = "passes/pass01/station/pressure/"+pd[0]
-                    append_dataset(datasetpath, pd[1].take())
 
-                Progress.write(self.calc_progress(initial_frame, Mythen_frameID.take(), images))
+            ### Pass loop
+            while pass_id <= passes:
+                passpath = "pass"+'{:02d}'.format(pass_id)
+
+                caput("PINK:GEYES:Scan:progress", 0) # Reset pass progress
+                caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
+                caput("PINK:MYTHEN:specsum_enable", 0) # clean spectrum sum
+                caput("PINK:MYTHEN:specsum_enable", 1) # enable spectrum sum
+
+                Display_status.write("Line scan pass "+ '{:02d}'.format(pass_id) +" / "+ '{:02d}'.format(passes))
+
+                ## eta_calc(exposure, Ypoints, Xpoints, passes, linedelay)
+                self.eta_calc(exposure, Ypoints, 1, 1+passes-pass_id, 0)
+
+                initial_frame = Mythen_frameID.read()
+
+                ## save pre scan data
+                save_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.read())
+
+                ## create dataset for passes
+                create_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum", 'd', False, (0, Mythen_X))
+                create_dataset("passes/"+passpath+"/detector/d_mythen/raw/frame_id", 'd', False)
+                create_dataset("passes/"+passpath+"/station/izero_profile", 'd', False, (0, profile_size))
+                create_dataset("passes/"+passpath+"/station/izero", 'd', False)
+                create_dataset("passes/"+passpath+"/station/tfy_profile", 'd', False, (0, profile_size))
+                create_dataset("passes/"+passpath+"/station/tfy", 'd', False)
+                create_dataset("passes/"+passpath+"/station/ring_current", 'd', False)
+                create_dataset("passes/"+passpath+"/timestamps", 'd', False)
+                #create_dataset("passes/"+passpath+"/positioners/sec_el_x", 'd', False)
+                create_dataset("passes/"+passpath+"/positioners/sec_el_y", 'd', False)
+
+                ## create pressure dataset
+                for pd in pdev:
+                    datasetpath = "passes/"+passpath+"/station/pressure/"+pd[0]
+                    create_dataset(datasetpath, 'd', False)
+                    set_attribute(datasetpath, "DESC", pd[2])
+
+                for point_id in range(int(Ypoints)):
+                    # move sample to position
+                    Sec_el_y.write(Y0+(point_id*dY))
+                    sleep(0.1)
+                    Sec_el_y_DMOV.waitValueInRange(1, 0.1, 60000)
+                    Frame_countdown.write(100) # Initiate frame countdown
+                    Mythen_acquire.write(1)
+                    Mythen_Spectra.waitCacheChange(int((exposure*1000)+10000))
+                    sleep(0.1)
+                    ## append to dataset
+                    append_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum", Mythen_Spectra.take())
+                    append_dataset("passes/"+passpath+"/detector/d_mythen/raw/frame_id", Mythen_frameID.take())
+                    append_dataset("passes/"+passpath+"/station/izero_profile", IZero_profile.take())
+                    append_dataset("passes/"+passpath+"/station/izero", IZero.take())
+                    append_dataset("passes/"+passpath+"/station/tfy_profile", TFY_profile.take())
+                    append_dataset("passes/"+passpath+"/station/tfy", TFY.take())
+                    append_dataset("passes/"+passpath+"/station/ring_current", Ring_current.take())
+                    append_dataset("passes/"+passpath+"/timestamps", Mythen_frameID.getTimestampNanos())
+                    #append_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.take())
+                    append_dataset("passes/"+passpath+"/positioners/sec_el_y", Sec_el_y_RBV.take())
+                    ## append to pressure devices
+                    for pd in pdev:
+                        datasetpath = "passes/"+passpath+"/station/pressure/"+pd[0]
+                        append_dataset(datasetpath, pd[1].take())
+
+                    Progress.write(self.calc_progress(initial_frame, Mythen_frameID.take(), Ypoints))
+
+                    ## save after scan data
+                    save_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
+
+                ## save after pass data
+                append_dataset("detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())
+
+                ## save spec filename
+                self.save_specfile(pass_id, extrafname="", spectrum=Mythen_Spectra_sum.take())
+
+                ## increment pass counter
+                pass_id = pass_id+1
+
         except:
             tnow = time.ctime()
             scan_abort = True
             print("scan aborted [ " + tnow + " ]")
-
-        ## save after scan data
-        save_dataset("passes/pass01/detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
-        save_dataset("detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
-
-        ## save spec filename
-        self.save_specfile(pass_id, extrafname="", spectrum=Mythen_Spectra_sum.take())
-
-        ## stop detectors
-        Mythen_acquire.write(0)
+            ## save after scan data
+            save_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
+            append_dataset("detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())
 
         ## save beamline/station snapshot
         Display_status.write("Saving beamline snapshot...")
@@ -197,13 +221,20 @@ class SPOTMYTHEN():
         ## [trigger mode] [5:single shot] [1: Ext rising edge]
         self.setup_delaygen(5, [0, 0], [0, 0], [0, 0], [0, 0])
 
+        ## Stop mythen
+        if Mythen_status.read():
+            Mythen_acquire.write(0)
+            if DEBUG: log("Mythen Stop", data_file = False)
+            while(Mythen_status.read()):
+                sleep(1)
+            if DEBUG: log("Mythen Idle", data_file = False)
+
         if scan_abort:
             Display_status.write("scan aborted - " + tnow)
             save_dataset("scan/status", "aborted")
         else:
-            Display_status.write("Spot scan completed. OK")
-            save_dataset("scan/status", "ok")
-            print("Spot scan completed. OK")
+            Display_status.write("Line scan completed. OK")
+            print("Line scan completed.")
 
     ################################################################################################
 
@@ -215,7 +246,7 @@ class SPOTMYTHEN():
     ### ETA calculation
     def eta_calc(self, exposure, Ypoints, Xpoints, passes, linedelay):
         bgtime = 0
-        linetime = (Ypoints*(exposure+0.001))+1.7+linedelay
+        linetime = (Ypoints*(exposure+0.35))+1.7+linedelay
         passtime = (Xpoints * linetime) + bgtime
         scantime = passes*passtime
         tnow = time.time()

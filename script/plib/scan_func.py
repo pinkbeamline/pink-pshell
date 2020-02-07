@@ -59,6 +59,13 @@ class SCANFUNC():
             del myscan
             print("OK")
             return
+        if detector=="mythen":
+            run("plib/scan/line_mythen.py")
+            myscan = LINEMYTHEN()
+            myscan.scan(exposure, Y0, dY, Ypoints, passes, sample)
+            del myscan
+            print("OK")
+            return
         else:
             print("Not yet coded")
 
