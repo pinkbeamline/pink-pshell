@@ -87,6 +87,13 @@ class SCANFUNC():
             del myscan
             print("OK")
             return
+        if detector=="mythen":
+            run("plib/scan/zigzag_mythen.py")
+            myscan = ZIGZAGMYTHEN()
+            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
+            del myscan
+            print("OK")
+            return
         else:
             print("Not yet coded")
 
@@ -104,6 +111,13 @@ class SCANFUNC():
         if detector=="eiger":
             run("plib/scan/continuous_eiger.py")
             myscan = CONTEIGER()
+            myscan.scan(det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay)
+            del myscan
+            print("OK")
+            return
+        if detector=="mythen":
+            run("plib/scan/continuous_mythen.py")
+            myscan = CONTMYTHEN()
             myscan.scan(det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay)
             del myscan
             print("OK")
