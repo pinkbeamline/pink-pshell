@@ -146,10 +146,12 @@ class MLMIRROR():
                 tout = tout+1
             print("Changing mirror to " + grouplabels[group-1] + ". Please wait. This takes a while...")
             print("Epics group: " + str(epicsgroup))
-            #caput("HEX2OS12L:hexapod:mbboMirrorChoicerRun", epicsgroup)
-            #sleep(1)
-            #while(caget("HEX2OS12L:multiaxis:running")):
-            #    sleep(1)
-            #sleep(1)
+            caput("HEX2OS12L:hexapod:mbboMirrorChoicerRun", epicsgroup)
+            sleep(1)
+            while(caget("HEX2OS12L:multiaxis:running")):
+                eta = caget("HEX2OS12L:multiaxis:mvtm")
+                print("ETA: " + '{:.3f}'.format(eta) + " sec")
+                sleep(1)
+            sleep(1)
         print("Mirror group in position.")
 

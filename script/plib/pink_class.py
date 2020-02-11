@@ -61,26 +61,28 @@ class PINKCLASS():
         for i in range(3):
             shutter_status = caget("PSHY01U012L:State1", 'd')
             if shutter_status == 14:
-                return True
+                print("Shutter is opened")
+                return
             else:
                 caputq("PSHY01U012L:SetTa", 1)
                 sleep(3)
         print("Failed to open Shutter Hard")
         log("Failed to open Shutter Hard")
-        return False
+        return
 
     #### Close hard shutter  ############################################################
     def shutter_hard_CLOSE(self):
         for i in range(3):
             shutter_status = caget("PSHY01U012L:State1", 'd')
             if shutter_status == 5 or shutter_status == 1:
-                return True
+                print("Shutter is closed")
+                return
             else:
                 caputq("PSHY01U012L:SetTa", 1)
                 sleep(3)
         print("Failed to close Shutter Hard")
         log("Failed to close Shutter Hard")
-        return False
+        return
 
     #### Setup Pink Beamline  ############################################################
     def __pvwait(self, pvname, value, deadband=0, timeout=300):

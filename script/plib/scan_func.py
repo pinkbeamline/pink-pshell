@@ -6,10 +6,10 @@ class DETEC():
         return "eiger"
     def mythen(self):
         return "mythen"
-    def greateyes_eiger(self):
-        return "ge+eiger"
-    def greateyes_mythen(self):
-        return "ge+mythen"
+#    def greateyes_eiger(self):
+#        return "ge+eiger"
+#    def greateyes_mythen(self):
+#        return "ge+mythen"
 
 class SCANFUNC():
 

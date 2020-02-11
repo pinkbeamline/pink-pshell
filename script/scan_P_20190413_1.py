@@ -1,0 +1,2 @@
+pink.ge_SEC_EL_continous_exposure_speed(7, -15600, 800, 4, -7950, 0, 500, passes=40, sample='ZP03 NaH2PO4')
+pink.ge_SEC_EL_continous_exposure_speed(8, 3000, 800, 4, -8000, 8000, 500, passes=10, sample='ZP01 PPh3')

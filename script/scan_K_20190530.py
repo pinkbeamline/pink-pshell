@@ -1,0 +1,6 @@
+pink.ge_SEC_EL_continous_exposure_speed(5, 37200, 800, 4, -5500, 8000, 200, passes=1, sample='KCl')
+pink.ge_SEC_EL_continous_exposure_speed(10, 1900, 800, 4, -3800, 7000, 200, passes=10, sample='K4 calib')
+pink.ge_SEC_EL_continous_exposure_speed(10, -15100, 800, 4, -3700, 6900, 200, passes=10, sample='K3 calib')
+pink.shutter_hard_CLOSE()
+caput("PINK:PLCVAC:V11close", 1)
+caput("PINK:PLCVAC:V10close", 1)

@@ -1,0 +1,7 @@
+scan.ge_SEC_EL_continuous_points_speed(19600, 800, 5, -2950, 8000, 1, 500, passes=10, sample='Rubpy NO6')
+scan.ge_SEC_EL_continuous_points_speed(-15200, 800, 5, -6000, 8000, 1, 500, passes=10, sample='Rubpy NO7')
+#pink.ge_SEC_EL_continous_exposure_speed(10, 37000, 800, 5, -8000, 8000, 200, passes=5, sample='Ru_CT 2.3 S#b')
+#pink.shutter_hard_CLOSE()
+#caput("PINK:PLCVAC:V11close", 1)
+#caput("PINK:PLCVAC:V10close", 1)
+#caput("PINK:GEYES:cam1:Temperature", 20)

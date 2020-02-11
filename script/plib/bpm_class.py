@@ -20,9 +20,14 @@ class BPM():
 
     def __print_info(self, label, a, b, amp, com, sigma, conv_fact, comabs):
         print("*** " + label + " Gaussian Fit ***:")
-        print("Inclination: " + '{:.3e}'.format(a)               + "\tBackground: " + '{:.3f}'.format(b)                   + "\tAmplitude: " + '{:.3f}'.format(amp))
-        print("      Sigma: " + '{:.3f}'.format(sigma)           + "\t      FWHM: " + '{:.3f}'.format(self.sig2fwmh*sigma) + "\t     Mean: " + '{:.3f}'.format(comabs))
-        print("  Sigma(um): " + '{:.3f}'.format(sigma*conv_fact) + "\t  FWHM(um): " + '{:.3f}'.format(sigma*conv_fact*self.sig2fwmh))
+        print("   Inclination: " + '{:.3e}'.format(a))
+        print("    Background: " + '{:.3f}'.format(b))
+        print("     Amplitude: " + '{:.3f}'.format(amp))
+        print("         Sigma: " + '{:.3f}'.format(sigma))
+        print("          FWHM: " + '{:.3f}'.format(self.sig2fwmh*sigma))
+        print("          Mean: " + '{:.3f}'.format(comabs))
+        print("     Sigma(um): " + '{:.3f}'.format(sigma*conv_fact))
+        print("      FWHM(um): " + '{:.3f}'.format(sigma*conv_fact*self.sig2fwmh))
 
     def BPM1_Vertical_Profile(self):
         label = "BPM1 Vertical Profile"

@@ -1,12 +1,12 @@
 energy =  2300
 group_desc =  "Optic ID#1"
 group =  1
-tx =  19000
-ty  = -4000
-tz  =
-rx  =
-ry  =
-rz  = 
+tx =  18600
+ty  = -3900
+tz  = -10
+rx  = 1100
+ry  = -1900
+rz  = -4000
 gap =
 
 energy =  3000
@@ -49,4 +49,11 @@ tx = 12500
 energy=9500
 group_desc="Optic ID#3"
 group=3
-tx  = 25500
+tx  = 18500
+ty = -4000
+tz = -0.535
+rx = 980
+ry = -2000
+rz = -4500
+
+

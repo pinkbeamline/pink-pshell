@@ -1,0 +1,7 @@
+#pink.ge_SEC_EL_continous_exposure_speed(10, 2500, 550, 6, 6000, 8100, 400, passes=1, sample='NaH2PO4')
+pink.ge_SEC_EL_continous_exposure_speed(10, -14300, 550, 6, -8000, 8100, 500, passes=1, sample='Na2HPO4')
+pink.ge_SEC_EL_continous_exposure_speed(40, -41300, 700, 6, -1200, 1600, 60, passes=10, sample='Na2ATP pH8 30mM')
+#pink.shutter_hard_CLOSE()
+#caput("PINK:PLCVAC:V11close", 1)
+#caput("PINK:PLCVAC:V10close", 1)
+#caput("PINK:GEYES:cam1:Temperature", 20)

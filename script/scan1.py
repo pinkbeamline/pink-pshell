@@ -1,0 +1,2 @@
+pink.ge_SEC_EL_continous_exposure_speed(2, 37600, 1100, 3, -3000, 0, 500, passes=2, sample='test1')
+pink.ge_SEC_EL_continous_exposure_speed(2, 37600, 1100, 3, 1000, 4000, 500, passes=2, sample='test1')

@@ -99,7 +99,7 @@ class SLITSCAN():
         try:
             (off, amp, com, sigma) = fit_gaussian_offset(dt, motor)
             f = Gaussian(amp, com, sigma)
-            xgauss = linspace(min(xdata), max(xdata), 100)
+            xgauss = linspace(min(motor), max(motor), 100)
             gauss = [f.value(i)+off for i in xgauss]
             fwhm = 2.355*sigma
             p2.getSeries(1).setData(xgauss, gauss)
