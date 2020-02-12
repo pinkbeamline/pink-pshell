@@ -11,6 +11,16 @@ class DETEC():
 #    def greateyes_mythen(self):
 #        return "ge+mythen"
 
+class FILTERS():
+    def filter_1(self):
+        return "f1"
+    def filter_2(self):
+        return "f2"
+    def filter_3(self):
+        return "f3"
+    def scatter(self):
+        return "sc"
+
 class SCANFUNC():
 
     def spot(self, detector, exposure=1, images=1, sample=""):
@@ -124,3 +134,11 @@ class SCANFUNC():
             return
         else:
             print("Not yet coded")
+
+    def filter_scan(self, filters, start=0, end=0, step=0, exposure=1):
+        if isinstance(filters, FILTERS):
+            print("!! Please use filters. to see list of options !!")
+            return
+        run("plib/scan/filter_scan.py")
+        filterscan = FILTERSCAN()
+        filterscan.scan(filters,start,end,step,exposure)
