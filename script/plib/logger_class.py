@@ -27,7 +27,6 @@ class MasterLogger():
         self.start_id = info.id
         if info.script != None:
             self.start_time = time.localtime()
-            
             self.script = info.script
             self.start_path = self._makepath(self.data_path)
             #start_path_before = "/home/nilson/PShell/pshellcontrol/home/data/2018_09_0"
@@ -49,6 +48,7 @@ class MasterLogger():
                 self.new_list.sort()
                 try:
                     self._createmasterlog(info)
+                    pass
                 except:
                     print("[Error]: Failed to create master file")
 
@@ -69,7 +69,7 @@ class MasterLogger():
             '{:02d}'.format(int(self.start_time.tm_mon))+
             '{:02d}'.format(int(self.start_time.tm_mday))
             )
-            
+
         fname = (
             foldername+"_"+
             '{:02d}'.format(int(self.start_time.tm_hour))+
@@ -108,8 +108,8 @@ class MasterLogger():
         logtext.append(str(info.getResult())+'\n\n')
         logtext.append("###  script code  ###\n")
         logtext.append(scripttext)
-        
-        f = open(fullpath, "w") 
+
+        f = open(fullpath, "w")
         for lines in logtext:
             f.write(lines)
         f.close()

@@ -22,11 +22,7 @@ print("PShell v13 - New Pink refactored version")
 print("OK")
 
 def on_command_started(info):
-    #mlogger.onstart(info)
-    #print("onstart")
-    pass
+    mlogger.onstart(info)
 
 def on_command_finished(info):
-    #mlogger.onend(info)
-    #print("onend")
-    pass
+    mlogger.onend(info)
