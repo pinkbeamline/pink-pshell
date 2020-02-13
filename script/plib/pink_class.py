@@ -30,7 +30,7 @@ class PINKCLASS():
         for i, row in enumerate(temprow):
             rows[i].append(row.ljust(colmaxwidth+1))
         header.append('Device'.ljust(colmaxwidth+1))
- 
+
         for i, item in enumerate(pvl):
             #print(item[1])
             pvdisconnected=False
@@ -191,14 +191,14 @@ class PINKCLASS():
         #MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
         #MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
         #MOTOR_RBV = create_channel_device("U17IT6R::BasePmGap.A")
-        #MOTOR_RBV.setMonitored(True)   
+        #MOTOR_RBV.setMonitored(True)
         #motor_deadband = 2.0
 
         ## simulated channels
         MOTOR = create_channel_device("PINK:GAPSIM:gapset")
         MOTOR_SET = create_channel_device("PINK:GAPSIM:gapexec.PROC")
         MOTOR_RBV = create_channel_device("PINK:GAPSIM:m1.RBV")
-        MOTOR_RBV.setMonitored(True)   
+        MOTOR_RBV.setMonitored(True)
         motor_deadband = 0.1
 
         ## variables
@@ -270,89 +270,30 @@ class PINKCLASS():
         ml = MLMIRROR()
         ml.set(energy=9500)
 
+    #### Set eiger background  #################################################
+    def eiger_set_background(self):
+        print("Setting background for Eiger detector...")
 
-#        def ml_2300ev(self):
-#            layer = 8
-#            self.__movemirror(layer)
-#    
-#        def ml_3000ev(self):
-#            layer = 7
-#            self.__movemirror(layer)
-#    
-#        def ml_4000ev(self):
-#            layer = 6
-#            self.__movemirror(layer)
-#    
-#        def ml_5000ev(self):
-#            layer = 5
-#            self.__movemirror(layer)
-#    
-#        def ml_6300ev(self):
-#            layer = 4
-#            self.__movemirror(layer)
-#    
-#        def ml_6800ev(self):
-#            layer = 3
-#            self.__movemirror(layer)
-#    
-#        def ml_7300ev(self):
-#            layer = 2
-#            self.__movemirror(layer)
-#    
-#        def ml_8000ev(self):
-#            layer = 1
-#            self.__movemirror(layer)
-#    
-#        def ml_9500ev(self):
-#            layer = 0
-#            self.__movemirror(layer)
-#    
-#        def __movemirror(self,layer):
-#            group = self.m2poslist[layer][3]
-#            pos = self.m2poslist[layer][2]
-#            try:
-#                self.__movegroup(group)
-#                self.__movelayer(pos)
-#                print("Mirror Ready. OK")
-#            except:
-#                print("Error moving mirror or operation canceled")
-#    
-#        def __movegroup(self, group):
-#            grouplabels = ["Optic ID#3", "Optic ID#2", "Optic ID#1"]
-#            actualgroup = caget("HEX2OS12L:hexapod:mbboMirrorChoicerRun", 'i')
-#            if(group != actualgroup):
-#                tout = 0
-#                while(caget("HEX2OS12L:multiaxis:running")):
-#                    if tout%5==0:
-#                        print("Mirror is in use. Waiting! ( "+ str(tout) + " sec ) ")
-#                    sleep(1)
-#                    tout = tout+1
-#                print("Changing mirror to " + grouplabels[group]+". Please wait. This takes a while...")
-#                caput("HEX2OS12L:hexapod:mbboMirrorChoicerRun", group)
-#                sleep(1)
-#                while(caget("HEX2OS12L:multiaxis:running")):
-#                    sleep(1)
-#                sleep(1)
-#    
-#        def __movelayer(self, pos):
-#            while(caget("HEX2OS12L:multiaxis:running")):
-#                if tout%5==0:
-#                    print("Mirror is in use. Waiting! ( "+ str(tout) + " sec ) ")
-#                sleep(1)
-#                tout = tout+1
-#            print("Moving mirror to Tx: "+str(pos)+". Please wait. This takes a while...")
-#            caput("HEX2OS12L:hexapod:setPoseX", pos)
-#            sleep(1)
-#            while(caget("HEX2OS12L:multiaxis:running")):
-#                sleep(1)
-#            sleep(1)
-#    
-    ####################################################################################
-    #### Internal Functions ############################################################
-    ####################################################################################
+        caput("PINK:EIGER:cam1:AcquireTime", 0.001)
+        caput("PINK:EIGER:cam1:AcquirePeriod", 1.000)
+        caput("PINK:EIGER:cam1:NumImages", 1)
+        caput("PINK:EIGER:Proc1:EnableBackground", 0)
+        sleep(0.2)
+        eig_frame_id = caget("PINK:EIGER:cam1:ArrayCounter_RBV")
 
-#    def __ge_setup_file(self, fname="ge"):
-#        set_exec_pars(open=False, name=fname, reset=True)
+        caput("PINK:EIGER:cam1:Acquire", 1)
+        sleep(0.2)
+        if caget("PINK:EIGER:cam1:ArrayCounter_RBV") == eig_frame_id:
+            print("Eiger failed to acquire frame. Aborting!")
+            return
 
-#    def __publish_status(self, message):
-#        set_status(message)
+        caput("PINK:EIGER:Proc1:SaveBackground", 1)
+        caput("PINK:EIGER:Proc1:EnableBackground", 1)
+        caput("PINK:EIGER:cam1:AcquireTime", 1)
+        #caput("PINK:EIGER:cam1:AcquirePeriod", 1)
+        sleep(0.2)
+        caput("PINK:EIGER:cam1:Acquire", 1)
+        sleep(0.2)
+        caput("PINK:EIGER:specsum_reset", 0)
+        caput("PINK:EIGER:specsum_reset", 1)
+        print("Success")
