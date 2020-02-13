@@ -85,6 +85,17 @@ class LINEEIGER():
         save_dataset("scan/num_passes", passes)
         save_dataset("scan/num_images_pass", Ypoints)
 
+        ## save plot data
+        save_dataset("plot/title", sample)
+        save_dataset("plot/xlabel", "channel")
+        save_dataset("plot/ylabel", "counts")
+        plotx = linspace(1,Eiger_ROI_X,1.0)
+        save_dataset("plot/x", plotx)
+
+        ## create plot dataset
+        create_dataset("plot/y", 'd', False, (0, Eiger_ROI_X))
+        create_dataset("plot/y_desc", 's', False)
+
         ## Saving detectors settings
         save_dataset("detector/d_eiger/exposure", exposure)
         save_dataset("detector/d_eiger/roi_line", caget("PINK:EIGER:ROI1:MinX_RBV"))
@@ -206,6 +217,10 @@ class LINEEIGER():
 
                 ## save after pass data
                 append_dataset("detector/d_eiger/processed/spectrum_sum", Eiger_Spectra_sum.take())
+
+                ## save plot data
+                append_dataset("plot/y", Eiger_Spectra_sum.read())
+                append_dataset("plot/y_desc", "Pass "+'{:d}'.format(pass_id))
 
                 ## save spec filename
                 self.save_specfile(pass_id, extrafname="", spectrum=Eiger_Spectra_sum.take())

@@ -297,3 +297,10 @@ class PINKCLASS():
         caput("PINK:EIGER:specsum_reset", 0)
         caput("PINK:EIGER:specsum_reset", 1)
         print("Success")
+
+    #### pink plot  #################################################
+    def plot(self, filepath=""):
+        run("plib/pinkplot.py")
+        pinkplot = PINKPLOT()
+        pinkplot.plot(filepath=filepath)
+        del pinkplot

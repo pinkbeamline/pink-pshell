@@ -110,6 +110,17 @@ class FILTERSCAN():
         save_dataset("raw/sensor", sensor)
         save_dataset("raw/blade", motor)
 
+        ## Save plot data
+        save_dataset("plot/title", plottitle)
+        save_dataset("plot/xlabel", "position")
+        save_dataset("plot/ylabel", "intensity")
+        save_dataset("plot/x", motor)
+        ## create plot dataset
+        create_dataset("plot/y", 'd', False, (0, len(sensor)))
+        create_dataset("plot/y_desc", 's', False)
+        append_dataset("plot/y", sensor)
+        append_dataset("plot/y_desc", filter_desc)
+
         ## Setup CAE2
         #0:continuous 1:multiple 2:single
         caput("PINK:CAE2:AcquireMode", 0) ## continuous

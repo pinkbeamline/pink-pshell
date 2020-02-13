@@ -142,3 +142,4 @@ class SCANFUNC():
         run("plib/scan/filter_scan.py")
         filterscan = FILTERSCAN()
         filterscan.scan(filters,start,end,step,exposure)
+        del filterscan
