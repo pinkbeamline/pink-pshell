@@ -125,6 +125,16 @@ class CONTGE():
         save_dataset("scan/vert_lines", Xpoints)
         save_dataset("scan/images_per_line", Ypoints)
 
+        ## save plot data
+        save_dataset("plot/title", sample)
+        save_dataset("plot/xlabel", "channel")
+        save_dataset("plot/ylabel", "counts")
+        save_dataset("plot/x", linspace(1, GE_ROI_X, 1.0))
+
+        ## create plot dataset
+        create_dataset("plot/y", 'd', False, (0, GE_ROI_X))
+        create_dataset("plot/y_desc", 's', False)
+
         ## Saving detectors settings
         save_dataset("detector/d_ccd/exposure", exposure)
         save_dataset("detector/d_ccd/roi_line", caget("PINK:GEYES:ROI1:MinY_RBV"))
@@ -291,6 +301,10 @@ class CONTGE():
 
                 ## save after pass data
                 append_dataset("detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.take())
+
+                ## save plot data
+                append_dataset("plot/y", GE_Spectra_sum.take())
+                append_dataset("plot/y_desc", "Pass "+'{:d}'.format(pass_id))
 
                 ## save spec filename
                 self.save_specfile(pass_id, extrafname="", spectrum=GE_Spectra_sum.take())

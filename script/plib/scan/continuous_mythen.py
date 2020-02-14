@@ -3,7 +3,7 @@ class CONTMYTHEN():
 
     def scan(self, det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay):
         print("Continuous scan for mythen...")
-        
+
         ## variables
         DEBUG=0
         initial_frame = 0
@@ -116,6 +116,17 @@ class CONTMYTHEN():
         save_dataset("scan/sample_exposure", sample_exposure)
         save_dataset("scan/vert_lines", Xpoints)
         save_dataset("scan/images_per_line", Ypoints)
+
+        ## save plot data
+        save_dataset("plot/title", sample)
+        save_dataset("plot/xlabel", "channel")
+        save_dataset("plot/ylabel", "counts")
+        plotx = linspace(1, Mythen_X, 1.0)
+        save_dataset("plot/x", plotx)
+
+        ## create plot dataset
+        create_dataset("plot/y", 'd', False, (0, Mythen_X))
+        create_dataset("plot/y_desc", 's', False)
 
         ## Saving detectors settings
         save_dataset("detector/d_mythen/exposure", exposure)
@@ -258,6 +269,10 @@ class CONTMYTHEN():
 
                 ## save after pass data
                 append_dataset("detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())
+
+                ## save plot data
+                append_dataset("plot/y", Mythen_Spectra_sum.take())
+                append_dataset("plot/y_desc", "Pass "+'{:d}'.format(pass_id))
 
                 ## save spec filename
                 self.save_specfile(pass_id, extrafname="", spectrum=Mythen_Spectra_sum.take())
