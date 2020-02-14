@@ -95,7 +95,7 @@ class PINKCLASS():
             sleep(1)
         print("Timeout (" + str(timeout) + " seconds) waiting for PV: " + pvname)
 
-    def bl_set(self):
+    def __bl_set(self):
         import config.bl_setup_config as pcfg
 
         resp = get_option("Setup PINK beamline will move multiples devices. Are you sure?", type='OkCancel')
