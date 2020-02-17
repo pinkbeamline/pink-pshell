@@ -230,8 +230,8 @@ class CONTMYTHEN():
                         append_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.take())
                         append_dataset("passes/"+passpath+"/positioners/sec_el_y", Sec_el_y_RBV.take())
                         Frame_countdown.write(100) # Initiate frame countdown
-                        Mythen_Spectra.waitCacheChange(int((exposure*1000)+10000))
-                        sleep(0.1)
+                        Mythen_Spectra.waitCacheChange(int((exposure*1000)+30000))
+                        sleep(0.2)
                         ## append to dataset
                         append_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum", Mythen_Spectra.take())
                         append_dataset("passes/"+passpath+"/detector/d_mythen/raw/frame_id", Mythen_frameID.take())

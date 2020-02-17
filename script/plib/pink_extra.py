@@ -17,12 +17,12 @@ def linspace(start, end, step):
         N = int(abs(step))
         ds = float((end-start))/(step-1)
     else:
-        N = abs(int(math.floor((end-start)/step)))+1
+        N = abs(int(math.floor(abs((end-start)/step))))+1
         ds = abs(step)
         if end-start < 0:
             ds = -1*ds
     resp = [start+(i*ds) for i in range(N)]
-    return resp        
+    return resp
 
 # ******** Pseudo Devices ************
 

@@ -146,6 +146,7 @@ class SPOTMYTHEN():
         create_dataset("passes/pass01/station/tfy", 'd', False)
         create_dataset("passes/pass01/station/ring_current", 'd', False)
         create_dataset("passes/pass01/timestamps", 'd', False)
+        create_dataset("passes/pass01/timestamps_ps", 'd', False)
         ##create_dataset("passes/pass01/positioners/sec_el_x", 'd', False)
         ##create_dataset("passes/pass01/positioners/sec_el_y", 'd', False)
 
@@ -160,8 +161,8 @@ class SPOTMYTHEN():
         try:
             for i in range(int(images)):
                 Frame_countdown.write(100) # Initiate frame countdown
-                Mythen_Spectra.waitCacheChange(int((exposure*1000)+10000))
-                sleep(0.05)
+                Mythen_Spectra.waitCacheChange(int((exposure*1000)+30000))
+                sleep(0.2)
                 ## append to dataset
                 append_dataset("passes/pass01/detector/d_mythen/processed/spectrum", Mythen_Spectra.take())
                 append_dataset("passes/pass01/detector/d_mythen/raw/frame_id", Mythen_frameID.take())
@@ -171,6 +172,7 @@ class SPOTMYTHEN():
                 append_dataset("passes/pass01/station/tfy", TFY.take())
                 append_dataset("passes/pass01/station/ring_current", Ring_current.take())
                 append_dataset("passes/pass01/timestamps", Mythen_frameID.getTimestampNanos())
+                append_dataset("passes/pass01/timestamps_ps", time.time()*1e9)
                 ##append_dataset("passes/pass01/positioners/sec_el_x", Sec_el_x.take())
                 ##append_dataset("passes/pass01/positioners/sec_el_y", Sec_el_y.take())
                 ## append to pressure devices

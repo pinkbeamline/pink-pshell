@@ -187,8 +187,8 @@ class ZIGZAGMYTHEN():
 
                         Frame_countdown.write(100) # Initiate frame countdown
                         Mythen_acquire.write(1)
-                        Mythen_Spectra.waitCacheChange(int((exposure*1000)+10000))
-                        sleep(0.1)
+                        Mythen_Spectra.waitCacheChange(int((exposure*1000)+30000))
+                        sleep(0.2)
                         ## append to dataset
                         append_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum", Mythen_Spectra.take())
                         append_dataset("passes/"+passpath+"/detector/d_mythen/raw/frame_id", Mythen_frameID.take())
@@ -220,7 +220,7 @@ class ZIGZAGMYTHEN():
 
                 ## save plot data
                 append_dataset("plot/y", Mythen_Spectra_sum.take())
-                append_dataset("plot/y_desc", "Pass "+'{:d}'.format(pass_id))                
+                append_dataset("plot/y_desc", "Pass "+'{:d}'.format(pass_id))
 
                 ## save spec filename
                 self.save_specfile(pass_id, extrafname="", spectrum=Mythen_Spectra_sum.take())

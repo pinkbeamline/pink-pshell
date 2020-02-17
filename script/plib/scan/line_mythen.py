@@ -178,8 +178,8 @@ class LINEMYTHEN():
                     Sec_el_y_DMOV.waitValueInRange(1, 0.1, 60000)
                     Frame_countdown.write(100) # Initiate frame countdown
                     Mythen_acquire.write(1)
-                    Mythen_Spectra.waitCacheChange(int((exposure*1000)+10000))
-                    sleep(0.1)
+                    Mythen_Spectra.waitCacheChange(int((exposure*1000)+30000))
+                    sleep(0.2)
                     ## append to dataset
                     append_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum", Mythen_Spectra.take())
                     append_dataset("passes/"+passpath+"/detector/d_mythen/raw/frame_id", Mythen_frameID.take())
