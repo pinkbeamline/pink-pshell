@@ -8,6 +8,7 @@ class SLITSCAN():
         DEBUG=0
         sensor = []
         motor = []
+        prescan_pos = 0
 
         ## channels
         SENSOR = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
@@ -67,6 +68,9 @@ class SLITSCAN():
         p2.getAxis(p1.AxisId.X).setRange(min(start, end),max(start,end))
         #p1.addSeries(LinePlotSeries("Interpolation"))
         p2.addSeries(LinePlotSeries("Fit"))
+
+        #Grab pre scan initial position
+        prescan_pos = MOTOR_RBV.read()
 
         print("Scanning...")
 
@@ -138,3 +142,10 @@ class SLITSCAN():
         ## Setup CAE2
         #0:continuous 1:multiple 2:single
         caput("PINK:CAE2:AcquireMode", 0) ## continuous
+
+        ## Move motor back to pre scan position
+        MOTOR.write(prescan_pos)
+        MOTOR_RBV.waitValueInRange(prescan_pos, 1.0, 60000)
+        MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)        
+
+        print("Done")
