@@ -25,9 +25,9 @@ class GAPSCAN():
         ACQ.setMonitored(True)
         MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
         MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
-        MOTOR_RBV = create_channel_device("U17IT6R::BasePmGap.A")
+        MOTOR_RBV = create_channel_device("U17IT6R:BasePmGap.A")
         MOTOR_RBV.setMonitored(True)
-        motor_deadband = 2.0
+        motor_deadband = 0.02
 
         ## simulated channels
         #SENSOR = create_channel_device("PINK:GAPSIM:izero")
@@ -45,6 +45,7 @@ class GAPSCAN():
         ## Setup
         #print("Scanning ...")
         set_exec_pars(open=False, name="gap", reset=True)
+        save_dataset("scan/scantype", "Gap scan with linear bg gaussian fitting")
 
         if verbose: print("Setup ampmeter")
         ## Configure ampmeter
@@ -70,23 +71,29 @@ class GAPSCAN():
         pos = positionarray[0]
         MOTOR.write(pos)
         MOTOR_SET.write(1)
-        while(abs(pos-MOTOR_RBV.take()) > motor_deadband):
+        while(abs(pos-MOTOR_RBV.read()) > motor_deadband):
             mystat = "Gap: " + str(MOTOR_RBV.take())
             set_status(mystat)
             sleep(0.5)
         #MOTOR_RBV.waitValueInRange(positionarray[0], motor_deadband, 60000)
-
+        mystat = "Gap: " + str(MOTOR_RBV.take())
+        set_status(mystat)
+    
         if verbose: print("Scanning...")
         ## Main loop
         for pos in positionarray:
             MOTOR.write(pos)
             MOTOR_SET.write(1)
-            MOTOR_RBV.waitValueInRange(pos, motor_deadband, 10000)
-
+            junk = MOTOR_RBV.read()
+            try:
+                MOTOR_RBV.waitValueInRange(pos, motor_deadband, 5000)
+            except:
+                continue
+    
             while(ACQ.take()==1):
                 sleep(0.25)
             ACQ.write(1)
-            resp = SENSOR2.waitCacheChange(1000*int(exposure+2))
+            resp = SENSOR.waitCacheChange(1000*int(exposure+2))
             if resp==False:
                 print("Abort: No data from ampmeter")
                 return
@@ -114,7 +121,7 @@ class GAPSCAN():
             print("-----------------------------------------")
 
             if verbose: print("Saving data")
-            save_dataset("scan/scantype", "Gap scan with linear bg gaussian fitting")
+            #save_dataset("scan/scantype", "Gap scan with linear bg gaussian fitting")
             save_dataset("gaussian/inclination", a)
             save_dataset("gaussian/offset", b)
             save_dataset("gaussian/amplitude", amp)
@@ -162,7 +169,7 @@ class GAPSCAN():
 
         # end routine
         caput("PINK:CAE2:AcquireMode", 0)
-        print(".")
+        print("Scan finished. OK")
 
 ###########################################
 ### Support functions

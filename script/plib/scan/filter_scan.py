@@ -66,6 +66,8 @@ class FILTERSCAN():
         else:
             set_exec_pars(open=False, name="filter", reset=True)
 
+        save_dataset("scan/start_time", time.ctime())
+
         ## configure scan positions
         positionarray = linspace(start, end, step)
 
@@ -120,6 +122,8 @@ class FILTERSCAN():
         create_dataset("plot/y_desc", 's', False)
         append_dataset("plot/y", sensor)
         append_dataset("plot/y_desc", filter_desc)
+        
+        save_dataset("scan/finish_time", time.ctime())
 
         ## Setup CAE2
         #0:continuous 1:multiple 2:single

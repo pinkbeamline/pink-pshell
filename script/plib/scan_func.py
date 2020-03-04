@@ -145,7 +145,7 @@ class SCANFUNC():
         del filterscan
 
     def gap_scan(self, start=0, end=0, step=0, exposure=1):
-        run("plib/scan/gap_scans.py")
+        run("plib/gap_scans.py")
         gapscan = GAPSCAN()
         gapscan.scan(start=start,end=end,step=step, exposure=exposure)
         del gapscan
