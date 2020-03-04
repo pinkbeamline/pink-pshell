@@ -12,37 +12,37 @@ class GAPSCAN():
         if exposure==0:
             print("abort: exposure = 0")
             return
-            
+
         set_exec_pars(open=False, name="gap", reset=True)
-        
+
         verbose=True
 
         if verbose: print("Creating channels")
         ## channels
-        SENSOR2 = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
-        SENSOR2.setMonitored(True)
+        SENSOR = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
+        SENSOR.setMonitored(True)
         ACQ = create_channel_device("PINK:CAE2:Acquire", type='i')
         ACQ.setMonitored(True)
-        #MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
-        #MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
-        #MOTOR_RBV = create_channel_device("U17IT6R::BasePmGap.A")
-        #MOTOR_RBV.setMonitored(True)   
-        #motor_deadband = 2.0
+        MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
+        MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
+        MOTOR_RBV = create_channel_device("U17IT6R::BasePmGap.A")
+        MOTOR_RBV.setMonitored(True)
+        motor_deadband = 2.0
 
         ## simulated channels
-        SENSOR = create_channel_device("PINK:GAPSIM:izero")
-        SENSOR.setMonitored(True)
-        MOTOR = create_channel_device("PINK:GAPSIM:gapset")
-        MOTOR_SET = create_channel_device("PINK:GAPSIM:gapexec.PROC")
-        MOTOR_RBV = create_channel_device("PINK:GAPSIM:m1.RBV")
-        MOTOR_RBV.setMonitored(True)   
-        motor_deadband = 0.1
+        #SENSOR = create_channel_device("PINK:GAPSIM:izero")
+        #SENSOR.setMonitored(True)
+        #MOTOR = create_channel_device("PINK:GAPSIM:gapset")
+        #MOTOR_SET = create_channel_device("PINK:GAPSIM:gapexec.PROC")
+        #MOTOR_RBV = create_channel_device("PINK:GAPSIM:m1.RBV")
+        #MOTOR_RBV.setMonitored(True)
+        #motor_deadband = 0.1
 
         ## variables
         sensor = []
         motor = []
-                    
-        ## Setup 
+
+        ## Setup
         #print("Scanning ...")
         set_exec_pars(open=False, name="gap", reset=True)
 
@@ -59,12 +59,12 @@ class GAPSCAN():
 
         ## configure scan positions
         positionarray = linspace(start, end, step)
-        
+
         ## plot setup
         if verbose: print("Setup plot")
         [p1] = plot(None, "Scan", title="Gap Scan")
         p1.getAxis(p1.AxisId.X).setRange(min(start, end),max(start,end))
-        p1.addSeries(LinePlotSeries("Fit"))      
+        p1.addSeries(LinePlotSeries("Fit"))
 
         if verbose: print("Moving gap to start position")
         pos = positionarray[0]
@@ -75,14 +75,14 @@ class GAPSCAN():
             set_status(mystat)
             sleep(0.5)
         #MOTOR_RBV.waitValueInRange(positionarray[0], motor_deadband, 60000)
-        
+
         if verbose: print("Scanning...")
         ## Main loop
         for pos in positionarray:
             MOTOR.write(pos)
             MOTOR_SET.write(1)
             MOTOR_RBV.waitValueInRange(pos, motor_deadband, 10000)
-            
+
             while(ACQ.take()==1):
                 sleep(0.25)
             ACQ.write(1)
@@ -90,12 +90,12 @@ class GAPSCAN():
             if resp==False:
                 print("Abort: No data from ampmeter")
                 return
-            
+
             sensor.append(SENSOR.take())
             motor.append(MOTOR_RBV.take())
             p1.getSeries(0).setData(motor, sensor)
 
-    
+
         ## Fitting options
         if fit=="linear":
             if verbose: print("analysing")
@@ -125,7 +125,7 @@ class GAPSCAN():
             save_dataset("plot/y", gauss)
             save_dataset("raw/sensor", sensor)
             save_dataset("raw/gap", motor)
-            
+
         elif fit == "exp":
             if verbose: print("analysing")
             (eamp, decay, amp, com, sigma, gauss, fwhm, xgauss)=self.__gauss_exp_fit(sensor,motor)
@@ -141,7 +141,7 @@ class GAPSCAN():
             print("         Sigma: " + '{:.3f}'.format(sigma))
             print("          FWHM: " + '{:.3f}'.format(fwhm))
             print("-----------------------------------------")
-            
+
             if verbose: print("Saving data")
             save_dataset("scan/scantype", "Gap scan with exponential bg gaussian fitting")
             save_dataset("gaussian/exp_amplitude", eamp)
@@ -154,8 +154,8 @@ class GAPSCAN():
             save_dataset("plot/y", gauss)
             save_dataset("raw/sensor", sensor)
             save_dataset("raw/gap", motor)
-            
-        else:    
+
+        else:
             save_dataset("scan/scantype", "Gap scan without fitting")
             save_dataset("raw/sensor", sensor)
             save_dataset("raw/blade", motor)
