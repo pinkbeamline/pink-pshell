@@ -8,7 +8,7 @@ class GAPSCAN():
 ### scan
 ########################################
 
-    def scan(self, start=0, end=0, step=0, exposure=0.0, fit=None):
+    def scan(self, start=0, end=0, step=0, exposure=0.0, fit=False):
         if exposure==0:
             print("abort: exposure = 0")
             return
@@ -78,20 +78,35 @@ class GAPSCAN():
         #MOTOR_RBV.waitValueInRange(positionarray[0], motor_deadband, 60000)
         mystat = "Gap: " + str(MOTOR_RBV.take())
         set_status(mystat)
-    
+
         if verbose: print("Scanning...")
         ## Main loop
         for pos in positionarray:
             MOTOR.write(pos)
             MOTOR_SET.write(1)
-            junk = MOTOR_RBV.read()
-            try:
-                MOTOR_RBV.waitValueInRange(pos, motor_deadband, 5000)
-            except:
-                continue
-    
+
+            gaperr = abs(pos - MOTOR_RBV.read())
+            time_init = time.clock()
+
+            ## wait for gap to reach position
+            while(gaperr>=motor_deadband):
+                gaperr = abs(pos - MOTOR_RBV.read())
+                time_elapse = time.clock()-time_init
+                if time_elapse>3.0:
+                    print("Gap have not reached position in 3 seconds. Skipping position: " + str(pos))
+                    continue
+                sleep(0.25)
+
+            # junk = MOTOR_RBV.read()
+            # try:
+            #     MOTOR_RBV.waitValueInRange(pos, motor_deadband, 5000)
+            # except:
+            #     continue
+
+            # waits forever if ampmeter is stuck since last reading
             while(ACQ.take()==1):
                 sleep(0.25)
+
             ACQ.write(1)
             resp = SENSOR.waitCacheChange(1000*int(exposure+2))
             if resp==False:
@@ -102,9 +117,13 @@ class GAPSCAN():
             motor.append(MOTOR_RBV.take())
             p1.getSeries(0).setData(motor, sensor)
 
+        if fit == True:
+            fittype = "exp"
+        else:
+            fittype = None
 
         ## Fitting options
-        if fit=="linear":
+        if fittype=="linear":
             if verbose: print("analysing")
             (a, b, amp, com, sigma, gauss, fwhm, xgauss)=self.__gauss_fit(sensor, motor)
             p1.getSeries(1).setData(xgauss, gauss)
@@ -133,13 +152,13 @@ class GAPSCAN():
             save_dataset("raw/sensor", sensor)
             save_dataset("raw/gap", motor)
 
-        elif fit == "exp":
+        elif fittype == "exp":
             if verbose: print("analysing")
             (eamp, decay, amp, com, sigma, gauss, fwhm, xgauss)=self.__gauss_exp_fit(sensor,motor)
             p1.getSeries(1).setData(xgauss, gauss)
             p1.setLegendVisible(True)
             print(" ")
-            print("Gaussian fit -- expontial background")
+            print("Gaussian fit -- exponetial background")
             print("-----------------------------------------")
             print("Exp. amplitude: " + '{:.3e}'.format(eamp))
             print("Exp.     decay: " + '{:.3e}'.format(decay))
