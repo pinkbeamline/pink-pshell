@@ -304,3 +304,10 @@ class PINKCLASS():
         pinkplot = PINKPLOT()
         pinkplot.plot(filepath=filepath)
         del pinkplot
+
+    #### pink plot  #################################################
+    def AU1(self, top=0, bottom=0, wall=0, ring=0):
+        run("plib/u17au1.py")
+        pinkapperture = U17AU1()
+        pinkapperture.move(top=top,bottom=bottom,wall=wall,ring=ring)
+        del pinkapperture
