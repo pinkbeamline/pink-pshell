@@ -149,7 +149,7 @@ class GAPSCAN():
             save_dataset("gaussian/fwhm", fwhm)
             save_dataset("plot/x", xgauss)
             save_dataset("plot/y", gauss)
-            save_dataset("raw/sensor", sensor)
+            save_dataset("raw/izero", sensor)
             save_dataset("raw/gap", motor)
 
         elif fittype == "exp":
@@ -178,13 +178,13 @@ class GAPSCAN():
             save_dataset("gaussian/fwhm", fwhm)
             save_dataset("plot/x", xgauss)
             save_dataset("plot/y", gauss)
-            save_dataset("raw/sensor", sensor)
+            save_dataset("raw/izero", sensor)
             save_dataset("raw/gap", motor)
 
         else:
             save_dataset("scan/scantype", "Gap scan without fitting")
-            save_dataset("raw/sensor", sensor)
-            save_dataset("raw/blade", motor)
+            save_dataset("raw/izero", sensor)
+            save_dataset("raw/gap", motor)
 
         # end routine
         caput("PINK:CAE2:AcquireMode", 0)
