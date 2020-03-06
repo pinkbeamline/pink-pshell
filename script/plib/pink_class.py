@@ -124,6 +124,10 @@ class PINKCLASS():
     def filter3(self, pos):
         caput("PINK:SMA01:m2.VAL", float(pos))
 
+    def scatter(self, pos):
+        caput("PINK:SMA01:m5.VAL", float(pos))
+
+
     #### Open/Close valves  ############################################################
     def valveOPEN(self,vnum):
         dev = None
