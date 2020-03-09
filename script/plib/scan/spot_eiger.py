@@ -102,7 +102,7 @@ class SPOTEIGER():
 
         ## Saving detectors settings
         save_dataset("detector/d_eiger/exposure", exposure)
-        save_dataset("detector/d_eiger/roi_line", caget("PINK:EIGER:ROI1:MinX_RBV"))
+        save_dataset("detector/d_eiger/roi_line", caget("PINK:EIGER:ROI1:MinY_RBV"))
         save_dataset("detector/d_eiger/roi_sizex", Eiger_ROI_X)
         save_dataset("detector/d_eiger/roi_sizey", Eiger_ROI_Y)
         save_dataset("detector/d_eiger/energy", caget("PINK:EIGER:cam1:PhotonEnergy_RBV"))
