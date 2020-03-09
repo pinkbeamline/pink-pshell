@@ -278,11 +278,14 @@ class PINKCLASS():
     def eiger_set_background(self):
         print("Setting background for Eiger detector...")
 
+        energy_before = caget("PINK:EIGER:cam1:PhotonEnergy")
+
         caput("PINK:EIGER:cam1:AcquireTime", 0.001)
         caput("PINK:EIGER:cam1:AcquirePeriod", 1.000)
+        caput("PINK:EIGER:cam1:PhotonEnergy", 22000)
         caput("PINK:EIGER:cam1:NumImages", 1)
         caput("PINK:EIGER:Proc1:EnableBackground", 0)
-        sleep(0.2)
+        sleep(0.5)
         eig_frame_id = caget("PINK:EIGER:cam1:ArrayCounter_RBV")
 
         caput("PINK:EIGER:cam1:Acquire", 1)
@@ -294,10 +297,11 @@ class PINKCLASS():
         caput("PINK:EIGER:Proc1:SaveBackground", 1)
         caput("PINK:EIGER:Proc1:EnableBackground", 1)
         caput("PINK:EIGER:cam1:AcquireTime", 1)
+        caput("PINK:EIGER:cam1:PhotonEnergy", energy_before)
         #caput("PINK:EIGER:cam1:AcquirePeriod", 1)
-        sleep(0.2)
+        sleep(0.5)
         caput("PINK:EIGER:cam1:Acquire", 1)
-        sleep(0.2)
+        sleep(0.5)
         caput("PINK:EIGER:specsum_reset", 0)
         caput("PINK:EIGER:specsum_reset", 1)
         print("Success")
