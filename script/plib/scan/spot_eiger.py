@@ -101,12 +101,12 @@ class SPOTEIGER():
         create_dataset("plot/y_desc", 's', False)
 
         ## Saving detectors settings
-        save_dataset("detector/d_eiger/exposure", exposure)
-        save_dataset("detector/d_eiger/roi_line", caget("PINK:EIGER:ROI1:MinY_RBV"))
-        save_dataset("detector/d_eiger/roi_sizex", Eiger_ROI_X)
-        save_dataset("detector/d_eiger/roi_sizey", Eiger_ROI_Y)
-        save_dataset("detector/d_eiger/energy", caget("PINK:EIGER:cam1:PhotonEnergy_RBV"))
-        save_dataset("detector/d_eiger/threshold", caget("PINK:EIGER:cam1:ThresholdEnergy_RBV"))
+        save_dataset("detector/eiger/exposure", exposure)
+        save_dataset("detector/eiger/roi_line", caget("PINK:EIGER:ROI1:MinY_RBV"))
+        save_dataset("detector/eiger/roi_sizex", Eiger_ROI_X)
+        save_dataset("detector/eiger/roi_sizey", Eiger_ROI_Y)
+        save_dataset("detector/eiger/energy", caget("PINK:EIGER:cam1:PhotonEnergy_RBV"))
+        save_dataset("detector/eiger/threshold", caget("PINK:EIGER:cam1:ThresholdEnergy_RBV"))
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
@@ -153,17 +153,17 @@ class SPOTEIGER():
         initial_frame = Eiger_frameID.read()
 
         ## save pre scan data
-        #save_dataset("passes/pass01/detector/d_eiger/raw/bg_image", Convert.reshape(GE_raw_array.read(), GE_Y, GE_X))
+        #save_dataset("passes/pass01/detector/eiger/raw/bg_image", Convert.reshape(GE_raw_array.read(), GE_Y, GE_X))
         #save_dataset("passes/pass01/detector/d_ccd/processed/bg_spectrum", GE_Spectra.read())
         save_dataset("passes/pass01/positioners/sec_el_x", Sec_el_x.take())
         save_dataset("passes/pass01/positioners/sec_el_y", Sec_el_y.take())
 
         ## create dataset
-        #create_dataset("passes/pass01/detector/d_eiger/raw/image", 'd', False, (0, GE_Y, GE_X), features=data_compression)
-        create_dataset("passes/pass01/detector/d_eiger/processed/image", 'd', False, (0, Eiger_ROI_Y, Eiger_ROI_X), features=data_compression)
-        create_dataset("passes/pass01/detector/d_eiger/processed/spectrum", 'd', False, (0, Eiger_ROI_X))
+        #create_dataset("passes/pass01/detector/eiger/raw/image", 'd', False, (0, GE_Y, GE_X), features=data_compression)
+        create_dataset("passes/pass01/detector/eiger/processed/image", 'd', False, (0, Eiger_ROI_Y, Eiger_ROI_X), features=data_compression)
+        create_dataset("passes/pass01/detector/eiger/processed/spectrum", 'd', False, (0, Eiger_ROI_X))
         ##create_dataset("passes/pass01/detector/d_ccd/raw/temperature", 'd', False)
-        create_dataset("passes/pass01/detector/d_eiger/raw/frame_id", 'd', False)
+        create_dataset("passes/pass01/detector/eiger/raw/frame_id", 'd', False)
         create_dataset("passes/pass01/station/izero_profile", 'd', False, (0, profile_size))
         create_dataset("passes/pass01/station/izero", 'd', False)
         create_dataset("passes/pass01/station/tfy_profile", 'd', False, (0, profile_size))
@@ -188,10 +188,10 @@ class SPOTEIGER():
                 sleep(0.01)
                 ## append to dataset
                 #append_dataset("passes/pass01/detector/d_ccd/raw/image", Convert.reshape(GE_raw_array.take(), GE_Y, GE_X))
-                append_dataset("passes/pass01/detector/d_eiger/processed/image", Convert.reshape(Eiger_roi_array.take(), Eiger_ROI_Y, Eiger_ROI_X))
-                append_dataset("passes/pass01/detector/d_eiger/processed/spectrum", Eiger_Spectra.take())
+                append_dataset("passes/pass01/detector/eiger/processed/image", Convert.reshape(Eiger_roi_array.take(), Eiger_ROI_Y, Eiger_ROI_X))
+                append_dataset("passes/pass01/detector/eiger/processed/spectrum", Eiger_Spectra.take())
                 #append_dataset("passes/pass01/detector/d_ccd/raw/temperature", GE_temperature.take())
-                append_dataset("passes/pass01/detector/d_eiger/raw/frame_id", Eiger_frameID.take())
+                append_dataset("passes/pass01/detector/eiger/raw/frame_id", Eiger_frameID.take())
                 append_dataset("passes/pass01/station/izero_profile", IZero_profile.take())
                 append_dataset("passes/pass01/station/izero", IZero.take())
                 append_dataset("passes/pass01/station/tfy_profile", TFY_profile.take())
@@ -212,8 +212,8 @@ class SPOTEIGER():
             print("scan aborted [ " + tnow + " ]")
 
         ## save after scan data
-        save_dataset("passes/pass01/detector/d_eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
-        save_dataset("detector/d_eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
+        save_dataset("passes/pass01/detector/eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
+        save_dataset("detector/eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
 
         ## save plot data
         append_dataset("plot/y", Eiger_Spectra_sum.read())

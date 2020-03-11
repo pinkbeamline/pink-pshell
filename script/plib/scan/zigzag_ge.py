@@ -101,10 +101,10 @@ class ZIGZAGGE():
         create_dataset("plot/y_desc", 's', False)
 
         ## Saving detectors settings
-        save_dataset("detector/d_ccd/exposure", exposure)
-        save_dataset("detector/d_ccd/roi_line", caget("PINK:GEYES:ROI1:MinY_RBV"))
-        save_dataset("detector/d_ccd/roi_sizex", GE_ROI_X)
-        save_dataset("detector/d_ccd/roi_sizey", GE_ROI_Y)
+        save_dataset("detector/ccd/exposure", exposure)
+        save_dataset("detector/ccd/roi_line", caget("PINK:GEYES:ROI1:MinY_RBV"))
+        save_dataset("detector/ccd/roi_sizex", GE_ROI_X)
+        save_dataset("detector/ccd/roi_sizey", GE_ROI_Y)
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
@@ -132,7 +132,7 @@ class ZIGZAGGE():
         caputq("PINK:CAE2:Acquire", 1)
 
         ## create dataset for pass spectrum for greateyes
-        create_dataset("detector/d_ccd/processed/spectrum_sum", 'd', False, (0, GE_ROI_X))
+        create_dataset("detector/ccd/processed/spectrum_sum", 'd', False, (0, GE_ROI_X))
 
         try:
             ### Pass loop
@@ -166,15 +166,15 @@ class ZIGZAGGE():
                 initial_frame = GE_frameID.read()
 
                 ## save pre scan data
-                save_dataset("passes/"+passpath+"/detector/d_ccd/raw/bg_image", Convert.reshape(GE_raw_array.read(), GE_Y, GE_X))
-                save_dataset("passes/"+passpath+"/detector/d_ccd/processed/bg_spectrum", GE_Spectra.read())
+                save_dataset("passes/"+passpath+"/detector/ccd/raw/bg_image", Convert.reshape(GE_raw_array.read(), GE_Y, GE_X))
+                save_dataset("passes/"+passpath+"/detector/ccd/processed/bg_spectrum", GE_Spectra.read())
 
                 ## create dataset for passes
-                create_dataset("passes/"+passpath+"/detector/d_ccd/raw/image", 'd', False, (0, GE_Y, GE_X), features=data_compression)
-                create_dataset("passes/"+passpath+"/detector/d_ccd/processed/image", 'd', False, (0, GE_ROI_Y, GE_ROI_X), features=data_compression)
-                create_dataset("passes/"+passpath+"/detector/d_ccd/processed/spectrum", 'd', False, (0, GE_ROI_X))
-                create_dataset("passes/"+passpath+"/detector/d_ccd/raw/temperature", 'd', False)
-                create_dataset("passes/"+passpath+"/detector/d_ccd/raw/frame_id", 'd', False)
+                create_dataset("passes/"+passpath+"/detector/ccd/raw/image", 'd', False, (0, GE_Y, GE_X), features=data_compression)
+                create_dataset("passes/"+passpath+"/detector/ccd/processed/image", 'd', False, (0, GE_ROI_Y, GE_ROI_X), features=data_compression)
+                create_dataset("passes/"+passpath+"/detector/ccd/processed/spectrum", 'd', False, (0, GE_ROI_X))
+                create_dataset("passes/"+passpath+"/detector/ccd/raw/temperature", 'd', False)
+                create_dataset("passes/"+passpath+"/detector/ccd/raw/frame_id", 'd', False)
                 create_dataset("passes/"+passpath+"/station/izero_profile", 'd', False, (0, profile_size))
                 create_dataset("passes/"+passpath+"/station/izero", 'd', False)
                 create_dataset("passes/"+passpath+"/station/tfy_profile", 'd', False, (0, profile_size))
@@ -216,11 +216,11 @@ class ZIGZAGGE():
                         GE_Spectra.waitCacheChange(int((exposure*1000)+10000))
                         sleep(0.01)
                         ## append to dataset
-                        append_dataset("passes/"+passpath+"/detector/d_ccd/raw/image", Convert.reshape(GE_raw_array.take(), GE_Y, GE_X))
-                        append_dataset("passes/"+passpath+"/detector/d_ccd/processed/image", Convert.reshape(GE_roi_array.take(), GE_ROI_Y, GE_ROI_X))
-                        append_dataset("passes/"+passpath+"/detector/d_ccd/processed/spectrum", GE_Spectra.take())
-                        append_dataset("passes/"+passpath+"/detector/d_ccd/raw/temperature", GE_temperature.take())
-                        append_dataset("passes/"+passpath+"/detector/d_ccd/raw/frame_id", GE_frameID.take())
+                        append_dataset("passes/"+passpath+"/detector/ccd/raw/image", Convert.reshape(GE_raw_array.take(), GE_Y, GE_X))
+                        append_dataset("passes/"+passpath+"/detector/ccd/processed/image", Convert.reshape(GE_roi_array.take(), GE_ROI_Y, GE_ROI_X))
+                        append_dataset("passes/"+passpath+"/detector/ccd/processed/spectrum", GE_Spectra.take())
+                        append_dataset("passes/"+passpath+"/detector/ccd/raw/temperature", GE_temperature.take())
+                        append_dataset("passes/"+passpath+"/detector/ccd/raw/frame_id", GE_frameID.take())
                         append_dataset("passes/"+passpath+"/station/izero_profile", IZero_profile.take())
                         append_dataset("passes/"+passpath+"/station/izero", IZero.take())
                         append_dataset("passes/"+passpath+"/station/tfy_profile", TFY_profile.take())
@@ -242,15 +242,15 @@ class ZIGZAGGE():
                     ## end of line loop
 
                 ## save after scan data
-                save_dataset("passes/"+passpath+"/detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.read())
+                save_dataset("passes/"+passpath+"/detector/ccd/processed/spectrum_sum", GE_Spectra_sum.read())
 
                 ## save after pass data
-                append_dataset("detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.take())
+                append_dataset("detector/ccd/processed/spectrum_sum", GE_Spectra_sum.take())
 
                 ## save plot data
                 append_dataset("plot/y", GE_Spectra_sum.take())
                 append_dataset("plot/y_desc", "Pass "+'{:d}'.format(pass_id))
-                
+
                 ## save spec filename
                 self.save_specfile(pass_id, extrafname="", spectrum=GE_Spectra_sum.take())
 
@@ -263,8 +263,8 @@ class ZIGZAGGE():
             tnow = time.ctime()
             scan_abort = True
             print("scan aborted [ " + tnow + " ]")
-            save_dataset("passes/"+passpath+"/detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.read())
-            append_dataset("detector/d_ccd/processed/spectrum_sum", GE_Spectra_sum.take())
+            save_dataset("passes/"+passpath+"/detector/ccd/processed/spectrum_sum", GE_Spectra_sum.read())
+            append_dataset("detector/ccd/processed/spectrum_sum", GE_Spectra_sum.take())
 
         ## save beamline/station snapshot
         Display_status.write("Saving beamline snapshot...")

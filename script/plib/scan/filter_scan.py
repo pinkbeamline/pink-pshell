@@ -8,6 +8,7 @@ class FILTERSCAN():
         DEBUG=0
         sensor = []
         motor = []
+        prescan_pos = 0
 
         ## channels
         SENSOR = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
@@ -88,6 +89,9 @@ class FILTERSCAN():
 
         print("Scanning...")
 
+        # saving pre scan position
+        prescan_pos = MOTOR_RBV.read()
+
         ## Main loop
         for pos in positionarray:
             MOTOR.write(pos)
@@ -122,11 +126,16 @@ class FILTERSCAN():
         create_dataset("plot/y_desc", 's', False)
         append_dataset("plot/y", sensor)
         append_dataset("plot/y_desc", filter_desc)
-        
+
         save_dataset("scan/finish_time", time.ctime())
 
         ## Setup CAE2
         #0:continuous 1:multiple 2:single
         caput("PINK:CAE2:AcquireMode", 0) ## continuous
+
+        ## Move back to original position
+        MOTOR.write(prescan_pos)
+        MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
+        MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
 
         print("Scan complete")

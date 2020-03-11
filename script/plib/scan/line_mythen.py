@@ -93,9 +93,9 @@ class LINEMYTHEN():
         create_dataset("plot/y_desc", 's', False)
 
         ## Saving detectors settings
-        save_dataset("detector/d_mythen/exposure", exposure)
-        save_dataset("detector/d_mythen/energy", caget("PINK:MYTHEN:cam1:BeamEnergy_RBV"))
-        save_dataset("detector/d_mythen/threshold", caget("PINK:MYTHEN:cam1:ThresholdEnergy_RBV"))
+        save_dataset("detector/mythen/exposure", exposure)
+        save_dataset("detector/mythen/energy", caget("PINK:MYTHEN:cam1:BeamEnergy_RBV"))
+        save_dataset("detector/mythen/threshold", caget("PINK:MYTHEN:cam1:ThresholdEnergy_RBV"))
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
@@ -130,7 +130,7 @@ class LINEMYTHEN():
         self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, 0], [0, 0])
 
         ## create dataset for pass spectrum for mythen
-        create_dataset("detector/d_mythen/processed/spectrum_sum", 'd', False, (0, Mythen_X))
+        create_dataset("detector/mythen/processed/spectrum_sum", 'd', False, (0, Mythen_X))
 
         try:
 
@@ -154,8 +154,8 @@ class LINEMYTHEN():
                 save_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.read())
 
                 ## create dataset for passes
-                create_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum", 'd', False, (0, Mythen_X))
-                create_dataset("passes/"+passpath+"/detector/d_mythen/raw/frame_id", 'd', False)
+                create_dataset("passes/"+passpath+"/detector/mythen/processed/spectrum", 'd', False, (0, Mythen_X))
+                create_dataset("passes/"+passpath+"/detector/mythen/raw/frame_id", 'd', False)
                 create_dataset("passes/"+passpath+"/station/izero_profile", 'd', False, (0, profile_size))
                 create_dataset("passes/"+passpath+"/station/izero", 'd', False)
                 create_dataset("passes/"+passpath+"/station/tfy_profile", 'd', False, (0, profile_size))
@@ -181,8 +181,8 @@ class LINEMYTHEN():
                     Mythen_Spectra.waitCacheChange(int((exposure*1000)+30000))
                     sleep(0.2)
                     ## append to dataset
-                    append_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum", Mythen_Spectra.take())
-                    append_dataset("passes/"+passpath+"/detector/d_mythen/raw/frame_id", Mythen_frameID.take())
+                    append_dataset("passes/"+passpath+"/detector/mythen/processed/spectrum", Mythen_Spectra.take())
+                    append_dataset("passes/"+passpath+"/detector/mythen/raw/frame_id", Mythen_frameID.take())
                     append_dataset("passes/"+passpath+"/station/izero_profile", IZero_profile.take())
                     append_dataset("passes/"+passpath+"/station/izero", IZero.take())
                     append_dataset("passes/"+passpath+"/station/tfy_profile", TFY_profile.take())
@@ -199,10 +199,10 @@ class LINEMYTHEN():
                     Progress.write(self.calc_progress(initial_frame, Mythen_frameID.take(), Ypoints))
 
                     ## save after scan data
-                    save_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
+                    save_dataset("passes/"+passpath+"/detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
 
                 ## save after pass data
-                append_dataset("detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())
+                append_dataset("detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())
 
                 ## save plot data
                 append_dataset("plot/y", Mythen_Spectra_sum.take())
@@ -219,8 +219,8 @@ class LINEMYTHEN():
             scan_abort = True
             print("scan aborted [ " + tnow + " ]")
             ## save after scan data
-            save_dataset("passes/"+passpath+"/detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
-            append_dataset("detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())
+            save_dataset("passes/"+passpath+"/detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
+            append_dataset("detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())
 
         ## save beamline/station snapshot
         Display_status.write("Saving beamline snapshot...")

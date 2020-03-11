@@ -97,12 +97,12 @@ class LINEEIGER():
         create_dataset("plot/y_desc", 's', False)
 
         ## Saving detectors settings
-        save_dataset("detector/d_eiger/exposure", exposure)
-        save_dataset("detector/d_eiger/roi_line", caget("PINK:EIGER:ROI1:MinY_RBV"))
-        save_dataset("detector/d_eiger/roi_sizex", Eiger_ROI_X)
-        save_dataset("detector/d_eiger/roi_sizey", Eiger_ROI_Y)
-        save_dataset("detector/d_eiger/energy", caget("PINK:EIGER:cam1:PhotonEnergy_RBV"))
-        save_dataset("detector/d_eiger/threshold", caget("PINK:EIGER:cam1:ThresholdEnergy_RBV"))
+        save_dataset("detector/eiger/exposure", exposure)
+        save_dataset("detector/eiger/roi_line", caget("PINK:EIGER:ROI1:MinY_RBV"))
+        save_dataset("detector/eiger/roi_sizex", Eiger_ROI_X)
+        save_dataset("detector/eiger/roi_sizey", Eiger_ROI_Y)
+        save_dataset("detector/eiger/energy", caget("PINK:EIGER:cam1:PhotonEnergy_RBV"))
+        save_dataset("detector/eiger/threshold", caget("PINK:EIGER:cam1:ThresholdEnergy_RBV"))
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
@@ -142,7 +142,7 @@ class LINEEIGER():
         self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
 
         ## create dataset for pass spectrum for eiger
-        create_dataset("detector/d_eiger/processed/spectrum_sum", 'd', False, (0, Eiger_ROI_X))
+        create_dataset("detector/eiger/processed/spectrum_sum", 'd', False, (0, Eiger_ROI_X))
 
         try:
 
@@ -166,9 +166,9 @@ class LINEEIGER():
                 save_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.read())
 
                 ## create dataset for passes
-                create_dataset("passes/"+passpath+"/detector/d_eiger/processed/image", 'd', False, (0, Eiger_ROI_Y, Eiger_ROI_X), features=data_compression)
-                create_dataset("passes/"+passpath+"/detector/d_eiger/processed/spectrum", 'd', False, (0, Eiger_ROI_X))
-                create_dataset("passes/"+passpath+"/detector/d_eiger/raw/frame_id", 'd', False)
+                create_dataset("passes/"+passpath+"/detector/eiger/processed/image", 'd', False, (0, Eiger_ROI_Y, Eiger_ROI_X), features=data_compression)
+                create_dataset("passes/"+passpath+"/detector/eiger/processed/spectrum", 'd', False, (0, Eiger_ROI_X))
+                create_dataset("passes/"+passpath+"/detector/eiger/raw/frame_id", 'd', False)
                 create_dataset("passes/"+passpath+"/station/izero_profile", 'd', False, (0, profile_size))
                 create_dataset("passes/"+passpath+"/station/izero", 'd', False)
                 create_dataset("passes/"+passpath+"/station/tfy_profile", 'd', False, (0, profile_size))
@@ -194,9 +194,9 @@ class LINEEIGER():
                     Eiger_Spectra.waitCacheChange(int((exposure*1000)+10000))
                     sleep(0.01)
                     ## append to dataset
-                    append_dataset("passes/"+passpath+"/detector/d_eiger/processed/image", Convert.reshape(Eiger_roi_array.take(), Eiger_ROI_Y, Eiger_ROI_X))
-                    append_dataset("passes/"+passpath+"/detector/d_eiger/processed/spectrum", Eiger_Spectra.take())
-                    append_dataset("passes/"+passpath+"/detector/d_eiger/raw/frame_id", Eiger_frameID.take())
+                    append_dataset("passes/"+passpath+"/detector/eiger/processed/image", Convert.reshape(Eiger_roi_array.take(), Eiger_ROI_Y, Eiger_ROI_X))
+                    append_dataset("passes/"+passpath+"/detector/eiger/processed/spectrum", Eiger_Spectra.take())
+                    append_dataset("passes/"+passpath+"/detector/eiger/raw/frame_id", Eiger_frameID.take())
                     append_dataset("passes/"+passpath+"/station/izero_profile", IZero_profile.take())
                     append_dataset("passes/"+passpath+"/station/izero", IZero.take())
                     append_dataset("passes/"+passpath+"/station/tfy_profile", TFY_profile.take())
@@ -213,10 +213,10 @@ class LINEEIGER():
                     Progress.write(self.calc_progress(initial_frame, Eiger_frameID.take(), Ypoints))
 
                     ## save after scan data
-                    save_dataset("passes/"+passpath+"/detector/d_eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
+                    save_dataset("passes/"+passpath+"/detector/eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
 
                 ## save after pass data
-                append_dataset("detector/d_eiger/processed/spectrum_sum", Eiger_Spectra_sum.take())
+                append_dataset("detector/eiger/processed/spectrum_sum", Eiger_Spectra_sum.take())
 
                 ## save plot data
                 append_dataset("plot/y", Eiger_Spectra_sum.read())
@@ -233,8 +233,8 @@ class LINEEIGER():
             scan_abort = True
             print("scan aborted [ " + tnow + " ]")
             ## save after scan data
-            save_dataset("passes/"+passpath+"/detector/d_eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
-            append_dataset("detector/d_eiger/processed/spectrum_sum", Eiger_Spectra_sum.take())
+            save_dataset("passes/"+passpath+"/detector/eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
+            append_dataset("detector/eiger/processed/spectrum_sum", Eiger_Spectra_sum.take())
 
         ## save beamline/station snapshot
         Display_status.write("Saving beamline snapshot...")

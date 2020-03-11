@@ -84,9 +84,9 @@ class SPOTMYTHEN():
         create_dataset("plot/y_desc", 's', False)
 
         ## Saving detectors settings
-        save_dataset("detector/d_mythen/exposure", exposure)
-        save_dataset("detector/d_mythen/energy", caget("PINK:MYTHEN:cam1:BeamEnergy_RBV"))
-        save_dataset("detector/d_mythen/threshold", caget("PINK:MYTHEN:cam1:ThresholdEnergy_RBV"))
+        save_dataset("detector/mythen/exposure", exposure)
+        save_dataset("detector/mythen/energy", caget("PINK:MYTHEN:cam1:BeamEnergy_RBV"))
+        save_dataset("detector/mythen/threshold", caget("PINK:MYTHEN:cam1:ThresholdEnergy_RBV"))
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
@@ -138,8 +138,8 @@ class SPOTMYTHEN():
         save_dataset("passes/pass01/positioners/sec_el_y", Sec_el_y.take())
 
         ## create dataset
-        create_dataset("passes/pass01/detector/d_mythen/processed/spectrum", 'd', False, (0, Mythen_X))
-        create_dataset("passes/pass01/detector/d_mythen/raw/frame_id", 'd', False)
+        create_dataset("passes/pass01/detector/mythen/processed/spectrum", 'd', False, (0, Mythen_X))
+        create_dataset("passes/pass01/detector/mythen/raw/frame_id", 'd', False)
         create_dataset("passes/pass01/station/izero_profile", 'd', False, (0, profile_size))
         create_dataset("passes/pass01/station/izero", 'd', False)
         create_dataset("passes/pass01/station/tfy_profile", 'd', False, (0, profile_size))
@@ -164,8 +164,8 @@ class SPOTMYTHEN():
                 Mythen_Spectra.waitCacheChange(int((exposure*1000)+30000))
                 sleep(0.2)
                 ## append to dataset
-                append_dataset("passes/pass01/detector/d_mythen/processed/spectrum", Mythen_Spectra.take())
-                append_dataset("passes/pass01/detector/d_mythen/raw/frame_id", Mythen_frameID.take())
+                append_dataset("passes/pass01/detector/mythen/processed/spectrum", Mythen_Spectra.take())
+                append_dataset("passes/pass01/detector/mythen/raw/frame_id", Mythen_frameID.take())
                 append_dataset("passes/pass01/station/izero_profile", IZero_profile.take())
                 append_dataset("passes/pass01/station/izero", IZero.take())
                 append_dataset("passes/pass01/station/tfy_profile", TFY_profile.take())
@@ -187,8 +187,8 @@ class SPOTMYTHEN():
             print("scan aborted [ " + tnow + " ]")
 
         ## save after scan data
-        save_dataset("passes/pass01/detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
-        save_dataset("detector/d_mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
+        save_dataset("passes/pass01/detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
+        save_dataset("detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
 
         ## save plot data
         append_dataset("plot/y", Mythen_Spectra_sum.read())
