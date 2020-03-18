@@ -1,7 +1,7 @@
 ## U17AU1 apperture functions
 
 class U17AU1():
-    def move(self, top=0, bottom=0, wall=0, ring=0):
+    def move(self, top=None, bottom=None, wall=None, ring=None):
 
         #variables
         cell_width = 11
@@ -22,6 +22,39 @@ class U17AU1():
         ring_app_RBV = create_channel_device("WAUY02U012L:rdPosM4")
         ring_app_RBV.setMonitored(True)
 
+        ##### Just grab values and print
+        if (top==None) and (bottom==None) and (wall==None) and (ring==None):
+            sensor = "----"
+
+            print(cell_border+"TOP".center(cell_width)+
+            cell_border+"BOTTOM".center(cell_width)+
+            cell_border+"WALL".center(cell_width)+
+            cell_border+"RING".center(cell_width)+
+            cell_border+"Gap V".center(cell_width)+
+            cell_border+"Center V".center(cell_width)+
+            cell_border+"Gap H".center(cell_width)+
+            cell_border+"Center H".center(cell_width)+
+            cell_border+"Izero".center(cell_width)+
+            cell_border)
+
+            gapv = abs(top_app_RBV.read()-bottom_app_RBV.read())
+            gaph = abs(wall_app_RBV.read()-ring_app_RBV.read())
+            centerv = (top_app_RBV.read()+bottom_app_RBV.read())/2
+            centerh = (wall_app_RBV.read()+ring_app_RBV.read())/2
+
+            print(cell_border+'{:.3f}'.format(top_app_RBV.read()).center(cell_width)+
+            cell_border+'{:.3f}'.format(bottom_app_RBV.read()).center(cell_width)+
+            cell_border+'{:.3f}'.format(wall_app_RBV.read()).center(cell_width)+
+            cell_border+'{:.3f}'.format(ring_app_RBV.read()).center(cell_width)+
+            cell_border+'{:.3f}'.format(gapv).center(cell_width)+
+            cell_border+'{:.3f}'.format(centerv).center(cell_width)+
+            cell_border+'{:.3f}'.format(gaph).center(cell_width)+
+            cell_border+'{:.3f}'.format(centerh).center(cell_width)+
+            cell_border+'{:.1e}'.format(sensor).center(cell_width)+
+            cell_border)
+            return
+
+        #### Move necessary motors
         ## Check ampmeter
         if caget("PINK:AUX:CAE2VALID")<1:
             print("Setting up ampmeter...")
@@ -43,10 +76,14 @@ class U17AU1():
         # caputq("PINK:MSIM2:m4.VAL", ring)
 
         ## real motors
-        top_app.write(top)
-        bottom_app.write(bottom)
-        wall_app.write(wall)
-        ring_app.write(ring)
+        if top!=None:
+            top_app.write(top)
+        if bottom!=None:
+            bottom_app.write(bottom)
+        if wall!=None:
+            wall_app.write(wall)
+        if ring!=None:
+            ring_app.write(ring)
 
         notready=True
         tbegin = time.clock()
@@ -63,7 +100,11 @@ class U17AU1():
                     sleep(2)
                 else:
                     telapse = time.clock()-tbegin
-                    mystat = "Time elapse: " + '{:.1f}'.format(telapse) + " seconds"
+                    #mystat = "Time elapse: " + '{:.1f}'.format(telapse) + " seconds"
+                    mystat = "top: " + '{:.3f}'.format(top_app_RBV.take())+
+                    " bottom: " + '{:.3f}'.format(bottom_app_RBV.take())+
+                    " wall: " + '{:.3f}'.format(wall_app_RBV.take())+
+                    " ring: " + '{:.3f}'.format(ring_app_RBV.take())+
                     set_status(mystat)
                     sleep(1)
         except:
@@ -103,6 +144,9 @@ class U17AU1():
         print("\nDone. OK")
 
     def ismotordone(self, pos, RBV, deadband):
+        if pos == None:
+            return True
+
         motorerr = abs(pos-RBV.read())
         if motorerr<=abs(deadband):
             return True
