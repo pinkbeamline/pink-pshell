@@ -1,0 +1,16 @@
+/*
+!/script
+!/plugins
+!/devices
+!/config
+script/Lib
+script/**/cachedir
+script/**/*.class
+script/**/*.pyc
+script/**/*.*~
+plugins/*.class
+plugins/**/*.*~
+config/**/*.*~
+devices/**/*.*~
+**/test
+!.gitignore

@@ -319,3 +319,10 @@ class PINKCLASS():
         pinkapperture = U17AU1()
         pinkapperture.move(top=top,bottom=bottom,wall=wall,ring=ring)
         del pinkapperture
+
+    #### Move ATM spec to stand by position to replace detector
+    def spec_atm_go2_stdby_position(self):
+        run("plib/spec_atm_stdby.py")
+        specstdby = SPECSTDBY()
+        specstdby.move()
+        del specstdby

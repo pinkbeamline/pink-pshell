@@ -142,6 +142,7 @@ class CONTEIGER():
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
+        print("Filename: " + self.get_filename())
         caput("PINK:AUX:ps_sample", sample) # Update sample name
         caput("PINK:AUX:ps_sample2", array('b', str(sample))) # Update long sample name
 
