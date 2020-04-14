@@ -116,6 +116,7 @@ class SPOTEIGER():
 
         ## setup eiger
         caput("PINK:EIGER:cam1:AcquireTime", exposure)
+        sleep(1)
         caput("PINK:EIGER:cam1:AcquirePeriod", exposure+0.001)
         caput("PINK:EIGER:cam1:NumImages", images)
         #caput("PINK:GEYES:cam1:ImageMode", 0) # single image

@@ -112,6 +112,7 @@ class LINEEIGER():
 
         ## setup eiger
         caput("PINK:EIGER:cam1:AcquireTime", exposure)
+        sleep(1)
         caput("PINK:EIGER:cam1:AcquirePeriod", exposure+0.001)
         caput("PINK:EIGER:cam1:NumImages", 1)
         caput("PINK:EIGER:cam1:NumTriggers", Ypoints*passes)
