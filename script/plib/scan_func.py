@@ -21,6 +21,12 @@ class FILTERS():
     def scatter(self):
         return "sc"
 
+class SAMPLEAXIS():
+    def horizontal(self):
+        return "x"
+    def vertical(self):
+        return "y"
+
 class SCANFUNC():
 
     def spot(self, detector, exposure=1, images=1, sample=""):
@@ -149,3 +155,31 @@ class SCANFUNC():
         gapscan = GAPSCAN()
         gapscan.scan(start=start,end=end,step=step, exposure=exposure, fit=fit)
         del gapscan
+
+    def sample_scan(self, axis, detector, start=0, end=0, step=0, exposure=1):
+        if isinstance(axis, SAMPLEAXIS):
+            print('!! Please use "axis." to see list of options !!')
+            return
+        if isinstance(detector, DETEC):
+            print('!! Please use "detector." to see list of detectors !!')
+            return
+        if detector=="mythen":
+            run("plib/scan/sample_scan_mythen.py")
+            samplescan = SAMPLESCAN()
+            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure)
+            del samplescan
+            return
+        if detector=="eiger":
+            run("plib/scan/sample_scan_eiger.py")
+            samplescan = SAMPLESCAN()
+            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure)
+            del samplescan
+            return
+        if detector=="ge":
+            run("plib/scan/sample_scan_ge.py")
+            samplescan = SAMPLESCAN()
+            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure)
+            del samplescan
+            return
+        print("Not available")
+        return
