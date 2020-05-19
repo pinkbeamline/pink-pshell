@@ -19,6 +19,7 @@ detector = DETEC()
 slit = SLITS()
 filters = FILTERS()
 diode = DIODE()
+axis = SAMPLEAXIS()
 
 print("PShell v13 - New Pink refactored version")
 print("OK")

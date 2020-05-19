@@ -314,8 +314,15 @@ class PINKCLASS():
         del pinkplot
 
     #### pink plot  #################################################
-    def AU1(self, top=0, bottom=0, wall=0, ring=0):
+    def AU1(self, top=None, bottom=None, wall=None, ring=None):
         run("plib/u17au1.py")
         pinkapperture = U17AU1()
         pinkapperture.move(top=top,bottom=bottom,wall=wall,ring=ring)
         del pinkapperture
+
+    #### Move ATM spec to stand by position to replace detector
+    def spec_atm_go2_stdby_position(self):
+        run("plib/spec_atm_stdby.py")
+        specstdby = SPECSTDBY()
+        specstdby.move()
+        del specstdby
