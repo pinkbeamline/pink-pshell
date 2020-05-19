@@ -8,21 +8,30 @@ class GAPSCAN():
 ### scan
 ########################################
 
-    def scan(self, start=0, end=0, step=0, exposure=0.0, fit=False):
+    def scan(self, diode, start=0, end=0, step=0, exposure=0.0, fit=False):
+        print(diode)
         if exposure==0:
             print("abort: exposure = 0")
             return
 
         set_exec_pars(open=False, name="gap", reset=True)
-
+       
         verbose=True
+        DEBUG=False
 
         if verbose: print("Creating channels")
         ## channels
-        SENSOR = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
-        SENSOR.setMonitored(True)
-        ACQ = create_channel_device("PINK:CAE2:Acquire", type='i')
-        ACQ.setMonitored(True)
+        if diode=="izero":
+            SENSOR = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
+            SENSOR.setMonitored(True)
+            ACQ = create_channel_device("PINK:CAE2:Acquire", type='i')
+            ACQ.setMonitored(True)
+        else:
+            SENSOR = create_channel_device("PINK:CAE1:Current3:MeanValue_RBV")
+            SENSOR.setMonitored(True)
+            ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
+            ACQ.setMonitored(True)        
+            
         MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
         MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
         MOTOR_RBV = create_channel_device("U17IT6R:BasePmGap.A")
@@ -45,17 +54,24 @@ class GAPSCAN():
         ## Setup
         #print("Scanning ...")
         set_exec_pars(open=False, name="gap", reset=True)
-        save_dataset("scan/scantype", "Gap scan with linear bg gaussian fitting")
+        save_dataset("scan/scantype", "Gap scan")
 
         if verbose: print("Setup ampmeter")
         ## Configure ampmeter
         exposure=float(exposure)
         ACQ.write(0)
         sleep(1)
-        caput("PINK:CAE2:ValuesPerRead", int(1000*exposure))
-        caput("PINK:CAE2:AveragingTime", exposure)
-        caput("PINK:CAE2:TriggerMode", 0)
-        caput("PINK:CAE2:AcquireMode", 2)
+        if diode=="izero":
+            caput("PINK:CAE2:ValuesPerRead", int(1000*exposure))
+            caput("PINK:CAE2:AveragingTime", exposure)
+            caput("PINK:CAE2:TriggerMode", 0)
+            caput("PINK:CAE2:AcquireMode", 2)
+        else:
+            caput("PINK:CAE1:ValuesPerRead", int(1000*exposure))
+            caput("PINK:CAE1:AveragingTime", exposure)
+            caput("PINK:CAE1:TriggerMode", 0)
+            caput("PINK:CAE1:AcquireMode", 2)
+            caput("PINK:CAE1:Range", 0)
         sleep(1)
 
         ## configure scan positions
@@ -78,45 +94,89 @@ class GAPSCAN():
         #MOTOR_RBV.waitValueInRange(positionarray[0], motor_deadband, 60000)
         mystat = "Gap: " + str(MOTOR_RBV.take())
         set_status(mystat)
-
+        
         if verbose: print("Scanning...")
-        ## Main loop
-        for pos in positionarray:
-            MOTOR.write(pos)
-            MOTOR_SET.write(1)
+        try:
+            ## Main loop
+            for pos in positionarray:
+                moveattempt = 0
+                posok = False
+                while(moveattempt < 3 and posok==False):
+                    if DEBUG: print("Pos: " + str(pos))
+                    MOTOR.write(pos)
+                    sleep(0.2)
+                    MOTOR_SET.write(1)
+        
+                    gaperr = abs(pos - MOTOR_RBV.read())
+                    if DEBUG: print("Gap dx: " + str(gaperr))
+                    time_init = time.clock()
+        
+                    ## wait for gap to reach position
+                    pos_skip = False
+                    waitpos = True
+                    while(gaperr>=motor_deadband and pos_skip==False and waitpos==True):
+                        gaperr = abs(pos - MOTOR_RBV.read())
+                        time_elapse = time.clock()-time_init
+                        if time_elapse>3.0:
+                            moveattempt = moveattempt + 1
+                            logmsg="Gap have not reached position in 3 seconds. Position: " + str(pos) + " ,Attempt: " + str(moveattempt)
+                            print(logmsg)
+                            log(logmsg, data_file = True)
+                            waitpos=False
+                        sleep(0.25)
 
-            gaperr = abs(pos - MOTOR_RBV.read())
-            time_init = time.clock()
+                    if moveattempt >= 3:
+                        logmsg = "Warning: Failed to reach gap position after 3 attempts. Skipping position"
+                        print(logmsg)
+                        log(logmsg, data_file = True)
+                        pos_skip = True
 
-            ## wait for gap to reach position
-            while(gaperr>=motor_deadband):
-                gaperr = abs(pos - MOTOR_RBV.read())
-                time_elapse = time.clock()-time_init
-                if time_elapse>3.0:
-                    print("Gap have not reached position in 3 seconds. Skipping position: " + str(pos))
-                    continue
-                sleep(0.25)
+                    if gaperr<=motor_deadband:
+                        posok=True
+                   
+                    
+                # junk = MOTOR_RBV.read()
+                # try:
+                #     MOTOR_RBV.waitValueInRange(pos, motor_deadband, 5000)
+                # except:
+                #     continue
+    
+    
+                if(pos_skip==False):
+                    trycount = 0
+                    waitsensor = True
+                    # try 3 times to read ampmeter
+                    while(waitsensor):
 
-            # junk = MOTOR_RBV.read()
-            # try:
-            #     MOTOR_RBV.waitValueInRange(pos, motor_deadband, 5000)
-            # except:
-            #     continue
-
-            # waits forever if ampmeter is stuck since last reading
-            while(ACQ.take()==1):
-                sleep(0.25)
-
-            ACQ.write(1)
-            resp = SENSOR.waitCacheChange(1000*int(exposure+2))
-            if resp==False:
-                print("Abort: No data from ampmeter")
-                return
-
-            sensor.append(SENSOR.take())
-            motor.append(MOTOR_RBV.take())
-            p1.getSeries(0).setData(motor, sensor)
-
+                        while(ACQ.take()==1):
+                            ACQ.write(0)
+                            sleep(1)
+                    
+                        ACQ.write(1)
+                        resp = SENSOR.waitCacheChange(int(1000*(exposure+2)))
+                        
+                        if resp==False:
+                            if trycount < 3:
+                                trycount = trycount + 1
+                                logmsg = "Warning: No data from ampmeter. Attempt " + '{:d}'.format(int(trycount)) + " of 3."
+                                print(logmsg)
+                                log(logmsg, data_file = True)
+                            else:
+                                pos_skip=True
+                                waitsensor = False
+                                logmsg = "Failed to read ampmeter after 3 attempts. Skipping position"
+                                print(logmsg)
+                                log(logmsg, data_file = True)
+                        else:
+                            waitsensor=False
+                       
+                if(pos_skip==False):                
+                    sensor.append(SENSOR.take())
+                    motor.append(MOTOR_RBV.take())
+                    p1.getSeries(0).setData(motor, sensor)
+        except:
+            print("Gap scan aborted.")
+            
         if fit == True:
             fittype = "exp"
         else:
@@ -182,12 +242,28 @@ class GAPSCAN():
             save_dataset("raw/gap", motor)
 
         else:
-            save_dataset("scan/scantype", "Gap scan without fitting")
+            save_dataset("plot/x", motor)
+            create_dataset("plot/y", 'd', False, (0, len(sensor)))
+            append_dataset("plot/y", sensor)
+            save_dataset("plot/title", "Gap Scan")
+            save_dataset("plot/xlabel", "Gap")
+            save_dataset("plot/ylabel", "Current")
+            save_dataset("plot/y_desc", "scan 0")
+            #save_dataset("scan/scantype", "Gap scan without fitting")
             save_dataset("raw/izero", sensor)
             save_dataset("raw/gap", motor)
 
+        ## save beamline/station snapshot
+        run("config/bl_snapshot_config.py")
+        for spdev in snapshot_pvlist:
+            save_dataset(spdev[0], caget(spdev[1]))            
+
         # end routine
-        caput("PINK:CAE2:AcquireMode", 0)
+        if diode=="izero":
+            caput("PINK:CAE2:AcquireMode", 0)
+        else:
+            caput("PINK:CAE1:AcquireMode", 0)
+            caput("PINK:CAE1:Range", 1)
         print("Scan finished. OK")
 
 ###########################################

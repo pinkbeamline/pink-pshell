@@ -1,0 +1,7 @@
+scan.continuous(detector.eiger(), det_exposure=4, sample_exposure=0.2, X0=40200, X1=38000, dX=700, Y0=-7400, Y1=8100, passes=10, sample='Ce(IV)F', linedelay=0)
+scan.continuous(detector.eiger(), det_exposure=4, sample_exposure=0.2, X0=5400, X1=2700, dX=700, Y0=-7400, Y1=8100, passes=10, sample='Ce(III)F', linedelay=0)
+scan.continuous(detector.eiger(), det_exposure=4, sample_exposure=0.2, X0=40200, X1=38000, dX=700, Y0=-7400, Y1=8100, passes=10, sample='Ce(IV)F', linedelay=0)
+scan.continuous(detector.eiger(), det_exposure=4, sample_exposure=0.2, X0=5400, X1=2700, dX=700, Y0=-7400, Y1=8100, passes=10, sample='Ce(III)F', linedelay=0)
+pink.shutter_hard_CLOSE()
+caput("PINK:PLCVAC:V11close", 1)
+caput("PINK:PLCVAC:V10close", 1)

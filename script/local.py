@@ -18,6 +18,7 @@ scan = SCANFUNC()
 detector = DETEC()
 slit = SLITS()
 filters = FILTERS()
+diode = DIODE()
 
 print("PShell v13 - New Pink refactored version")
 print("OK")
