@@ -11,8 +11,10 @@ class SAMPLESCAN():
         GE_acquire = create_channel_device("PINK:GEYES:cam1:Acquire", type='i')
         GE_status = create_channel_device("PINK:GEYES:cam1:DetectorState_RBV", type='i')
         GE_status.setMonitored(True)
-        Sensor = create_channel_device("PINK:GEYES:.......", type='d')
-        Sensor.setMonitored(True)
+        GE_FrameID = create_channel_device("PINK:GEYES:cam1:ArrayCounter_RBV", type='i')
+        GE_FrameID.setMonitored(True)
+        SENSOR = create_channel_device("PINK:GEYES:spectra_avg", type='d')
+        SENSOR.setMonitored(True)
 
         ## sample motor
         if axis=="x":
@@ -74,7 +76,9 @@ class SAMPLESCAN():
             MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
             MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
             GE_acquire.write(1)
-            resp = SENSOR.waitCacheChange(1000*int(exposure+2))
+            #resp = SENSOR.waitCacheChange(1000*int(exposure+2))
+            resp = GE_FrameID.waitCacheChange(1000*int(exposure+2))
+            sleep(0.1)
             if resp==False:
                 print("Timeout: No data from mythen")
                 continue
@@ -90,6 +94,7 @@ class SAMPLESCAN():
         save_dataset("plot/title", plottitle)
         save_dataset("plot/xlabel", "Position")
         save_dataset("plot/ylabel", "Counts per second")
+        save_dataset("plot/y_desc", "Pass 0")
         save_dataset("plot/x", motor)
         create_dataset("plot/y", 'd', False, (0, len(sensor)))
         append_dataset("plot/y", sensor)

@@ -1,4 +1,4 @@
-## continuous scan for eiger
+## continuous scan for mythen
 class CONTMYTHEN():
 
     def scan(self, det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay):
@@ -32,14 +32,19 @@ class CONTMYTHEN():
         Ypoints = images_per_line
         exposure = det_exposure
 
+        ## setup filename
+        set_exec_pars(open=False, name="mythen", reset=True)
+
         print("******************************************* ")
+        print("                Filename:  " + self.get_filename())        
         print("                    Scan:  continuous")
-        print("                Detector:  Eiger")
+        print("                Detector:  Mythen")
         print("            Sample speed:  " + '{:.1f}'.format(sample_speed) + " um/s")
         print("Number of vertical lines:  " + '{:d}'.format(num_lines))
         print("          Images p/ line:  " + '{:d}'.format(int(images_per_line)))
         print("       Detector exposure:  " + '{:.1f}'.format(det_exposure) + " seconds")
-        print("         Sample exposure:  " + '{:.1f}'.format(sample_exposure) + " seconds")
+        print("Sample exposure per pass:  " + '{:.2f}'.format(sample_exposure) + " seconds")
+        print("   Total Sample exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")
         #print(" Sample usage efficiency:  " + '{:.1f}'.format(effic*100)+" %")
         print("******************************************* ")
         print(" ")
@@ -103,9 +108,6 @@ class CONTMYTHEN():
                 sleep(1)
             if DEBUG: log("Mythen Idle", data_file = False)
 
-        ## setup filename
-        set_exec_pars(open=False, name="mythen", reset=True)
-
         ## save initial scan data
         save_dataset("scan/sample", sample)
         save_dataset("scan/start_time", time.ctime())
@@ -135,7 +137,6 @@ class CONTMYTHEN():
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
-        print("Filename: " + self.get_filename())
         caput("PINK:AUX:ps_sample", sample) # Update sample name
         caput("PINK:AUX:ps_sample2", array('b', str(sample))) # Update long sample name
 
@@ -166,7 +167,7 @@ class CONTMYTHEN():
         ## [trigger mode] [5:single shot] [1: Ext rising edge]
         self.setup_delaygen(1, [0, ((exposure+0.001)*Ypoints)-0.02], [0, 0], [0, 0], [0, 0])
 
-        ## create dataset for pass spectrum for eiger
+        ## create dataset for pass spectrum for mythen
         create_dataset("detector/mythen/processed/spectrum_sum", 'd', False, (0, Mythen_X))
 
         try:

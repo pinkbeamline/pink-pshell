@@ -4,21 +4,23 @@ class SPECSTDBY():
     def move(self):
         print("Moving detector to stand by position ...")
 
-        print("Code not finished.")
+        #print("Code not finished.")
 
-        return
+        #get_option("Move spectrometer to stand-by position?", type='OkCancel')
+
+        #return
 
         ## variables
-        vert_pos1 = 0
-        horiz_end_pos = 0
-        horiz_free_pos = 0
-        rot_end_pos = 0
-        vert_end_pos = 0
+        vert_pos1 = 250.0
+        horiz_end_pos = 470.0
+        horiz_free_pos = 460.0
+        rot_end_pos = 80.0
+        vert_end_pos = 200.0
 
         ## EPICS pvs
-        vert_motor_PV = "PINK:"
-        horiz_motor_PV = "PINK:"
-        rotation_motor_PV = "PINK:"
+        vert_motor_PV = "PINK:PHY:AxisL"
+        horiz_motor_PV = "PINK:PHY:AxisK"
+        rotation_motor_PV = "PINK:PHY:AxisM"
 
         ## Create channels
         motor_vert = create_channel_device(vert_motor_PV)
@@ -70,7 +72,7 @@ class SPECSTDBY():
                 set_status(mymsg)
                 notdone = (motor_vert_DMOV.read()<1) or (motor_horiz_DMOV.read()<1) or (motor_rotation_DMOV.read()<1)
                 sleep(1)
-                print("Spectrometer in stand by position")
+            print("Spectrometer in stand by position")
         except:
             print("Failed moving motors. Stopping motors and aborting")
             notdone = True
