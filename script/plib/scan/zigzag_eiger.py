@@ -144,6 +144,12 @@ class ZIGZAGEIGER():
         ## [trigger mode] [5:single shot] [1: Ext rising edge]
         self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
 
+        ## Setup trigger switch
+        ## A=Delaygen Trigger Source [0:OFF, 1:CCD, 2:mythen, 3:eiger]
+        ## B=Caenels Trigger Source [0:OFF, 1:Delaygen, 2:Output A]
+        caput("PINK:RPISW:select_A", 3)
+        caput("PINK:RPISW:select_B", 2)           
+
         ## create dataset for pass spectrum for eiger
         create_dataset("detector/eiger/processed/spectrum_sum", 'd', False, (0, Eiger_ROI_X))
 
