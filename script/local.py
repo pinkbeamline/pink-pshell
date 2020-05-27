@@ -21,8 +21,8 @@ filters = FILTERS()
 diode = DIODE()
 axis = SAMPLEAXIS()
 
-print("PShell v13 - New Pink refactored version")
-print("OK")
+print("PShell v1.14")
+#print("OK")
 
 def on_command_started(info):
     mlogger.onstart(info)
