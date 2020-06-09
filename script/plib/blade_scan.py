@@ -36,6 +36,7 @@ class BLADESCAN():
             ## variables
             sensor = []
             motor = []
+            prescan_pos = 0
                         
             ## Setup 
             #print("Scanning ...")
@@ -64,6 +65,8 @@ class BLADESCAN():
             p2.addSeries(LinePlotSeries("Fit"))
 
             if verbose: print("Scanning...")
+
+            prescan_pos = MOTOR_RBV.read()
             
             ## Main loop
             for pos in positionarray:
@@ -115,6 +118,12 @@ class BLADESCAN():
             save_dataset("raw/blade", motor)
     
             caput("PINK:CAE2:AcquireMode", 0)
+
+            ## Move motor back to pre scan position
+            MOTOR.write(prescan_pos)
+            MOTOR_RBV.waitValueInRange(prescan_pos, 1.0, 60000)
+            #MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)   
+            
             print(".")
 
 ###############################################################3
@@ -150,6 +159,7 @@ class BLADESCAN():
             ## variables
             sensor = []
             motor = []
+            prescan_pos = 0
                         
             ## Setup 
             #print("Scanning ...")
@@ -178,6 +188,8 @@ class BLADESCAN():
             p2.addSeries(LinePlotSeries("Fit"))
 
             if verbose: print("Scanning...")
+
+            prescan_pos = MOTOR_RBV.read()
             
             ## Main loop
             for pos in positionarray:
@@ -228,6 +240,13 @@ class BLADESCAN():
             save_dataset("raw/blade", motor)
     
             caput("PINK:CAE1:AcquireMode", 0)
+
+
+            ## Move motor back to pre scan position
+            MOTOR.write(prescan_pos)
+            MOTOR_RBV.waitValueInRange(prescan_pos, 1.0, 60000)
+            #MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
+            
             print(".")
 
         ######################################

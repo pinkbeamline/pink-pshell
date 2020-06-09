@@ -1,0 +1,1 @@
+print("|"+'{:.3f}'.format(12.345).center(10))

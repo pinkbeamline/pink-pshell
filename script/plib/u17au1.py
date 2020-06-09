@@ -2,7 +2,6 @@
 
 class U17AU1():
     def move(self, top=None, bottom=None, wall=None, ring=None):
-
         #variables
         cell_width = 11
         cell_border = "|"
@@ -24,18 +23,9 @@ class U17AU1():
 
         ##### Just grab values and print
         if (top==None) and (bottom==None) and (wall==None) and (ring==None):
-            sensor = "----"
+            sensor = 0
 
-            print(cell_border+"TOP".center(cell_width)+
-            cell_border+"BOTTOM".center(cell_width)+
-            cell_border+"WALL".center(cell_width)+
-            cell_border+"RING".center(cell_width)+
-            cell_border+"Gap V".center(cell_width)+
-            cell_border+"Center V".center(cell_width)+
-            cell_border+"Gap H".center(cell_width)+
-            cell_border+"Center H".center(cell_width)+
-            cell_border+"Izero".center(cell_width)+
-            cell_border)
+            print(cell_border+"TOP".center(cell_width)+cell_border+"BOTTOM".center(cell_width)+cell_border+"WALL".center(cell_width)+cell_border+"RING".center(cell_width)+cell_border+"Gap V".center(cell_width)+cell_border+"Center V".center(cell_width)+cell_border+"Gap H".center(cell_width)+cell_border+"Center H".center(cell_width)+cell_border+"Izero".center(cell_width)+cell_border)
 
             gapv = abs(top_app_RBV.read()-bottom_app_RBV.read())
             gaph = abs(wall_app_RBV.read()-ring_app_RBV.read())
@@ -50,8 +40,7 @@ class U17AU1():
             cell_border+'{:.3f}'.format(centerv).center(cell_width)+
             cell_border+'{:.3f}'.format(gaph).center(cell_width)+
             cell_border+'{:.3f}'.format(centerh).center(cell_width)+
-            cell_border+'{:.1e}'.format(sensor).center(cell_width)+
-            cell_border)
+            cell_border+'{:.1e}'.format(sensor).center(cell_width)+cell_border)
             return
 
         #### Move necessary motors
@@ -101,10 +90,7 @@ class U17AU1():
                 else:
                     telapse = time.clock()-tbegin
                     #mystat = "Time elapse: " + '{:.1f}'.format(telapse) + " seconds"
-                    mystat = "top: " + '{:.3f}'.format(top_app_RBV.take())+
-                    " bottom: " + '{:.3f}'.format(bottom_app_RBV.take())+
-                    " wall: " + '{:.3f}'.format(wall_app_RBV.take())+
-                    " ring: " + '{:.3f}'.format(ring_app_RBV.take())+
+                    mystat = "top: " + '{:.3f}'.format(top_app_RBV.take())+" bottom: " + '{:.3f}'.format(bottom_app_RBV.take())+" wall: " + '{:.3f}'.format(wall_app_RBV.take())+" ring: " + '{:.3f}'.format(ring_app_RBV.take())
                     set_status(mystat)
                     sleep(1)
         except:
