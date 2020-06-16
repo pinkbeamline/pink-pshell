@@ -99,9 +99,19 @@ class SPOTGE():
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
-        print("Filename: " + self.get_filename())
+        #print("Filename: " + self.get_filename())
         caput("PINK:AUX:ps_sample", sample) # Update sample name
         caput("PINK:AUX:ps_sample2", array('b', str(sample))) # Update long sample name
+
+        ## print some info
+        print("******************************************************")
+        print("    Scan: spot")
+        print("Detector: Greateyes")
+        print("  Sample: " + sample)
+        print("Filename: " + self.get_filename())
+        print("Exposure: " + '{:.2f}'.format(float(exposure)) + " seconds")
+        print("  Images: " + '{:02d}'.format(int(images)))
+        print("******************************************************")
 
         ## setup greateyes
         caput("PINK:GEYES:cam1:AcquireTime", exposure)
@@ -234,10 +244,7 @@ class SPOTGE():
         GE_acquire.write(0)
 
         ## save beamline/station snapshot
-        Display_status.write("Saving beamline snapshot...")
-        run("config/bl_snapshot_config.py")
-        for spdev in snapshot_pvlist:
-            save_dataset(spdev[0], caget(spdev[1]))
+        pink_save_bl_snapshot()
 
         ## save final scan time
         save_dataset("scan/end_time", time.ctime())

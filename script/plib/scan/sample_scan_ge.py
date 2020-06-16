@@ -107,4 +107,7 @@ class SAMPLESCAN():
         MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
         MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
 
+        ## save beamline/station snapshot
+        pink_save_bl_snapshot()
+
         print("Scan complete")

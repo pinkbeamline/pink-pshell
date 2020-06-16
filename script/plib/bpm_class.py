@@ -202,4 +202,3 @@ class BPM():
         save_dataset("plot/xdata", xdata)
         save_dataset("plot/profile", yprofile)
         save_dataset("plot/gauss_fit", ygauss)
-

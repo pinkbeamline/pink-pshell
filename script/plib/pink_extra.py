@@ -1,15 +1,17 @@
 ## PINK Extra functions
 
 def pink_save_bl_snapshot():
-    import config.bl_snapshot_config as pcfg
-
-    for dat in pcfg.snapshot_pvlist:
+    print("Saving beamline snapshot...")
+    run("config/bl_snapshot_config.py")
+    for spdev in snapshot_pvlist:
         try:
-            pval = caget(dat[1])
+            pval = caget(spdev[1])
         except:
-            print("PV is unreachable: " + dat[1])
+            msg = "[snapshot]: caget failed for PV: " + spdev[1]
+            print(msg)
+            log(msg, data_file = True)
             pval = "----"
-        save_dataset(dat[0], pval)
+        save_dataset(spdev[0], pval)
 
 def linspace(start, end, step):
     if type(step)==type(int(0)):

@@ -36,7 +36,7 @@ class CONTMYTHEN():
         set_exec_pars(open=False, name="mythen", reset=True)
 
         print("******************************************* ")
-        print("                Filename:  " + self.get_filename())        
+        print("                Filename:  " + self.get_filename())
         print("                    Scan:  continuous")
         print("                Detector:  Mythen")
         print("            Sample speed:  " + '{:.1f}'.format(sample_speed) + " um/s")
@@ -299,10 +299,11 @@ class CONTMYTHEN():
             append_dataset("detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())
 
         ## save beamline/station snapshot
-        Display_status.write("Saving beamline snapshot...")
-        run("config/bl_snapshot_config.py")
-        for spdev in snapshot_pvlist:
-            save_dataset(spdev[0], caget(spdev[1]))
+        pink_save_bl_snapshot()
+        #Display_status.write("Saving beamline snapshot...")
+        #run("config/bl_snapshot_config.py")
+        #for spdev in snapshot_pvlist:
+        #    save_dataset(spdev[0], caget(spdev[1]))
 
         ## setup Sec_el_y
         Sec_el_y_STOP.write(1)

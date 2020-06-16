@@ -116,7 +116,7 @@ class SAMPLESCAN():
         caput("PINK:EIGER:cam1:NumImages", 1)
         caput("PINK:EIGER:cam1:NumTriggers", 1)
         # manual trigger enable
-        caput("PINK:EIGER:cam1:ManualTrigger", 0)            
+        caput("PINK:EIGER:cam1:ManualTrigger", 0)
 
         ## Save data
         save_dataset("raw/sensor", sensor)
@@ -138,5 +138,8 @@ class SAMPLESCAN():
         MOTOR.write(prescan_pos)
         MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
         MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
+
+        ## save beamline/station snapshot
+        pink_save_bl_snapshot()
 
         print("Scan complete")

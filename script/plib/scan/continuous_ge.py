@@ -36,10 +36,10 @@ class CONTGE():
         exposure = det_exposure
 
         ## setup filename
-        set_exec_pars(open=False, name="ge", reset=True)        
+        set_exec_pars(open=False, name="ge", reset=True)
 
         print("******************************************* ")
-        print("                Filename:  " + self.get_filename())          
+        print("                Filename:  " + self.get_filename())
         print("                    Scan:  continuous")
         print("                Detector:  Greateyes")
         print("            Sample speed:  " + '{:.1f}'.format(sample_speed) + " um/s")
@@ -47,7 +47,7 @@ class CONTGE():
         print("          Images p/ line:  " + '{:d}'.format(int(images_per_line)))
         print("       Detector exposure:  " + '{:.1f}'.format(det_exposure) + " seconds")
         print("Sample exposure per pass:  " + '{:.2f}'.format(sample_exposure) + " seconds")
-        print("   Total Sample exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")        
+        print("   Total Sample exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")
         #print(" Sample usage efficiency:  " + '{:.1f}'.format(effic*100)+" %")
         print("******************************************* ")
         print(" ")
@@ -200,7 +200,7 @@ class CONTGE():
                 ## A=Delaygen Trigger Source [0:OFF, 1:CCD, 2:mythen, 3:eiger]
                 ## B=Caenels Trigger Source [0:OFF, 1:Delaygen, 2:Output A]
                 caput("PINK:RPISW:select_A", 1)
-                caput("PINK:RPISW:select_B", 1)                
+                caput("PINK:RPISW:select_B", 1)
 
                 caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
                 caput("PINK:GEYES:specsum_reset", 0) # clean spectrum sum
@@ -334,10 +334,11 @@ class CONTGE():
             append_dataset("detector/ccd/processed/spectrum_sum", GE_Spectra_sum.take())
 
         ## save beamline/station snapshot
-        Display_status.write("Saving beamline snapshot...")
-        run("config/bl_snapshot_config.py")
-        for spdev in snapshot_pvlist:
-            save_dataset(spdev[0], caget(spdev[1]))
+        pink_save_bl_snapshot()
+        #Display_status.write("Saving beamline snapshot...")
+        #run("config/bl_snapshot_config.py")
+        #for spdev in snapshot_pvlist:
+        #    save_dataset(spdev[0], caget(spdev[1]))
 
         ## setup Sec_el_y
         Sec_el_y_STOP.write(1)

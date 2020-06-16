@@ -31,14 +31,14 @@ class BLADESCAN():
             #MOTOR_RBV = create_channel_device("PINK:MSIM2:m5.RBV")
             #bladepos_RBV.setMonitored(True)
             #add_device(ch.psi.pshell.epics.Positioner("BPOS", "PINK:MSIM2:m5", "PINK:MSIM2:m5.RBV", True))
-            #MOTOR_RBV.setMonitored(True)            
-            
+            #MOTOR_RBV.setMonitored(True)
+
             ## variables
             sensor = []
             motor = []
             prescan_pos = 0
-                        
-            ## Setup 
+
+            ## Setup
             #print("Scanning ...")
             set_exec_pars(open=False, name="blade", reset=True)
 
@@ -67,7 +67,7 @@ class BLADESCAN():
             if verbose: print("Scanning...")
 
             prescan_pos = MOTOR_RBV.read()
-            
+
             ## Main loop
             for pos in positionarray:
                 MOTOR.write(pos)
@@ -116,15 +116,17 @@ class BLADESCAN():
             #save_dataset("diodes/diode4", self.diode4)
             save_dataset("raw/sensor", sensor)
             save_dataset("raw/blade", motor)
-    
+
             caput("PINK:CAE2:AcquireMode", 0)
 
             ## Move motor back to pre scan position
             MOTOR.write(prescan_pos)
             MOTOR_RBV.waitValueInRange(prescan_pos, 1.0, 60000)
-            #MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)   
-            
-            print(".")
+            #MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
+
+            pink_save_bl_snapshot()
+
+            print("OK")
 
 ###############################################################3
 
@@ -154,14 +156,14 @@ class BLADESCAN():
             #MOTOR_RBV = create_channel_device("PINK:MSIM2:m5.RBV")
             #bladepos_RBV.setMonitored(True)
             #add_device(ch.psi.pshell.epics.Positioner("BPOS", "PINK:MSIM2:m5", "PINK:MSIM2:m5.RBV", True))
-            #MOTOR_RBV.setMonitored(True)            
-            
+            #MOTOR_RBV.setMonitored(True)
+
             ## variables
             sensor = []
             motor = []
             prescan_pos = 0
-                        
-            ## Setup 
+
+            ## Setup
             #print("Scanning ...")
             set_exec_pars(open=False, name="blade", reset=True)
 
@@ -190,7 +192,7 @@ class BLADESCAN():
             if verbose: print("Scanning...")
 
             prescan_pos = MOTOR_RBV.read()
-            
+
             ## Main loop
             for pos in positionarray:
                 MOTOR.write(pos)
@@ -238,7 +240,7 @@ class BLADESCAN():
             #save_dataset("diodes/diode4", self.diode4)
             save_dataset("raw/sensor", sensor)
             save_dataset("raw/blade", motor)
-    
+
             caput("PINK:CAE1:AcquireMode", 0)
 
 
@@ -246,8 +248,9 @@ class BLADESCAN():
             MOTOR.write(prescan_pos)
             MOTOR_RBV.waitValueInRange(prescan_pos, 1.0, 60000)
             #MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
-            
-            print(".")
+
+            pink_save_bl_snapshot()
+            print("OK")
 
         ######################################
         ### Support Functions
@@ -270,4 +273,3 @@ class BLADESCAN():
             print("    Sigma: " + '{:.3f}'.format(sigma))
             print("     FWHM: " + '{:.3f}'.format(fwhm))
             print("--------------------")
-               

@@ -110,9 +110,19 @@ class SPOTEIGER():
 
         ## Update status data
         caput("PINK:AUX:ps_filename_RBV", self.get_filename())
-        print("Filename: " + self.get_filename())
+        #print("Filename: " + self.get_filename())
         caput("PINK:AUX:ps_sample", sample) # Update sample name
         caput("PINK:AUX:ps_sample2", array('b', str(sample))) # Update long sample name
+
+        ## print some info
+        print("******************************************************")
+        print("    Scan: spot")
+        print("Detector: Eiger")
+        print("  Sample: " + sample)
+        print("Filename: " + self.get_filename())
+        print("Exposure: " + '{:.2f}'.format(float(exposure)) + " seconds")
+        print("  Images: " + '{:02d}'.format(int(images)))
+        print("******************************************************")
 
         ## setup eiger
         caput("PINK:EIGER:cam1:AcquireTime", exposure)
@@ -146,7 +156,7 @@ class SPOTEIGER():
         ## A=Delaygen Trigger Source [0:OFF, 1:CCD, 2:mythen, 3:eiger]
         ## B=Caenels Trigger Source [0:OFF, 1:Delaygen, 2:Output A]
         caput("PINK:RPISW:select_A", 3)
-        caput("PINK:RPISW:select_B", 2)        
+        caput("PINK:RPISW:select_B", 2)
 
         caput("PINK:GEYES:Scan:progress", 0) # Reset pass progress
         caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
@@ -227,17 +237,14 @@ class SPOTEIGER():
         append_dataset("plot/y", Eiger_Spectra_sum.read())
         append_dataset("plot/y_desc", "Pass 0")
 
-        ## save spec filename
+        ## save spec filenameimages
         self.save_specfile(pass_id, extrafname="", spectrum=Eiger_Spectra_sum.take())
 
         ## stop detectors
         Eiger_acquire.write(0)
 
         ## save beamline/station snapshot
-        Display_status.write("Saving beamline snapshot...")
-        run("config/bl_snapshot_config.py")
-        for spdev in snapshot_pvlist:
-            save_dataset(spdev[0], caget(spdev[1]))
+        pink_save_bl_snapshot()
 
         ## save final scan time
         save_dataset("scan/end_time", time.ctime())

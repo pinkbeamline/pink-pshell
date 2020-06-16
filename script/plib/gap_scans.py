@@ -15,7 +15,7 @@ class GAPSCAN():
             return
 
         set_exec_pars(open=False, name="gap", reset=True)
-       
+
         verbose=True
         DEBUG=False
 
@@ -30,8 +30,8 @@ class GAPSCAN():
             SENSOR = create_channel_device("PINK:CAE1:Current3:MeanValue_RBV")
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
-            ACQ.setMonitored(True)        
-            
+            ACQ.setMonitored(True)
+
         MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
         MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
         MOTOR_RBV = create_channel_device("U17IT6R:BasePmGap.A")
@@ -94,7 +94,7 @@ class GAPSCAN():
         #MOTOR_RBV.waitValueInRange(positionarray[0], motor_deadband, 60000)
         mystat = "Gap: " + str(MOTOR_RBV.take())
         set_status(mystat)
-        
+
         if verbose: print("Scanning...")
         try:
             ## Main loop
@@ -106,11 +106,11 @@ class GAPSCAN():
                     MOTOR.write(pos)
                     sleep(0.2)
                     MOTOR_SET.write(1)
-        
+
                     gaperr = abs(pos - MOTOR_RBV.read())
                     if DEBUG: print("Gap dx: " + str(gaperr))
                     time_init = time.clock()
-        
+
                     ## wait for gap to reach position
                     pos_skip = False
                     waitpos = True
@@ -133,15 +133,15 @@ class GAPSCAN():
 
                     if gaperr<=motor_deadband:
                         posok=True
-                   
-                    
+
+
                 # junk = MOTOR_RBV.read()
                 # try:
                 #     MOTOR_RBV.waitValueInRange(pos, motor_deadband, 5000)
                 # except:
                 #     continue
-    
-    
+
+
                 if(pos_skip==False):
                     trycount = 0
                     waitsensor = True
@@ -151,10 +151,10 @@ class GAPSCAN():
                         while(ACQ.take()==1):
                             ACQ.write(0)
                             sleep(1)
-                    
+
                         ACQ.write(1)
                         resp = SENSOR.waitCacheChange(int(1000*(exposure+2)))
-                        
+
                         if resp==False:
                             if trycount < 3:
                                 trycount = trycount + 1
@@ -169,14 +169,14 @@ class GAPSCAN():
                                 log(logmsg, data_file = True)
                         else:
                             waitsensor=False
-                       
-                if(pos_skip==False):                
+
+                if(pos_skip==False):
                     sensor.append(SENSOR.take())
                     motor.append(MOTOR_RBV.take())
                     p1.getSeries(0).setData(motor, sensor)
         except:
             print("Gap scan aborted.")
-            
+
         if fit == True:
             fittype = "exp"
         else:
@@ -254,9 +254,7 @@ class GAPSCAN():
             save_dataset("raw/gap", motor)
 
         ## save beamline/station snapshot
-        run("config/bl_snapshot_config.py")
-        for spdev in snapshot_pvlist:
-            save_dataset(spdev[0], caget(spdev[1]))            
+        pink_save_bl_snapshot()
 
         # end routine
         if diode=="izero":

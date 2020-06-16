@@ -146,6 +146,9 @@ class SLITSCAN():
         ## Move motor back to pre scan position
         MOTOR.write(prescan_pos)
         MOTOR_RBV.waitValueInRange(prescan_pos, 1.0, 60000)
-        MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)        
+        MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
+
+        ## save beamline/station snapshot
+        pink_save_bl_snapshot()
 
         print("Done")

@@ -127,6 +127,8 @@ class U17AU1():
         cell_border+'{:.1e}'.format(sensor).center(cell_width)+
         cell_border)
 
+        #pink_save_bl_snapshot()
+
         print("\nDone. OK")
 
     def ismotordone(self, pos, RBV, deadband):

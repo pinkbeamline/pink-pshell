@@ -185,7 +185,7 @@ class CONTEIGER():
         ## A=Delaygen Trigger Source [0:OFF, 1:CCD, 2:mythen, 3:eiger]
         ## B=Caenels Trigger Source [0:OFF, 1:Delaygen, 2:Output A]
         caput("PINK:RPISW:select_A", 3)
-        caput("PINK:RPISW:select_B", 2)           
+        caput("PINK:RPISW:select_B", 2)
 
         ## create dataset for pass spectrum for eiger
         create_dataset("detector/eiger/processed/spectrum_sum", 'd', False, (0, Eiger_ROI_X))
@@ -316,10 +316,11 @@ class CONTEIGER():
             append_dataset("detector/eiger/processed/spectrum_sum", Eiger_Spectra_sum.take())
 
         ## save beamline/station snapshot
-        Display_status.write("Saving beamline snapshot...")
-        run("config/bl_snapshot_config.py")
-        for spdev in snapshot_pvlist:
-            save_dataset(spdev[0], caget(spdev[1]))
+        pink_save_bl_snapshot()
+        #Display_status.write("Saving beamline snapshot...")
+        #run("config/bl_snapshot_config.py")
+        #for spdev in snapshot_pvlist:
+        #    save_dataset(spdev[0], caget(spdev[1]))
 
         ## setup Sec_el_y
         Sec_el_y_STOP.write(1)
