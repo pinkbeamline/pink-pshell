@@ -293,7 +293,12 @@ class CONTMYTHEN():
         except:
             tnow = time.ctime()
             scan_abort = True
-            print("scan aborted [ " + tnow + " ]")
+            msg = "scan aborted [ " + tnow + " ]"
+            print(msg)
+            log(msg, data_file = True)
+            show_message(msg, blocking=False)
+            Display_status.write(msg)
+
             ## save the current spectrum sum
             save_dataset("passes/"+passpath+"/detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.read())
             append_dataset("detector/mythen/processed/spectrum_sum", Mythen_Spectra_sum.take())

@@ -269,7 +269,11 @@ class ZIGZAGGE():
         except:
             tnow = time.ctime()
             scan_abort = True
-            print("scan aborted [ " + tnow + " ]")
+            msg = "scan aborted [ " + tnow + " ]"
+            print(msg)
+            log(msg, data_file = True)
+            show_message(msg, blocking=False)
+            Display_status.write(msg)
             save_dataset("passes/"+passpath+"/detector/ccd/processed/spectrum_sum", GE_Spectra_sum.read())
             append_dataset("detector/ccd/processed/spectrum_sum", GE_Spectra_sum.take())
 

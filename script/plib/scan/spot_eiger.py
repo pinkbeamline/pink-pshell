@@ -228,7 +228,12 @@ class SPOTEIGER():
         except:
             tnow = time.ctime()
             scan_abort = True
-            print("scan aborted [ " + tnow + " ]")
+            msg = "scan aborted [ " + tnow + " ]"
+            print(msg)
+            log(msg, data_file = True)
+            show_message(msg, blocking=False)
+            Display_status.write(msg)
+
 
         ## save after scan data
         save_dataset("passes/pass01/detector/eiger/processed/spectrum_sum", Eiger_Spectra_sum.read())
