@@ -281,10 +281,13 @@ class PINKCLASS():
         #energy_before = caget("PINK:EIGER:cam1:PhotonEnergy")
 
         caput("PINK:EIGER:cam1:AcquireTime", 0.001)
+        sleep(0.5)
         caput("PINK:EIGER:cam1:AcquirePeriod", 1.000)
         #caput("PINK:EIGER:cam1:PhotonEnergy", 22000)
         caput("PINK:EIGER:cam1:NumImages", 1)
         caput("PINK:EIGER:Proc1:EnableBackground", 0)
+        caput("PINK:EIGER:cam1:ManualTrigger", 0)
+        caput("PINK:EIGER:cam1:NumTriggers", 1)
         sleep(1)
         eig_frame_id = caget("PINK:EIGER:cam1:ArrayCounter_RBV")
 

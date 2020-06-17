@@ -129,6 +129,7 @@ class SPOTEIGER():
         sleep(1)
         caput("PINK:EIGER:cam1:AcquirePeriod", exposure+0.001)
         caput("PINK:EIGER:cam1:NumImages", images)
+        caput("PINK:EIGER:cam1:NumTriggers", 1)
         #caput("PINK:GEYES:cam1:ImageMode", 0) # single image
 
         ## setup caenels 1 and 2
@@ -261,6 +262,11 @@ class SPOTEIGER():
             Display_status.write("Spot scan completed. OK")
             save_dataset("scan/status", "ok")
             print("Spot scan completed. OK")
+
+        ## close shutter parameter handler
+        #if len(str(close_shutter))>0:
+        #    if(str(close_shutter).lower()[0]=='y'):
+        #        caput("PINK:PLCGAS:ei_B01", 0)
 
     ################################################################################################
 
