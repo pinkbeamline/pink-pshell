@@ -130,7 +130,7 @@ class BLADESCAN():
 
 ###############################################################3
 
-        def run_sec_scan(self, start=0, end=0, steps=0, exposure=0):
+        def run_sec_scan(self, sensor, axis, start=0, end=0, steps=0, exposure=0):
             if exposure == 0:
                 print("Abort: exposure = 0 ")
                 return
@@ -141,13 +141,29 @@ class BLADESCAN():
 
             if verbose: print("Creating channels")
             ## channels
-            SENSOR = create_channel_device("PINK:CAE1:Current2:MeanValue_RBV")
-            SENSOR.setMonitored(True)
+            if sensor=="tfy":
+                ## TFY diode
+                SENSOR = create_channel_device("PINK:CAE1:Current2:MeanValue_RBV")
+                SENSOR.setMonitored(True)
+            else:
+                print("Blade scan is not not available for this sensor.")
+                return
+
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
             ACQ.setMonitored(True)
-            MOTOR = create_channel_device("PINK:SMA01:m9")
-            MOTOR_RBV = create_channel_device("PINK:SMA01:m9.RBV")
-            MOTOR_RBV.setMonitored(True)
+
+            if axis=="y":
+                MOTOR = create_channel_device("PINK:SMA01:m9")
+                MOTOR_RBV = create_channel_device("PINK:SMA01:m9.RBV")
+                MOTOR_RBV.setMonitored(True)
+            elif axis=="x":
+                MOTOR = create_channel_device("PINK:SMA01:m10")
+                MOTOR_RBV = create_channel_device("PINK:SMA01:m9.RBV")
+                MOTOR_RBV.setMonitored(True)
+            else:
+                print("axis option is invalid.")
+                return 
+
 
             ## simulated channels
             #SENSOR = create_channel_device("PINK:MSIM2:sigmoid")

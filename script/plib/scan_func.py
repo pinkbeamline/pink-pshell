@@ -30,6 +30,8 @@ class SENSORS():
         return "diag"
     def BPM3_ROI_Sum(self):
         return "bpm3"
+    def TFY(self):
+        return "tfy"
 
 class SAMPLEAXIS():
     def horizontal(self):
