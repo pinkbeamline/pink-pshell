@@ -21,7 +21,7 @@ class FILTERS():
     def scatter(self):
         return "sc"
 
-class SENSORS():
+class SOURCES():
     def IZero(self):
         return "izero"
     def direct_diode_SEC(self):
@@ -162,13 +162,13 @@ class SCANFUNC():
         filterscan.scan(filters,start,end,step,exposure)
         del filterscan
 
-    def gap(self, sensor, start=0, end=0, step=0, exposure=1):
-        if isinstance(sensor, SENSORS):
-            print("!! Please use sensor. to see list of options !!")
+    def gap(self, source, start=0, end=0, step=0, exposure=1):
+        if isinstance(source, SOURCES):
+            print("!! Please use source. to see list of options !!")
             return
         run("plib/gap_scans.py")
         gapscan = GAPSCAN()
-        gapscan.scan(sensor, start=start, end=end, step=step, exposure=exposure, fit=False)
+        gapscan.scan(source, start=start, end=end, step=step, exposure=exposure, fit=False)
         del gapscan
 
     def sample_scan(self, axis, detector, start=0, end=0, step=0, exposure=1):

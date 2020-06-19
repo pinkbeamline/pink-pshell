@@ -16,8 +16,8 @@ class BLADEFUNC():
         bladescan.run_diag_scan(start, end, step, exposure)
         print("OK")
 
-    def Sample_Env_Blade_Scan(self, sensor, axis, start=0, end=0, step=0, exposure=0.0):
-        if isinstance(sensor, SENSORS):
+    def Sample_Env_Blade_Scan(self, source, axis, start=0, end=0, step=0, exposure=0.0):
+        if isinstance(source, SOURCES):
             print("!! Please use sensor[dot] to see list of available sensors !!")
             return
         if isinstance(axis, SAMPLEAXIS):
@@ -34,7 +34,7 @@ class BLADEFUNC():
 
         run("plib/blade_scan.py")
         bladescan = BLADESCAN()
-        bladescan.run_sec_scan(sensor, axis, start, end, step, exposure)
+        bladescan.run_sec_scan(source, axis, start, end, step, exposure)
         print("OK")
 
     def Slit_Scan(self, slit, start=0, end=0, step=0, exposure=0.0):

@@ -6,7 +6,7 @@ class BLADESCAN():
 ##################################################################
 
         def run_diag_scan(self, start=0, end=0, steps=0, exposure=0):
-            if exposure == 0:
+            if (exposure == 0):
                 print("Abort: exposure = 0 ")
                 return
 
@@ -130,8 +130,8 @@ class BLADESCAN():
 
 ###############################################################3
 
-        def run_sec_scan(self, sensor, axis, start=0, end=0, steps=0, exposure=0):
-            if exposure == 0:
+        def run_sec_scan(self, source, axis, start=0, end=0, steps=0, exposure=0):
+            if (source != "bpm3") & (exposure == 0):
                 print("Abort: exposure = 0 ")
                 return
 
@@ -141,17 +141,17 @@ class BLADESCAN():
 
             if verbose: print("Creating channels")
             ## channels
-            if sensor == "tfy":
+            if source == "tfy":
                 ## TFY diode
                 SENSOR = create_channel_device("PINK:CAE1:Current2:MeanValue_RBV")
                 SENSOR.setMonitored(True)
-            elif sensor == "bpm3":
+            elif source == "bpm3":
                 SENSOR = create_channel_device("PINK:PG03:Stats2:Total_RBV")
                 SENSOR.setMonitored(True)
                 SENSOR_ID = create_channel_device("PINK:PG03:ArrayCounter_RBV")
                 SENSOR_ID.setMonitored(True)
             else:
-                print("Blade scan is not not available for this sensor.")
+                print("Blade scan is not not available for this source.")
                 return
 
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
@@ -219,7 +219,8 @@ class BLADESCAN():
                 MOTOR.write(pos)
                 #BPOS.waitInPosition(pos, 20000)
                 MOTOR_RBV.waitValueInRange(pos, 2.0, 30000)
-                if sensor == "tfy":
+                
+                if source == "tfy":
                     while(ACQ.take()==1):
                         sleep(0.25)
                     ACQ.write(1)
@@ -227,7 +228,7 @@ class BLADESCAN():
                     if resp==False:
                         print("Abort: No data from ampmeter")
                         return
-                elif sensor == "bpm3":
+                elif source == "bpm3":
                     sleep(1)
                     resp = SENSOR_ID.waitCacheChange(1000*int(exposure+2))
                     sleep(0.1)

@@ -8,8 +8,8 @@ class GAPSCAN():
 ### scan
 ########################################
 
-    def scan(self, sensor, start=0, end=0, step=0, exposure=0.0, fit=False):
-        #print(diode)
+    def scan(self, source, start=0, end=0, step=0, exposure=0.0, fit=False):
+        #print(source)
         if exposure==0:
             print("abort: exposure = 0")
             return
@@ -21,18 +21,18 @@ class GAPSCAN():
 
         if verbose: print("Creating channels")
         ## channels
-        if diode=="izero":
+        if source=="izero":
             SENSOR = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE2:Acquire", type='i')
             ACQ.setMonitored(True)
-        elif diode=="sec":
+        elif source=="sec":
             SENSOR = create_channel_device("PINK:CAE1:Current3:MeanValue_RBV")
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
             ACQ.setMonitored(True)
         else:
-            print("gap scan is not available for this sensor.")
+            print("gap scan is not available for this source.")
             return
 
         MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
@@ -64,7 +64,7 @@ class GAPSCAN():
         exposure=float(exposure)
         ACQ.write(0)
         sleep(1)
-        if diode=="izero":
+        if source=="izero":
             caput("PINK:CAE2:ValuesPerRead", int(1000*exposure))
             caput("PINK:CAE2:AveragingTime", exposure)
             caput("PINK:CAE2:TriggerMode", 0)
@@ -260,7 +260,7 @@ class GAPSCAN():
         pink_save_bl_snapshot()
 
         # end routine
-        if diode=="izero":
+        if source=="izero":
             caput("PINK:CAE2:AcquireMode", 0)
         else:
             caput("PINK:CAE1:AcquireMode", 0)

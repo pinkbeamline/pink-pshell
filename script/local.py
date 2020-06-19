@@ -18,7 +18,7 @@ scan = SCANFUNC()
 detector = DETEC()
 slit = SLITS()
 filters = FILTERS()
-sensor = SENSORS()
+source = SOURCES()
 axis = SAMPLEAXIS()
 
 print("PShell v1.14")
