@@ -141,10 +141,15 @@ class BLADESCAN():
 
             if verbose: print("Creating channels")
             ## channels
-            if sensor=="tfy":
+            if sensor == "tfy":
                 ## TFY diode
                 SENSOR = create_channel_device("PINK:CAE1:Current2:MeanValue_RBV")
                 SENSOR.setMonitored(True)
+            elif sensor == "bpm3":
+                SENSOR = create_channel_device("PINK:PG03:Stats2:Total_RBV")
+                SENSOR.setMonitored(True)
+                SENSOR_ID = create_channel_device("PINK:PG03:ArrayCounter_RBV")
+                SENSOR_ID.setMonitored(True)
             else:
                 print("Blade scan is not not available for this sensor.")
                 return
@@ -214,14 +219,22 @@ class BLADESCAN():
                 MOTOR.write(pos)
                 #BPOS.waitInPosition(pos, 20000)
                 MOTOR_RBV.waitValueInRange(pos, 2.0, 30000)
-                while(ACQ.take()==1):
-                    sleep(0.25)
-                ACQ.write(1)
-                resp = SENSOR.waitCacheChange(1000*int(exposure+2))
-                if resp==False:
-                    print("Abort: No data from ampmeter")
+                if sensor == "tfy":
+                    while(ACQ.take()==1):
+                        sleep(0.25)
+                    ACQ.write(1)
+                    resp = SENSOR.waitCacheChange(1000*int(exposure+2))
+                    if resp==False:
+                        print("Abort: No data from ampmeter")
+                        return
+                elif sensor == "bpm3":
+                    sleep(1)
+                    resp = SENSOR_ID.waitCacheChange(1000*int(exposure+2))
+                    sleep(0.1)
+                else:
+                    print("impossible error")
                     return
-                sensor.append(SENSOR.take())
+                sensor.append(SENSOR.read())
                 motor.append(MOTOR_RBV.take())
                 p1.getSeries(0).setData(motor, sensor)
                 if len(motor)>2:
