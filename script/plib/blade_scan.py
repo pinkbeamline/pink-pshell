@@ -158,11 +158,11 @@ class BLADESCAN():
                 MOTOR_RBV.setMonitored(True)
             elif axis=="x":
                 MOTOR = create_channel_device("PINK:SMA01:m10")
-                MOTOR_RBV = create_channel_device("PINK:SMA01:m9.RBV")
+                MOTOR_RBV = create_channel_device("PINK:SMA01:m10.RBV")
                 MOTOR_RBV.setMonitored(True)
             else:
                 print("axis option is invalid.")
-                return 
+                return
 
 
             ## simulated channels
