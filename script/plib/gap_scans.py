@@ -8,8 +8,8 @@ class GAPSCAN():
 ### scan
 ########################################
 
-    def scan(self, diode, start=0, end=0, step=0, exposure=0.0, fit=False):
-        print(diode)
+    def scan(self, sensor, start=0, end=0, step=0, exposure=0.0, fit=False):
+        #print(diode)
         if exposure==0:
             print("abort: exposure = 0")
             return
@@ -26,11 +26,14 @@ class GAPSCAN():
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE2:Acquire", type='i')
             ACQ.setMonitored(True)
-        else:
+        elif diode=="sec":
             SENSOR = create_channel_device("PINK:CAE1:Current3:MeanValue_RBV")
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
             ACQ.setMonitored(True)
+        else:
+            print("gap scan is not available for this sensor.")
+            return
 
         MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
         MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")

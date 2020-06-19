@@ -21,11 +21,15 @@ class FILTERS():
     def scatter(self):
         return "sc"
 
-class DIODE():
+class SENSORS():
     def IZero(self):
         return "izero"
-    def direct_SEC(self):
-        return "direct"
+    def direct_diode_SEC(self):
+        return "sec"
+    def direct_diode_diag(self):
+        return "diag"
+    def BPM3_ROI_Sum(self):
+        return "bpm3"
 
 class SAMPLEAXIS():
     def horizontal(self):
@@ -156,13 +160,13 @@ class SCANFUNC():
         filterscan.scan(filters,start,end,step,exposure)
         del filterscan
 
-    def gap(self, diode, start=0, end=0, step=0, exposure=1):
-        if isinstance(diode, DIODE):
-            print("!! Please use diode. to see list of options !!")
+    def gap(self, sensor, start=0, end=0, step=0, exposure=1):
+        if isinstance(sensor, SENSORS):
+            print("!! Please use sensor. to see list of options !!")
             return
         run("plib/gap_scans.py")
         gapscan = GAPSCAN()
-        gapscan.scan(diode, start=start, end=end, step=step, exposure=exposure, fit=False)
+        gapscan.scan(sensor, start=start, end=end, step=step, exposure=exposure, fit=False)
         del gapscan
 
     def sample_scan(self, axis, detector, start=0, end=0, step=0, exposure=1):

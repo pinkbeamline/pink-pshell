@@ -18,7 +18,7 @@ scan = SCANFUNC()
 detector = DETEC()
 slit = SLITS()
 filters = FILTERS()
-diode = DIODE()
+sensor = SENSORS()
 axis = SAMPLEAXIS()
 
 print("PShell v1.14")
@@ -29,4 +29,3 @@ def on_command_started(info):
 
 def on_command_finished(info):
     mlogger.onend(info)
-
