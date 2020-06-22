@@ -37,13 +37,16 @@ class BLADEFUNC():
         bladescan.run_sec_scan(source, axis, start, end, step, exposure)
         print("OK")
 
-    def Slit_Scan(self, slit, start=0, end=0, step=0, exposure=0.0):
+    def Slit_Scan(self, slit, source, start=0, end=0, step=0, exposure=0.0):
         if isinstance(slit, SLITS):
             print("!! Please use slit[dot] to see list of available slits !!")
             return
+        if isinstance(source, SOURCES):
+            print("!! Please use sensor[dot] to see list of available sensors !!")
+            return            
         run("plib/scan/slit_scan.py")
         slitscan = SLITSCAN()
-        slitscan.scan(slit,start,end,step,exposure)
+        slitscan.scan(slit,source,start,end,step,exposure)
 
 
 class SLITS():

@@ -28,8 +28,8 @@ class SOURCES():
         return "sec"
     def direct_diode_diag(self):
         return "diag"
-    def BPM3_ROI_Sum(self):
-        return "bpm3"
+#    def BPM3_ROI_Sum(self):
+#        return "bpm3"
     def TFY(self):
         return "tfy"
 
