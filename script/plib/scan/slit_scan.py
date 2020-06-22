@@ -1,7 +1,7 @@
 ## slit scan
 
 class SLITSCAN():
-    def scan(self,slit,start,end,step,exposure):
+    def scan(self,slit,source,start,end,step,exposure):
         print("Slit scan..." + slit)
 
         ## variables
@@ -11,10 +11,29 @@ class SLITSCAN():
         prescan_pos = 0
 
         ## channels
-        SENSOR = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
-        SENSOR.setMonitored(True)
-        ACQ = create_channel_device("PINK:CAE2:Acquire", type='i')
-        ACQ.setMonitored(True)
+        if source=="izero":
+            SENSOR = create_channel_device("PINK:CAE2:SumAll:MeanValue_RBV")
+            SENSOR.setMonitored(True)
+            ACQ = create_channel_device("PINK:CAE2:Acquire", type='i')
+            ACQ.setMonitored(True)
+        elif source=="tfy":
+            SENSOR = create_channel_device("PINK:CAE1:Current2:MeanValue_RBV")
+            SENSOR.setMonitored(True)
+            ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
+            ACQ.setMonitored(True)
+        elif source=="sec":
+            SENSOR = create_channel_device("PINK:CAE1:Current3:MeanValue_RBV")
+            SENSOR.setMonitored(True)
+            ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
+            ACQ.setMonitored(True)
+        elif source=="diag":
+            SENSOR = create_channel_device("PINK:CAE1:Current1:MeanValue_RBV")
+            SENSOR.setMonitored(True)
+            ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
+            ACQ.setMonitored(True)
+        else:
+            print("Invalid ssource option. Aborting")
+            return
 
         ## slit motor
         if slit=="bottom":
@@ -45,15 +64,27 @@ class SLITSCAN():
             print("Invalid slit. Aborting")
             return
 
-        ## setup caenels CAE2
-        if DEBUG: log("Setup CAE2", data_file = False)
-        #0:continuous 1:multiple 2:single
-        caput("PINK:CAE2:AcquireMode", 2) ## single
-        caput("PINK:CAE2:AveragingTime", exposure)
-        caput("PINK:CAE2:ValuesPerRead", exposure*1000)
-        #0:free run 1:ext trigger
-        caput("PINK:CAE2:TriggerMode", 0) ## free run
-        caputq("PINK:CAE2:Acquire", 0)
+        if source=="izero":
+            ## setup caenels CAE2
+            if DEBUG: log("Setup CAE2", data_file = False)
+            #0:continuous 1:multiple 2:single
+            caput("PINK:CAE2:AcquireMode", 2) ## single
+            caput("PINK:CAE2:AveragingTime", exposure)
+            caput("PINK:CAE2:ValuesPerRead", exposure*1000)
+            #0:free run 1:ext trigger
+            caput("PINK:CAE2:TriggerMode", 0) ## free run
+            caputq("PINK:CAE2:Acquire", 0)
+        else:
+            ## setup caenels CAE2
+            if DEBUG: log("Setup CAE1", data_file = False)
+            #0:continuous 1:multiple 2:single
+            caput("PINK:CAE1:AcquireMode", 2) ## single
+            caput("PINK:CAE1:AveragingTime", exposure)
+            caput("PINK:CAE1:ValuesPerRead", exposure*1000)
+            #0:free run 1:ext trigger
+            caput("PINK:CAE1:Range", 0)
+            caput("PINK:CAE1:TriggerMode", 0) ## free run
+            caputq("PINK:CAE1:Acquire", 0)
 
         ##set file name
         set_exec_pars(open=False, name="slit", reset=True)
@@ -141,7 +172,9 @@ class SLITSCAN():
 
         ## Setup CAE2
         #0:continuous 1:multiple 2:single
+        caput("PINK:CAE1:AcquireMode", 0) ## continuous
         caput("PINK:CAE2:AcquireMode", 0) ## continuous
+        caput("PINK:CAE1:Range", 1)
 
         ## Move motor back to pre scan position
         MOTOR.write(prescan_pos)
