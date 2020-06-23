@@ -40,6 +40,7 @@ class CONTGE():
 
         print("******************************************* ")
         print("                Filename:  " + self.get_filename())
+        print("                  Sample:  " + sample)
         print("                    Scan:  continuous")
         print("                Detector:  Greateyes")
         print("            Sample speed:  " + '{:.1f}'.format(sample_speed) + " um/s")

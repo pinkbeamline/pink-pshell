@@ -96,10 +96,10 @@ class SPOTMYTHEN():
 
         ## print some info
         print("******************************************************")
+        print("Filename: " + self.get_filename())
+        print("  Sample: " + sample)
         print("    Scan: spot")
         print("Detector: Eiger")
-        print("  Sample: " + sample)
-        print("Filename: " + self.get_filename())
         print("Exposure: " + '{:.2f}'.format(float(exposure)) + " seconds")
         print("  Images: " + '{:02d}'.format(int(images)))
         print("******************************************************")
