@@ -14,11 +14,17 @@ def pink_save_bl_snapshot():
         save_dataset(spdev[0], pval)
 
 def linspace(start, end, step):
+    if start==end:
+        return [start]
     if type(step)==type(int(0)):
+        if step<2:
+            return[start]
         step = abs(step)
         N = int(abs(step))
         ds = float((end-start))/(step-1)
     else:
+        if step==0.0:
+            return [start]
         N = abs(int(math.floor(abs((end-start)/step))))+1
         ds = abs(step)
         if end-start < 0:
