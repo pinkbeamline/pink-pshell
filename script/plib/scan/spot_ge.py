@@ -103,14 +103,18 @@ class SPOTGE():
         caput("PINK:AUX:ps_sample", sample) # Update sample name
         caput("PINK:AUX:ps_sample2", array('b', str(sample))) # Update long sample name
 
+        scantimestr = self.scantime_calc(exposure=exposure, Ypoints=images, Xpoints=1, passes=1, linedelay=0)
+
         ## print some info
         print("******************************************************")
-        print("    Scan: spot")
-        print("Detector: Greateyes")
-        print("  Sample: " + sample)
-        print("Filename: " + self.get_filename())
-        print("Exposure: " + '{:.2f}'.format(float(exposure)) + " seconds")
-        print("  Images: " + '{:02d}'.format(int(images)))
+        print("              Filename: " + self.get_filename())
+        print("                Sample: " + sample)
+        print("                  Scan: spot")
+        print("              Detector: Greateyes")
+        print("              Exposure: " + '{:.2f}'.format(float(exposure)) + " seconds")
+        print("                Images: " + '{:02d}'.format(int(images)))
+        print(" Total Sample exposure: " + '{:.2f}'.format(exposure*images) + " seconds")
+        print("              Scantime: " + scantimestr)
         print("******************************************************")
 
         ## setup greateyes
@@ -363,3 +367,27 @@ class SPOTGE():
             fspec.close()
         except:
             print("[Error]: Failed to create mca file")
+
+    def scantime_calc(self, exposure=0, Ypoints=0, Xpoints=0, passes=0, linedelay=0):
+        ## Greateyes
+        bgtime = 2.881 + exposure*1.087
+        linetime = (Ypoints*(exposure+0.35))+1.7+linedelay
+        passtime = (Xpoints * linetime) + bgtime
+        scantime = round(passes*passtime)
+        sh = int(scantime/3600.0)
+        sm = int(scantime/60)%60
+        ss = int(scantime%60)
+        if sh>0:
+            SH = "{:02d}h ".format(sh)
+        else:
+            SH = ""
+        if sm>0:
+            SM = "{:02d}m ".format(sm)
+        else:
+            SM = ""
+        if ss>0:
+            SS = "{:02d}s ".format(ss)
+        else:
+            SS = ""
+        msg = SH + SM + SS
+        return msg

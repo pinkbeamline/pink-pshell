@@ -36,8 +36,11 @@ class CONTEIGER():
         ## setup filename
         set_exec_pars(open=False, name="eiger", reset=True)
 
+        scantimestr = self.scantime_calc(exposure=exposure, Ypoints=Ypoints, Xpoints=Xpoints, passes=passes, linedelay=linedelay)
+
         print("******************************************* ")
         print("                Filename:  " + self.get_filename())
+        print("                  Sample:  " + sample)
         print("                    Scan:  continuous")
         print("                Detector:  Eiger")
         print("            Sample speed:  " + '{:.1f}'.format(sample_speed) + " um/s")
@@ -46,6 +49,7 @@ class CONTEIGER():
         print("       Detector exposure:  " + '{:.1f}'.format(det_exposure) + " seconds")
         print("Sample exposure per pass:  " + '{:.2f}'.format(sample_exposure) + " seconds")
         print("   Total Sample exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")
+        print("                Scantime:  " + scantimestr)
         #print(" Sample usage efficiency:  " + '{:.1f}'.format(effic*100)+" %")
         print("******************************************* ")
         print(" ")
@@ -434,3 +438,27 @@ class CONTEIGER():
             fspec.close()
         except:
             print("[Error]: Failed to create mca file")
+
+    def scantime_calc(self, exposure=0, Ypoints=0, Xpoints=0, passes=0, linedelay=0):
+        ## eiger
+        bgtime = 0
+        linetime = (Ypoints*(exposure+0.001))+1.7+linedelay
+        passtime = (Xpoints * linetime) + bgtime
+        scantime = round(passes*passtime)
+        sh = int(scantime/3600.0)
+        sm = int(scantime/60)%60
+        ss = int(scantime%60)
+        if sh>0:
+            SH = "{:02d}h ".format(sh)
+        else:
+            SH = ""
+        if sm>0:
+            SM = "{:02d}m ".format(sm)
+        else:
+            SM = ""
+        if ss>0:
+            SS = "{:02d}s ".format(ss)
+        else:
+            SS = ""
+        msg = SH + SM + SS
+        return msg
