@@ -8,6 +8,7 @@ run("plib/pink_extra.py")
 run("plib/pink_class.py")
 run("plib/blade_func.py")
 run("plib/scan_func.py")
+run("plib/sim_functions.py")
 
 mlogger = MasterLogger()
 
@@ -20,6 +21,7 @@ slit = SLITS()
 filters = FILTERS()
 source = SOURCES()
 axis = SAMPLEAXIS()
+sim = SIMFUNC()
 
 print("PShell v1.14")
 #print("OK")
