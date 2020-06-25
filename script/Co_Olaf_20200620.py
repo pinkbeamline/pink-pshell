@@ -1,34 +1,42 @@
-#Energy calibration
-#Ni Ka1,2
+sample_1='s15 La0.9 Sr0.1 CoO3'
+sample_2='s16 LaFe0.2 Co0.8 O3'
+sample_3='s17 CoZr2O4'
+
 print("########## ENERGYCALIBRATION ##########")
 caput("PINK:SMA01:m10.VAL", 21000.) #X
-caput("PINK:SMA01:m9.VAL", -5000.) #Y
+caput("PINK:SMA01:m9.VAL", -5400.) #Y
+
+#Ni Ka1,2
 scan.spot(detector.eiger(), exposure=5., images=40, sample='Ni foil')
 #Co foil, Kb1,3 and V2C
 caput("PINK:SMA01:m10.VAL", 21000.) #X
-caput("PINK:SMA01:m9.VAL", -3500.) #Y
+caput("PINK:SMA01:m9.VAL", -3150.) #Y
 scan.spot(detector.eiger(), exposure=2., images=200, sample='Co foil')
 #Co(OH)2 commercial, Kb1,3 and V2C
-scan.continuous(detector.eiger(), det_exposure=2, sample_exposure=0.5, X0=19300, X1=19500, dX=700, Y0=4050, Y1=8100, passes=20, sample='Co(OH)2', linedelay=0)
+scan.continuous(detector.eiger(), det_exposure=2, sample_exposure=0.5, X0=21500, X1=22400, dX=700, Y0=0, Y1=4000, passes=20, sample='Co(OH)2', linedelay=0)
 
 #Measurement
 print("########## MEASUREMENT ##########")
-#S1
-scan.continuous(detector.eiger(), det_exposure=5, sample_exposure=0.5, X0=37300, X1=40000, dX=750, Y0=-7500, Y1=8100, passes=6, sample='s04 KIT-32', linedelay=0)
-#S2
-scan.continuous(detector.eiger(), det_exposure=5, sample_exposure=0.5, X0=2500, X1=4800, dX=750, Y0=-7500, Y1=8100, passes=6, sample='s05 KIT-3', linedelay=0)
-#S3
-scan.continuous(detector.eiger(), det_exposure=5, sample_exposure=0.5, X0=-15100, X1=-12400, dX=750, Y0=-7500, Y1=8100, passes=6, sample='s6 Co3O4 SBA', linedelay=0)
+#1
+scan.continuous(detector.eiger(), det_exposure=5, sample_exposure=0.5, X0=37300, X1=40000, dX=750, Y0=-7500, Y1=8100, passes=6, sample=sample_1, linedelay=0)
+#2
+scan.continuous(detector.eiger(), det_exposure=5, sample_exposure=0.5, X0=2500, X1=4800, dX=750, Y0=-7500, Y1=8100, passes=6, sample=sample_2, linedelay=0)
+#3
+scan.continuous(detector.eiger(), det_exposure=5, sample_exposure=0.5, X0=-15100, X1=-12400, dX=750, Y0=-7500, Y1=8100, passes=6, sample=sample_3, linedelay=0)
 
 #Damage scan
 print("########## DAMAGE SCAN ##########")
 
 caput("PINK:SMA01:m9.VAL", 0.) #Y
 caput("PINK:SMA01:m10.VAL", -13500.) #X
-scan.spot(detector.eiger(), exposure=2., images=60, sample='s04 KIT-32')
+scan.spot(detector.eiger(), exposure=2., images=60, sample=sample_3)
 caput("PINK:SMA01:m10.VAL", 3500.) #X
-scan.spot(detector.eiger(), exposure=2., images=60, sample='s05 KIT-3')
+scan.spot(detector.eiger(), exposure=2., images=60, sample=sample_2)
 caput("PINK:SMA01:m10.VAL", 38500.) #X
-scan.spot(detector.eiger(), exposure=2., images=60, sample='s04 KIT-32')
+scan.spot(detector.eiger(), exposure=2., images=60, sample=sample_1)
 caput("PINK:SMA01:m10.VAL", 0.) #X
 print("########## DONE ##########")
+pink.shutter_hard_CLOSE()
+caput("PINK:PLCVAC:V11close", 1)
+caput("PINK:PLCVAC:V12close", 1)
+pink.gap(12.0)
