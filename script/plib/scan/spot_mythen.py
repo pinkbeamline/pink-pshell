@@ -100,12 +100,12 @@ class SPOTMYTHEN():
         print("******************************************************")
         print("              Filename: " + self.get_filename())
         print("                Sample: " + sample)
-        print("                  Scan: spot")
+        print("             Scan type: spot")
         print("              Detector: Eiger")
         print("              Exposure: " + '{:.2f}'.format(float(exposure)) + " seconds")
         print("                Images: " + '{:02d}'.format(int(images)))
-        print(" Total Sample exposure: " + '{:.2f}'.format(exposure*images) + " seconds")
-        print("              Scantime: " + scantimestr)
+        print(" Total sample exposure: " + '{:.2f}'.format(exposure*images) + " seconds")
+        print("       Total scan time: " + scantimestr)
         print("******************************************************")
 
         ## setup mythen
