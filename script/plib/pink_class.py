@@ -192,41 +192,43 @@ class PINKCLASS():
             return
 
         ##channels
-        #MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
-        #MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
-        #MOTOR_RBV = create_channel_device("U17IT6R::BasePmGap.A")
-        #MOTOR_RBV.setMonitored(True)
-        #motor_deadband = 2.0
+        MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
+        MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
+        MOTOR_RBV = create_channel_device("U17IT6R::BasePmGap.A")
+        MOTOR_RBV.setMonitored(True)
+        motor_deadband = 0.02
 
         ## simulated channels
-        MOTOR = create_channel_device("PINK:GAPSIM:gapset")
-        MOTOR_SET = create_channel_device("PINK:GAPSIM:gapexec.PROC")
-        MOTOR_RBV = create_channel_device("PINK:GAPSIM:m1.RBV")
-        MOTOR_RBV.setMonitored(True)
-        motor_deadband = 0.1
+        #MOTOR = create_channel_device("PINK:GAPSIM:gapset")
+        #MOTOR_SET = create_channel_device("PINK:GAPSIM:gapexec.PROC")
+        #MOTOR_RBV = create_channel_device("PINK:GAPSIM:m1.RBV")
+        #MOTOR_RBV.setMonitored(True)
+        #motor_deadband = 0.1
 
         ## variables
-        verbose = True
+        verbose = False
         start=float(MOTOR_RBV.read())
         end=pos
         sensor = []
 
         ## plot setup
         if verbose: print("Setup plot")
-        [p1] = plot(None, "Gap", title="Gap Motion")
+        #[p1] = plot(None, "Gap", title="Gap Motion")
         #p1.getAxis(p1.AxisId.X).setRange(min(start, end),max(start,end))
-        p1.getAxis(p1.AxisId.Y).setRange(min(start, end),max(start,end))
-        sensor.append(MOTOR_RBV.take())
+        #p1.getAxis(p1.AxisId.Y).setRange(min(start, end),max(start,end))
+        #sensor.append(MOTOR_RBV.take())
         MOTOR.write(pos)
+        sleep(0.5)
         MOTOR_SET.write(1)
-        while(abs(pos-MOTOR_RBV.take()) > motor_deadband):
+        while(abs(pos-MOTOR_RBV.read()) > motor_deadband):
             #mystat = "Gap: " + str(MOTOR_RBV.take())
             ##set_status(mystat)
-            sensor.append(MOTOR_RBV.take())
-            p1.getSeries(0).setData(sensor, sensor)
-            sleep(0.5)
-
+            #sensor.append(MOTOR_RBV.take())
+            #p1.getSeries(0).setData(sensor, sensor)
+            print("gap: {:.3f} mm".format(MOTOR_RBV.read()))
+            sleep(1)
         return
+        print("Ok")
 
     #### Multi player mirror positioning  ############################################################
     def ml_2300ev(self):

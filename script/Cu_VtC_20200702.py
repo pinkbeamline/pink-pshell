@@ -4,13 +4,13 @@ sample_3='s17 CoZr2O4'
 
 print("########## ENERGYCALIBRATION ##########")
 caput("PINK:SMA01:m10.VAL", 21000.) #X
-caput("PINK:SMA01:m9.VAL", -5000.) #Y
+caput("PINK:SMA01:m9.VAL", -5400.) #Y
 
-#Cu Kb1,3
-scan.spot(detector.eiger(), exposure=5., images=40, sample='Cu foil')
+#Ni Ka1,2
+scan.spot(detector.eiger(), exposure=5., images=40, sample='Ni foil')
 #Co foil, Kb1,3 and V2C
 caput("PINK:SMA01:m10.VAL", 21000.) #X
-caput("PINK:SMA01:m9.VAL", -15000.) #Y
+caput("PINK:SMA01:m9.VAL", -3150.) #Y
 scan.spot(detector.eiger(), exposure=2., images=200, sample='Co foil')
 #Co(OH)2 commercial, Kb1,3 and V2C
 scan.continuous(detector.eiger(), det_exposure=2, sample_exposure=0.5, X0=21500, X1=22400, dX=700, Y0=0, Y1=4000, passes=20, sample='Co(OH)2', linedelay=0)
