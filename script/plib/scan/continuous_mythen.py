@@ -2,7 +2,7 @@
 class CONTMYTHEN():
 
     def scan(self, det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay):
-        print("Continuous scan for mythen...")
+        #print("Continuous scan for mythen...")
 
         ## variables
         DEBUG=0
@@ -38,18 +38,19 @@ class CONTMYTHEN():
         scantimestr = self.scantime_calc(exposure=exposure, Ypoints=Ypoints, Xpoints=Xpoints, passes=passes, linedelay=linedelay)
 
         print("******************************************* ")
-        print("                Filename:  " + self.get_filename())
-        print("                  Sample:  " + sample)
-        print("               Scan type:  continuous")
-        print("                Detector:  Mythen")
-        print("            Sample speed:  " + '{:.1f}'.format(sample_speed) + " um/s")
-        print("Number of vertical lines:  " + '{:d}'.format(num_lines))
-        print("          Images p/ line:  " + '{:d}'.format(int(images_per_line)))
-        print("        Number of passes:  " + '{:d}'.format(int(passes)))
-        print("       Detector exposure:  " + '{:.1f}'.format(det_exposure) + " seconds")
-        print("Sample exposure per pass:  " + '{:.2f}'.format(sample_exposure) + " seconds")
-        print("   Total Sample exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")
-        print("         Total scan time:  " + scantimestr)
+        print("                  Filename:  " + self.get_filename())
+        print("                    Sample:  " + sample)
+        print("                 Scan type:  continuous")
+        print("                  Detector:  Mythen")
+        print("              Sample speed:  " + '{:.1f}'.format(sample_speed) + " um/s")
+        print("  Number of vertical lines:  " + '{:d}'.format(num_lines))
+        print("Position of vertical lines:  " + str(x_positions))
+        print("            Images p/ line:  " + '{:d}'.format(int(images_per_line)))
+        print("          Number of passes:  " + '{:d}'.format(int(passes)))
+        print("         Detector exposure:  " + '{:.1f}'.format(det_exposure) + " seconds")
+        print("  Sample exposure per pass:  " + '{:.2f}'.format(sample_exposure) + " seconds")
+        print("     Total Sample exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")
+        print("           Total scan time:  " + scantimestr)
         #print(" Sample usage efficiency:  " + '{:.1f}'.format(effic*100)+" %")
         print("******************************************* ")
         print(" ")

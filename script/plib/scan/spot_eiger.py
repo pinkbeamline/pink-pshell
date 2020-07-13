@@ -2,7 +2,7 @@
 class SPOTEIGER():
 
     def scan(self, exposure, images, sample):
-        print("spot scan for eiger...")
+        #print("spot scan for eiger...")
 
         ## variables
         DEBUG=0

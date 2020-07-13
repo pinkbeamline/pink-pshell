@@ -2,7 +2,7 @@
 class SPOTGE():
 
     def scan(self, exposure, images, sample):
-        print("spot scan for greateyes...")
+        #print("spot scan for greateyes...")
 
         ## variables
         DEBUG=0
