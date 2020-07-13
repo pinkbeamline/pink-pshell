@@ -194,7 +194,7 @@ class PINKCLASS():
         ##channels
         MOTOR = create_channel_device("U17IT6R:BaseParGapsel.B")
         MOTOR_SET = create_channel_device("U17IT6R:BaseCmdCalc.PROC")
-        MOTOR_RBV = create_channel_device("U17IT6R::BasePmGap.A")
+        MOTOR_RBV = create_channel_device("U17IT6R:BasePmGap.A")
         MOTOR_RBV.setMonitored(True)
         motor_deadband = 0.02
 
@@ -227,8 +227,9 @@ class PINKCLASS():
             #p1.getSeries(0).setData(sensor, sensor)
             print("gap: {:.3f} mm".format(MOTOR_RBV.read()))
             sleep(1)
+        print("gap: {:.3f} mm".format(MOTOR_RBV.read()))
+        print("ready")
         return
-        print("Ok")
 
     #### Multi player mirror positioning  ############################################################
     def ml_2300ev(self):
