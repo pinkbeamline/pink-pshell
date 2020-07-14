@@ -244,6 +244,8 @@ class SPOTMYTHEN():
             save_dataset("scan/status", "ok")
             print("Spot scan completed. OK")
 
+        caput("PINK:SCNALM:scanDone", 1)
+
     ################################################################################################
 
     ### progress calculation

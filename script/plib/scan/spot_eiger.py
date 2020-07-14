@@ -277,6 +277,8 @@ class SPOTEIGER():
         #    if(str(close_shutter).lower()[0]=='y'):
         #        caput("PINK:PLCGAS:ei_B01", 0)
 
+        caput("PINK:SCNALM:scanDone", 1)        
+
     ################################################################################################
 
     ### progress calculation

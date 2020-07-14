@@ -344,6 +344,8 @@ class CONTMYTHEN():
             Display_status.write("Continuous scan completed. OK")
             print("Continuous scan completed.")
 
+        caput("PINK:SCNALM:scanDone", 1)
+        
     ################################################################################################
 
     ### progress calculation

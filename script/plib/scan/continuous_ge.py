@@ -370,6 +370,8 @@ class CONTGE():
             Display_status.write("Continuous scan completed. OK")
             print("Continuous scan completed.")
 
+        caput("PINK:SCNALM:scanDone", 1)
+
     ################################################################################################
     ### GE save background image function
     def save_GE_BG(self, exposure):
