@@ -332,3 +332,8 @@ class PINKCLASS():
         specstdby = SPECSTDBY()
         specstdby.move()
         del specstdby
+
+    #### Scan Alarm functions
+    def scanAlarm(self):
+        caput("PINK:SCNALM:scanAlarmTrigger", 1)
+
