@@ -337,3 +337,11 @@ class PINKCLASS():
     def scanAlarm(self):
         caput("PINK:SCNALM:scanAlarmTrigger", 1)
 
+    ### Set SEC type
+    def set_Chamber_Cryo(self):
+        set_setting("chamber","cryo")
+        print("PINK sample chamber set to Cryogenic SEC")
+    def set_Chamber_Electro(self):
+        set_setting("chamber","elec")
+        print("PINK sample chamber set to Electro SEC")
+

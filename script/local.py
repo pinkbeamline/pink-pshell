@@ -23,8 +23,16 @@ source = SOURCES()
 axis = SAMPLEAXIS()
 sim = SIMFUNC()
 
+#set_setting("chamber", "cryo")
+#set_setting("chamber", "elec")
+
 print("PShell v1.14")
 #print("OK")
+if(get_setting("chamber")=="cryo"):
+    print("Scripts using Cryogenic SEC")
+else:
+    print("Scripts using Electro SEC")
+
 
 def on_command_started(info):
     mlogger.onstart(info)

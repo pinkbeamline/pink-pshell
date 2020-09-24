@@ -60,7 +60,10 @@ class SCANFUNC():
             print("OK")
             return
         elif detector=="eiger":
-            run("plib/scan/spot_eiger.py")
+            if(get_setting("chamber")=="cryo"):
+                run("plib/scan/spot_eiger_cryo.py")
+            else:
+                run("plib/scan/spot_eiger.py")
             myscan = SPOTEIGER()
             myscan.scan(exposure, images, sample)
             del myscan
@@ -137,6 +140,9 @@ class SCANFUNC():
             print("OK")
             return
         if detector=="eiger":
+            #if(get_setting("chamber")=="cryo"):
+            #    run("plib/scan/continuous_eiger_cryo.py")
+            #else:
             run("plib/scan/continuous_eiger.py")
             myscan = CONTEIGER()
             myscan.scan(det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay)
