@@ -4,7 +4,7 @@
 #scan.spot(detector.eiger(), exposure=1, images=3, sample='eiger spot t1')
 #scan.spot(detector.eiger(), exposure=1.3, images=4, sample='eiger spot t2')
 
-print("test1")
-sleep(3)
-print("test2")
+scan.spot(detector.eiger(), exposure=2, images=4, sample='test 1')
+sleep(5)
+scan.spot(detector.eiger(), exposure=2, images=4, sample='test 2')
 

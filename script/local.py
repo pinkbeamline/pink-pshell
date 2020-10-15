@@ -10,7 +10,7 @@ run("plib/blade_func.py")
 run("plib/scan_func.py")
 run("plib/sim_functions.py")
 
-mlogger = MasterLogger()
+#mlogger = MasterLogger()
 
 bpm = BPM()
 pink = PINKCLASS()
@@ -22,6 +22,13 @@ filters = FILTERS()
 source = SOURCES()
 axis = SAMPLEAXIS()
 sim = SIMFUNC()
+
+#global elab
+elab = ELAB()
+sleep(1)
+mlogger = MasterLogger(elab)
+
+#start_task("tests/elab_loop.py", delay=10.0)
 
 #set_setting("chamber", "cryo")
 #set_setting("chamber", "elec")
@@ -39,3 +46,6 @@ def on_command_started(info):
 
 def on_command_finished(info):
     mlogger.onend(info)
+
+
+#start_task("tests/elab_loop.py", delay=10.0)

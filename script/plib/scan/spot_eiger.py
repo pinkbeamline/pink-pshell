@@ -3,7 +3,7 @@ class SPOTEIGER():
 
     def scan(self, exposure, images, sample):
         #print("spot scan for eiger...")
-
+        
         ## variables
         DEBUG=0
         initial_frame = 0
@@ -127,6 +127,23 @@ class SPOTEIGER():
         print(" Total sample exposure: " + '{:.2f}'.format(exposure*images) + " seconds")
         print("       Total scan time: " + scantimestr)
         print("******************************************************")
+
+        ## Send info to elab
+        elab.put("scan.spot(detector.eiger(), exposure={}, images={}, sample='{}')".format(exposure,images,sample))
+        elab.put("******************************************************")
+        elab.put("Time: " + time.asctime())
+        elab.put("Filename: " + self.get_filename())
+        elab.put("Sample: " + sample)
+        elab.put("Scan type: spot")
+        elab.put("Detector: Eiger")
+        elab.put("Exposure: " + '{:.2f}'.format(float(exposure)) + " seconds")
+        elab.put("Images: " + '{:02d}'.format(int(images)))
+        elab.put("Total sample exposure: " + '{:.2f}'.format(exposure*images) + " seconds")
+        elab.put("Total scan time: " + scantimestr)
+        elab.put("******************************************************")
+        elab.put(" ")        
+        
+        #return
 
         ## setup eiger
         caput("PINK:EIGER:cam1:AcquireTime", exposure)

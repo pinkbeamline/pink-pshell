@@ -8,6 +8,17 @@ class SIMFUNC():
 
         scantimestr = self.__scantime_calc(exposure=exposure, Ypoints=images, Xpoints=1, passes=1, linedelay=0)
 
+        elab_det = ""
+        if simdetector=="eiger":
+            elab_det = ".eiger()"
+        elif simdetector=="ge":
+            elab_det = ".greateyes()"
+        elif simdetector=="mythen":
+            elab_det = ".mythen()"
+        else:
+            elab_det = ""
+        #elab.put("[Cmd] sim.spot(detector{}, exposure={}, images={}, sample='{}')".format(elab_det, exposure, images, sample))
+
         ## print some info
         print("******************************************************")
         print("              Filename: Simulation ")
@@ -19,7 +30,6 @@ class SIMFUNC():
         print(" Total sample exposure: " + '{:.2f}'.format(exposure*images) + " seconds")
         print("       Total scan time: " + scantimestr)
         print("******************************************************")
-        return
 
     def continuous(self, detector, det_exposure=1, sample_exposure=1, X0=0, X1=1000, dX=500, Y0=0, Y1=1000, passes=1, sample='', linedelay=0):
         if isinstance(detector, DETEC):
@@ -27,6 +37,17 @@ class SIMFUNC():
             simdetector="not defined"
         else:
             simdetector=detector
+
+        elab_det = ""
+        if simdetector=="eiger":
+            elab_det = ".eiger()"
+        elif simdetector=="ge":
+            elab_det = ".greateyes()"
+        elif simdetector=="mythen":
+            elab_det = ".mythen()"
+        else:
+            elab_det = ""
+        #elab.put("[Cmd] sim.continuous(detector{}, det_exposure={}, sample_exposure={}, X0={}, X1={}, dX={}, Y0={}, Y1={}, passes={}, sample='{}', linedelay={})".format(elab_det, det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay))
 
         ## parameter calculations
         ## assuming a beam of vertical size = 50um

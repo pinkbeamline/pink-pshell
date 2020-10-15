@@ -1,5 +1,9 @@
-## PINK Extra functions
+from org.python.core.util import StringUtil
+import Queue
+import threading
+import time
 
+## PINK Extra functions
 def pink_save_bl_snapshot():
     print("Saving beamline snapshot...")
     run("config/bl_snapshot_config.py")
@@ -57,3 +61,47 @@ class Array2Matrix(ReadonlyRegisterBase, ReadonlyRegisterMatrix):
 ##add_device(Array2Matrix("GE_BG_Image", GE_BG_Array, GE_BG_SizeX, GE_BG_SizeY), True)
 ##sleep(1)
 ##GE_BG_Image.read()
+
+class ELAB():
+    from org.python.core.util import StringUtil
+    #import Queue
+    
+    def __init__(self):
+        def post_thread(self):
+            #print("ELAB post thread has started.")
+            print("..")
+            while(True):
+                self.__post()
+                time.sleep(5)
+            
+        self.debug = False
+        self.qbuff = Queue.Queue(100)
+        self.ready = False
+        self.busy = False
+        try:
+            self.postpv = create_channel_device("PINK:SESSION:elab_queue", type='[b',size=2048)
+            self.ready=True
+        except:
+            self.ready=False
+        ## thread
+        self.pt = threading.Thread(target=post_thread, args=(self,))
+        self.pt.start()
+        
+    def put(self, msg):
+        if self.qbuff.full()==False:
+            self.qbuff.put_nowait(msg)
+
+    def __post(self):
+        if (self.ready):
+            while self.qbuff.qsize():
+                msg = self.qbuff.get()
+                #print("[->] " + msg)
+                try:
+                    self.postpv.write(StringUtil.toBytes(msg))
+                except:
+                    pass
+                sleep(0.250)
+        else:
+            while self.qbuff.qsize():
+                discard = self.qbuff.get()
+                

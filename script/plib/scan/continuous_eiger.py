@@ -56,6 +56,27 @@ class CONTEIGER():
         print("******************************************* ")
         print(" ")
 
+        ## Send info to elab
+        elab.put("scan.continuous(detector.eiger(), det_exposure={}, sample_exposure={}, X0={}, X1={}, dX={}, Y0={}, Y1={}, passes={}, sample='{}', linedelay={})".format(det_exposure, sample_exposure, X0, X1, dX, Y0, Y1, passes, sample, linedelay))
+        elab.put("******************************************************")
+        elab.put("Time: " + time.asctime())
+        elab.put("Filename:  " + self.get_filename())
+        elab.put("Sample:  " + sample)
+        elab.put("Scan type:  continuous")
+        elab.put("Detector:  Eiger")
+        elab.put("Sample speed:  " + '{:.1f}'.format(sample_speed) + " um/s")
+        elab.put("Number of vertical lines:  " + '{:d}'.format(num_lines))
+        elab.put("Position of vertical lines:  " + str(x_positions))
+        elab.put("Images p/ line:  " + '{:d}'.format(int(images_per_line)))
+        elab.put("Number of passes:  " + '{:d}'.format(int(passes)))
+        elab.put("Detector exposure:  " + '{:.1f}'.format(det_exposure) + " seconds")
+        elab.put("Sample exposure per pass:  " + '{:.2f}'.format(sample_exposure) + " seconds")
+        elab.put("Total sample exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")
+        elab.put("Total scan time:  " + scantimestr)
+        elab.put("******************************************* ")
+        elab.put(" ")
+
+        
         ## create channels
         Eiger_acquire = create_channel_device("PINK:EIGER:cam1:Acquire", type='i')
         Eiger_status = create_channel_device("PINK:EIGER:cam1:Acquire_RBV", type='i')

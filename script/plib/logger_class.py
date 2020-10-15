@@ -4,9 +4,8 @@ import time
 import os
 from os import walk
 
-
-class MasterLogger():
-    def __init__(self):
+class MasterLogger:
+    def __init__(self, melab):
         dpath = sys.path[0]
         dpath = dpath.split("script")
         self.data_path = dpath[0] + "data/"
@@ -22,9 +21,13 @@ class MasterLogger():
         self.end_path = None
         self.fullpath = ""
         self.status = "OK"
+        self.cmd = ''
+        self.elab=melab
 
     def onstart(self, info):
+        #global elab
         self.start_id = info.id
+        self.cmd = info.command
         if info.script != None:
             self.start_time = time.localtime()
             self.script = info.script
@@ -33,7 +36,9 @@ class MasterLogger():
             self.start_list = []
             for (dirpath, dirnames, filenames) in walk(self.start_path):
                 self.start_list.extend(filenames)
-
+            if (self.script.split('/')[-2])=='script':
+                self.elab.put("[Script] "+self.script.split('/')[-1])
+            
     def onend(self, info):
         self.end_id = info.id
         if info.script != None and self.end_id==self.start_id:
