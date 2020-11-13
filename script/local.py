@@ -7,21 +7,27 @@ run("plib/bpm_class.py")
 run("plib/pink_extra.py")
 run("plib/pink_class.py")
 run("plib/blade_func.py")
-run("plib/scan_func.py")
+run("plib/scan_func_elec.py")
+run("plib/scan_func_cryo.py")
 run("plib/sim_functions.py")
+run("plib/cryo_functions.py")
 
 #mlogger = MasterLogger()
 
 bpm = BPM()
 pink = PINKCLASS()
 blade = BLADEFUNC()
-scan = SCANFUNC()
+if (get_setting("chamber")=="cryo"):
+    scan = SCANFUNCRYO()
+else:
+    scan = SCANFUNC()
 detector = DETEC()
 slit = SLITS()
 filters = FILTERS()
 source = SOURCES()
 axis = SAMPLEAXIS()
 sim = SIMFUNC()
+cryo = CRYOFUN()
 
 #global elab
 elab = ELAB()

@@ -62,6 +62,9 @@ class SPOTEIGER():
         #Sample_pos_x.setMonitored(True)
         Sample_pos_y = create_channel_device("PINK:ANC01:ACT0:POSITION", type='d')
         #Sample_pos_y.setMonitored(True)
+        Sample_rel_x_RBV = create_channel_device("PINK:CRYO:rbvx", type='d')
+        Sample_rel_y_RBV = create_channel_device("PINK:CRYO:rbvy", type='d')
+        Holder_number = create_channel_device("PINK:CRYO:samplenumber", type='d')
 
         ## create pressure channels
         run("config/pressure_devices.py")
@@ -185,6 +188,9 @@ class SPOTEIGER():
         #save_dataset("passes/pass01/detector/d_ccd/processed/bg_spectrum", GE_Spectra.read())
         save_dataset("passes/pass01/positioners/sample_pos_x", Sample_pos_x.read())
         save_dataset("passes/pass01/positioners/sample_pos_y", Sample_pos_y.read())
+        save_dataset("passes/pass01/positioners/holder_number", Holder_number.read())
+        save_dataset("passes/pass01/positioners/sample_relative_x", Sample_rel_x_RBV.read())
+        save_dataset("passes/pass01/positioners/sample_relative_y", Sample_rel_y_RBV.read())
 
         ## create dataset
         #create_dataset("passes/pass01/detector/eiger/raw/image", 'd', False, (0, GE_Y, GE_X), features=data_compression)

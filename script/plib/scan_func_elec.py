@@ -112,7 +112,10 @@ class SCANFUNC():
             print("OK")
             return
         if detector=="eiger":
-            run("plib/scan/zigzag_eiger.py")
+            if(get_setting("chamber")=="cryo"):
+                run("plib/scan/zigzag_eiger_cryo.py")
+            else:
+                run("plib/scan/zigzag_eiger.py")
             myscan = ZIGZAGEIGER()
             myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
             del myscan

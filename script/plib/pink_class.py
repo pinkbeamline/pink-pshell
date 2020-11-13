@@ -339,9 +339,12 @@ class PINKCLASS():
 
     ### Set SEC type
     def set_Chamber_Cryo(self):
+        global scan
         set_setting("chamber","cryo")
+        scan = SCANFUNCRYO()
         print("PINK sample chamber set to Cryogenic SEC")
     def set_Chamber_Electro(self):
+        global scan
         set_setting("chamber","elec")
+        scan = SCANFUNC()
         print("PINK sample chamber set to Electro SEC")
-
