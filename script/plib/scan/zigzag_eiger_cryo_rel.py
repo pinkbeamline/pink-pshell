@@ -113,9 +113,10 @@ class ZIGZAGEIGER():
         ## save initial scan data
         save_dataset("scan/sample", sample)
         save_dataset("scan/start_time", time.ctime())
-        save_dataset("scan/type", "line")
+        save_dataset("scan/type", "zigzag")
         save_dataset("scan/num_passes", passes)
         save_dataset("scan/num_images_pass", Xpoints*Ypoints)
+        save_dataset("scan/sample_holder", caget("PINK:CRYO:samplenumber", type='i')+1)
 
         ## save plot data
         save_dataset("plot/title", sample)
