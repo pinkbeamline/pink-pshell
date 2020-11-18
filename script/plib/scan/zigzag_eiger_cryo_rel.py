@@ -13,6 +13,25 @@ class ZIGZAGEIGER():
                 pass
             return res
 
+        def motionsuccessbyspeed(dmov, speedpv):
+            status = False
+            notdone = True
+            attempts = 25
+            speedfail=attempts
+            while(notdone):
+                if(dmov.value>0):
+                    status=True
+                    notdone=False
+                if(abs(speedpv.value)<100.0):
+                    speedfail -= 1
+                    #print("Motor speed too low... {}".format(speedfail))
+                else:
+                    speedfail = attempts
+                if(speedfail<=0):
+                    notdone=False
+                sleep(0.2)       
+            return status            
+
         ## variables
         DEBUG=0
         initial_frame = 0
@@ -80,6 +99,8 @@ class ZIGZAGEIGER():
         cryo_y_RBV.setMonitored(True)
         cryo_y_DMOV = create_channel_device("PINK:ANC01:ACT0:IN_TARGET", type='d')
         cryo_y_DMOV.setMonitored(True)
+        cryo_y_SPEED = create_channel_device("PINK:ANC01:ACT0:speedavg", type='d')
+        cryo_y_SPEED.setMonitored(True)        
 
         ## cryo absolute positions for reference
         cryo_x_RBV_abs = create_channel_device("PINK:PHY:AxisJ.RBV", type='d')
@@ -189,6 +210,12 @@ class ZIGZAGEIGER():
         prescan_pos_x = cryo_x_RBV.read()
         prescan_pos_y = cryo_y_RBV.read()
 
+        ## move to first position
+        print("Moving to first spot...")
+        cryo_x.write(X0)
+        cryo_y.write(Y0)
+        sleep(1)
+        cryo_x_DMOV.waitValueInRange(1.0, 0.5, 120000)
 
         try:
             ### Pass loop
@@ -247,9 +274,10 @@ class ZIGZAGEIGER():
                         cryo_y.write(Y0+(yoffset*dY))
                         sleep(0.1)
                         #Sec_el_y_DMOV.waitValueInRange(1, 0.1, 60000)
-                        res = motionsuccess(cryo_y_DMOV, motion_timeout)
+                        #res = motionsuccess(cryo_y_DMOV, motion_timeout)
+                        res = motionsuccessbyspeed(cryo_y_DMOV, cryo_y_SPEED)
                         if (res==False):
-                            print("\nVertical motion did not complete within {} ms. Requested: {} Actual: {}\nScan will skip this spot.".format(motion_timeout, cryo_y.read(), cryo_y_RBV.read()))
+                            print("\nVertical motion did not complete. Requested: {} Actual: {}\nScan will skip this spot.".format(cryo_y.read(), cryo_y_RBV.read()))
                             missed_spot = True
                             continue
 
