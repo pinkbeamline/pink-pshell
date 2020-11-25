@@ -265,6 +265,16 @@ class GAPSCAN():
         else:
             caput("PINK:CAE1:AcquireMode", 0)
             caput("PINK:CAE1:Range", 1)
+
+        ## Setup CAE2
+        #0:free run 1:ext trigger
+        caput("PINK:CAE2:TriggerMode", 0)
+        #0:continuous 1:multiple 2:single
+        caput("PINK:CAE2:AcquireMode", 0)
+        caput("PINK:CAE2:ValuesPerRead", 1000)
+        caput("PINK:CAE2:AveragingTime", 1)
+        caputq("PINK:CAE2:Acquire", 1)
+            
         print("Scan finished. OK")
 
 ###########################################

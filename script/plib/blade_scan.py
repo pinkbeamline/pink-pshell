@@ -119,6 +119,15 @@ class BLADESCAN():
 
             caput("PINK:CAE2:AcquireMode", 0)
 
+            ## Setup CAE2
+            #0:free run 1:ext trigger
+            caput("PINK:CAE2:TriggerMode", 0)
+            #0:continuous 1:multiple 2:single
+            caput("PINK:CAE2:AcquireMode", 0)
+            caput("PINK:CAE2:ValuesPerRead", 1000)
+            caput("PINK:CAE2:AveragingTime", 1)
+            caputq("PINK:CAE2:Acquire", 1)            
+
             ## Move motor back to pre scan position
             MOTOR.write(prescan_pos)
             MOTOR_RBV.waitValueInRange(prescan_pos, 1.0, 60000)
@@ -273,6 +282,14 @@ class BLADESCAN():
 
             caput("PINK:CAE1:AcquireMode", 0)
 
+            ## Setup CAE2
+            #0:free run 1:ext trigger
+            caput("PINK:CAE2:TriggerMode", 0)
+            #0:continuous 1:multiple 2:single
+            caput("PINK:CAE2:AcquireMode", 0)
+            caput("PINK:CAE2:ValuesPerRead", 1000)
+            caput("PINK:CAE2:AveragingTime", 1)
+            caputq("PINK:CAE2:Acquire", 1)
 
             ## Move motor back to pre scan position
             MOTOR.write(prescan_pos)
