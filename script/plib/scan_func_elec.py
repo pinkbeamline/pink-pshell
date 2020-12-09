@@ -24,7 +24,7 @@ class FILTERS():
 class SOURCES():
     def IZero(self):
         return "izero"
-    def direct_diode_SEC(self):
+    def direct_diode_BPM3(self):
         return "sec"
     def direct_diode_diag(self):
         return "diag"

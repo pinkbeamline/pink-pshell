@@ -46,6 +46,15 @@ if(get_setting("chamber")=="cryo"):
 else:
     print("Scripts using Electro SEC")
 
+print("\nBeamline scripts can be called with:")
+print("  bpm.        (BPM profiles)")
+print("  pink.       (Beamline scripts)")
+print("  blade.      (Blade and Slit scans)")
+print("  scan.       (Sample scans)")
+print("  sim.        (Simulate scans for total scan time prediction)")
+print("  cryo.       (Relative Sample motion functions for cryo chamber)")
+print("  elab.       (Test function to post messages to a google doc)")
+
 
 def on_command_started(info):
     mlogger.onstart(info)
