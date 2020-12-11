@@ -32,6 +32,14 @@ class ZIGZAGEIGER():
                 sleep(0.2)       
             return status            
 
+        def get_filename():
+            execinfo=get_exec_pars()
+            filenameinfo=execinfo.path
+            filenameinfo=filenameinfo.split("/")
+            fname=filenameinfo[-1]
+            return fname       
+
+
         ## variables
         DEBUG=0
         initial_frame = 0
@@ -130,6 +138,25 @@ class ZIGZAGEIGER():
 
         ## setup filename
         set_exec_pars(open=False, name="eiger", reset=True)
+
+        ## Report
+        x_positions = linspace(X0,X0+((Xpoints-1)*dX),Xpoints)
+        y_positions = linspace(Y0,Y0+((Ypoints-1)*dY),Ypoints)
+        
+        print("******************************************* ")
+        print("             Filename:  " + get_filename())
+        print("               Sample:  " + sample)
+        print("            Scan type:  zigzag")
+        print("             Detector:  Eiger")
+        print("    Number of lines X:  " + '{:d}'.format(Xpoints))
+        print("  Position of lines X:  " + str(x_positions))
+        print("    Number of lines Y:  " + '{:d}'.format(int(Ypoints)))
+        print("  Position of lines Y:  " + str(y_positions))
+        print("     Number of passes:  " + '{:d}'.format(int(passes)))
+        print("    Detector exposure:  " + '{:.1f}'.format(det_exposure) + " seconds")
+        print("  Total spot exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")
+        print("******************************************* ")
+        print(" ")
 
         ## save initial scan data
         save_dataset("scan/sample", sample)
