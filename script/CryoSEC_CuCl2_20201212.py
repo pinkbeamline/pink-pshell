@@ -1,0 +1,3 @@
+scan.zigzag_absolute(detector.eiger(), exposure=10, X0=78250, dX=750, Xpoints=3, Y0=13000, dY=50, Ypoints=60, passes=1, sample='CuCl2 Kb 1mM center as foil', linedelay=0)
+scan.zigzag_absolute(detector.eiger(), exposure=10, X0=56650, dX=750, Xpoints=3, Y0=13000, dY=50, Ypoints=60, passes=1, sample='CuCl2 Kb 10mM', linedelay=0)
+scan.zigzag_absolute(detector.eiger(), exposure=10, X0=54250, dX=750, Xpoints=3, Y0=13000, dY=50, Ypoints=60, passes=1, sample='CuCl2 Kb 10mM center as foil', linedelay=0)

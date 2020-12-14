@@ -13,3 +13,5 @@ for i in samples:
     cryo.sample_number(i)
     scan.zigzag_relative(detector.eiger(), exposure=1, X0=-1600, dX=800, Xpoints=5, Y0=-6200, dY=1000, Ypoints=4, passes=1, sample='tests', linedelay=0)
 
+
+  

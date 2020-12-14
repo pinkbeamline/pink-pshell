@@ -14,5 +14,6 @@ config/**/*.*~
 devices/**/*.*~
 **/test
 config/variables.properties
+config/settings.properties
 !.gitignore
 !/docs
