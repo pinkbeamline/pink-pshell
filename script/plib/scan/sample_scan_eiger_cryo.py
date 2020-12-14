@@ -88,12 +88,14 @@ class SAMPLESCAN():
 
         MOTOR.write(positionarray[0])
         # wait up to 3 minutes to reach first position
+        sleep(0.25)
         MOTOR_DMOV.waitValueInRange(1, 0.5, 180000)
 
         ## Main loop
         for pos in positionarray:
             MOTOR.write(pos)
-            MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
+            #MOTOR_RBV.waitValueInRange(pos, 5.0, 60000)
+            sleep(0.25)
             MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
             Eiger_trigger.write(1)
             #resp = SENSOR.waitCacheChange(1000*int(exposure+2))
@@ -125,7 +127,7 @@ class SAMPLESCAN():
 
         ## Save data
         save_dataset("raw/sensor", sensor)
-        save_dataset("raw/blade", motor)
+        save_dataset("raw/motor", motor)
 
         ## Save plot data
         save_dataset("plot/title", plottitle)
@@ -141,8 +143,9 @@ class SAMPLESCAN():
 
         ## Move back to original position
         MOTOR.write(prescan_pos)
-        MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
-        MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
+        sleep(0.25)
+        #MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
+        MOTOR_DMOV.waitValueInRange(1, 0.5, 180000)
 
         ## save beamline/station snapshot
         pink_save_bl_snapshot()

@@ -153,8 +153,8 @@ class ZIGZAGEIGER():
         print("    Number of lines Y:  " + '{:d}'.format(int(Ypoints)))
         print("  Position of lines Y:  " + str(y_positions))
         print("     Number of passes:  " + '{:d}'.format(int(passes)))
-        print("    Detector exposure:  " + '{:.1f}'.format(det_exposure) + " seconds")
-        print("  Total spot exposure:  " + '{:.2f}'.format(sample_exposure*passes) + " seconds")
+        print("    Detector exposure:  " + '{:.1f}'.format(exposure) + " seconds")
+        print("  Total spot exposure:  " + '{:.2f}'.format(exposure*passes) + " seconds")
         print("******************************************* ")
         print(" ")
 
@@ -243,6 +243,7 @@ class ZIGZAGEIGER():
         cryo_y.write(Y0)
         sleep(1)
         cryo_x_DMOV.waitValueInRange(1.0, 0.5, 120000)
+        print("Scanning")
 
         try:
             ### Pass loop
