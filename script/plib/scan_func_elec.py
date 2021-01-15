@@ -25,7 +25,7 @@ class SOURCES():
     def IZero(self):
         return "izero"
     def direct_diode_BPM3(self):
-        return "sec"
+        return "bpm3"
     def direct_diode_diag(self):
         return "diag"
 #    def BPM3_ROI_Sum(self):

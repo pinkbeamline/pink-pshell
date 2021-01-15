@@ -155,9 +155,9 @@ class BLADESCAN():
                 SENSOR = create_channel_device("PINK:CAE1:Current2:MeanValue_RBV")
                 SENSOR.setMonitored(True)
             elif source == "bpm3":
-                SENSOR = create_channel_device("PINK:PG03:Stats2:Total_RBV")
+                SENSOR = create_channel_device("PINK:CAE1:Current3:MeanValue_RBV")
                 SENSOR.setMonitored(True)
-                SENSOR_ID = create_channel_device("PINK:PG03:ArrayCounter_RBV")
+                SENSOR_ID = create_channel_device("PINK:CAE1:NumAcquired")
                 SENSOR_ID.setMonitored(True)
             else:
                 print("Blade scan is not not available for this source.")
@@ -177,7 +177,6 @@ class BLADESCAN():
             else:
                 print("axis option is invalid.")
                 return
-
 
             ## simulated channels
             #SENSOR = create_channel_device("PINK:MSIM2:sigmoid")
@@ -206,6 +205,11 @@ class BLADESCAN():
             caput("PINK:CAE1:AveragingTime", exposure)
             caput("PINK:CAE1:TriggerMode", 0)
             caput("PINK:CAE1:AcquireMode", 2)
+
+           # if source == "tfy":
+           #     caput("PINK:CAE1:Range", 1)
+           # else:
+           #     caput("PINK:CAE1:Range", 0)
             sleep(1)
 
             ## configure scan positions
@@ -228,22 +232,15 @@ class BLADESCAN():
                 MOTOR.write(pos)
                 #BPOS.waitInPosition(pos, 20000)
                 MOTOR_RBV.waitValueInRange(pos, 2.0, 30000)
-                
-                if source == "tfy":
-                    while(ACQ.take()==1):
-                        sleep(0.25)
-                    ACQ.write(1)
-                    resp = SENSOR.waitCacheChange(1000*int(exposure+2))
-                    if resp==False:
-                        print("Abort: No data from ampmeter")
-                        return
-                elif source == "bpm3":
-                    sleep(1)
-                    resp = SENSOR_ID.waitCacheChange(1000*int(exposure+2))
-                    sleep(0.1)
-                else:
-                    print("impossible error")
+
+                while(ACQ.take()==1):
+                    sleep(0.25)
+                ACQ.write(1)
+                resp = SENSOR.waitCacheChange(1000*int(exposure+2))
+                if resp==False:
+                    print("Abort: No data from ampmeter")
                     return
+
                 sensor.append(SENSOR.read())
                 motor.append(MOTOR_RBV.take())
                 p1.getSeries(0).setData(motor, sensor)
