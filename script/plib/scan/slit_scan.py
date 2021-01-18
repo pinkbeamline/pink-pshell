@@ -21,7 +21,7 @@ class SLITSCAN():
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
             ACQ.setMonitored(True)
-        elif source=="sec":
+        elif source=="bpm3":
             SENSOR = create_channel_device("PINK:CAE1:Current3:MeanValue_RBV")
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
@@ -32,7 +32,7 @@ class SLITSCAN():
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
             ACQ.setMonitored(True)
         else:
-            print("Invalid ssource option. Aborting")
+            print("Invalid source option. Aborting")
             return
 
         ## slit motor
@@ -159,6 +159,7 @@ class SLITSCAN():
 
         save_dataset("scan/scantype", "slit scan")
         save_dataset("scan/slit", slit)
+        save_dataset("scan/source", source)
         save_dataset("gaussian/offset", off)
         save_dataset("gaussian/amplitude", amp)
         save_dataset("gaussian/mean", com)
