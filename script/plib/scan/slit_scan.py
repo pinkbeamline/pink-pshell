@@ -4,6 +4,19 @@ class SLITSCAN():
     def scan(self,slit,source,start,end,step,exposure):
         print("Slit scan..." + slit)
 
+        if source=="bpm3":
+            ## check for bpm3 diode status
+            diode_out = int(caget("PINK:PLCGAS:vdiode_FA_LS"))==1
+            if diode_out:
+                print("[Warning] The diode on BPM3 is not in the beam path. Aborting.")
+                return
+
+            ## check for filters attenuation
+            filter_att = float(caget("PINK:FILTER:TxNow"))
+            if filter_att > 0.5:
+                print("[Warning] Please check the attenuation filters to avoid diode damage.")
+                print("[Warning] The total attenuation is now approximately: 1/{:.0f}".format(1/filter_att))
+
         ## variables
         DEBUG=0
         sensor = []
