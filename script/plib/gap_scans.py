@@ -26,7 +26,7 @@ class GAPSCAN():
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE2:Acquire", type='i')
             ACQ.setMonitored(True)
-        elif source=="sec":
+        elif source=="bpm3":
             SENSOR = create_channel_device("PINK:CAE1:Current3:MeanValue_RBV")
             SENSOR.setMonitored(True)
             ACQ = create_channel_device("PINK:CAE1:Acquire", type='i')
@@ -274,7 +274,7 @@ class GAPSCAN():
         caput("PINK:CAE2:ValuesPerRead", 1000)
         caput("PINK:CAE2:AveragingTime", 1)
         caputq("PINK:CAE2:Acquire", 1)
-            
+
         print("Scan finished. OK")
 
 ###########################################
