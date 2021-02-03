@@ -140,7 +140,7 @@ class SPOTGE():
         ## Setup delay generator
         ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
         ## [trigger mode] [5:single shot] [1: Ext rising edge]
-        self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
+        self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, exposure+0.15], [0, 0.001])
 
         ## Setup trigger switch
         ## A=Delaygen Trigger Source [0:OFF, 1:CCD, 2:mythen, 3:eiger]
@@ -156,7 +156,7 @@ class SPOTGE():
         ## Setup delay generator
         ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
         ## [trigger mode] [5:single shot] [1: Ext rising edge]
-        self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
+        self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, exposure+0.15], [0, 0.001])
 
         caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
         caput("PINK:GEYES:specsum_reset", 0) # clean spectrum sum
@@ -207,7 +207,7 @@ class SPOTGE():
                 Frame_countdown.write(100) # Initiate frame countdown
                 #GE_acquire.write(1)
                 GE_Spectra.waitCacheChange(int((exposure*1000)+10000))
-                sleep(0.01)
+                sleep(0.1)
                 ## append to dataset
                 append_dataset("passes/pass01/detector/ccd/raw/image", Convert.reshape(GE_raw_array.take(), GE_Y, GE_X))
                 append_dataset("passes/pass01/detector/ccd/processed/image", Convert.reshape(GE_roi_array.take(), GE_ROI_Y, GE_ROI_X))
@@ -260,7 +260,7 @@ class SPOTGE():
         ## Setup delay generator
         ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
         ## [trigger mode] [5:single shot] [1: Ext rising edge]
-        self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
+        self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, exposure+0.15], [0, 0.001])
 
         if scan_abort:
             Display_status.write("scan aborted - " + tnow)

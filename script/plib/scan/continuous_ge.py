@@ -5,7 +5,7 @@ class CONTGE():
         #print("Continuous scan for greateyes...")
 
         ## variables
-        DEBUG=0
+        DEBUG=False
         initial_frame = 0
         pass_id = 1
         GE_ROI_X = caget("PINK:GEYES:image3:ArraySize0_RBV")
@@ -123,7 +123,7 @@ class CONTGE():
             if DEBUG: log("GE Idle", data_file = False)
 
         ## setup filename
-        set_exec_pars(open=False, name="ge", reset=True)
+        #set_exec_pars(open=False, name="ge", reset=True)
 
         ## save initial scan data
         save_dataset("scan/sample", sample)
@@ -187,20 +187,24 @@ class CONTGE():
                 passpath = "pass"+'{:02d}'.format(pass_id)
                 scan_dir=1
 
+                if DEBUG: print("[DEBUG] pass: {}".format(pass_id))
+
                 ## Setup delay generator
                 ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
                 ## [trigger mode] [5:single shot] [1: Ext rising edge]
-                self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
+                self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, exposure+0.15], [0, 0.001])
 
                 caput("PINK:GEYES:Scan:progress", 0) # Reset pass progress
 
                 ## take GE background image
+                if DEBUG: print("[DEBUG] save BG")
                 self.save_GE_BG(exposure)
+                if DEBUG: print("[DEBUG] save BG. done!")
 
                 ## Setup delay generator
                 ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
                 ## [trigger mode] [5:single shot] [1: Ext rising edge]
-                self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
+                self.setup_delaygen(1, [0, exposure-0.02], [0, 0], [0, exposure+0.15], [0, 0.001])
 
                 ## Setup trigger switch
                 ## A=Delaygen Trigger Source [0:OFF, 1:CCD, 2:mythen, 3:eiger]
@@ -248,7 +252,8 @@ class CONTGE():
                 caput("PINK:GEYES:cam1:AcquireTime", exposure)
                 caput("PINK:GEYES:cam1:NumImages", Ypoints)
                 ##image mode 0:single 1:multiple 2: continuous
-                caput("PINK:GEYES:cam1:ImageMode", 1) # multiple
+                caput("PINK:GEYES:cam1:ImageMode", 1)
+
 
                 ## Move Sec_el_y to start position
                 Sec_el_y_VELO.write(20000)
@@ -269,6 +274,8 @@ class CONTGE():
 
                     Sec_el_y_VELO.write(sample_speed)
                     Sec_el_y.write(ydest)
+
+                    if DEBUG: print("[DEBUG] Start detector")
                     GE_acquire.write(1)
 
                     ## spot loop
@@ -298,7 +305,17 @@ class CONTGE():
                             append_dataset(datasetpath, pd[1].take())
 
                         Progress.write(self.calc_progress(initial_frame, GE_frameID.take(), Xpoints*Ypoints))
+
+                        if DEBUG: print("[DEBUG] point: {}\tframe: {}".format(point_id, GE_frameID.take()))
                         ## end of spot loop
+
+                    ## stop greateyes
+                    if GE_status.read():
+                        GE_acquire.write(0)
+                        if DEBUG: print("[DEBUG] Stop detector")
+                        while(GE_status.read()):
+                            sleep(0.5)
+                        if DEBUG: print("[DEBUG] Stop detector. done!")
 
                     ## Move Sec_el_y to dest position
                     Sec_el_y_STOP.write(1)
@@ -310,6 +327,7 @@ class CONTGE():
                     Sec_el_y_DMOV.waitValueInRange(1, 0.1, 60000)
 
                     scan_dir = abs(scan_dir-1)
+                    if DEBUG: print("[DEBUG] End of line")
                     sleep(linedelay)
                     ## end of line loop
 
@@ -355,10 +373,17 @@ class CONTGE():
         sleep(0.1)
         Sec_el_y_VELO.write(20000)
 
+        ## stop greateyes
+        if GE_status.read():
+            GE_acquire.write(0)
+            if DEBUG: print("[DEBUG] Stop detector")
+            while(GE_status.read()): sleep(0.5)
+            if DEBUG: print("[DEBUG] Stop detector. done!")
+
         ## Setup delay generator
         ## (trigger mode, shutter, Mythen, Greateyes, Caenels)
         ## [trigger mode] [5:single shot] [1: Ext rising edge]
-        self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, 0], [0, 0.001])
+        self.setup_delaygen(5, [0, exposure-0.02], [0, 0], [0, exposure+0.15], [0, 0.001])
 
         ## save final scan time
         save_dataset("scan/end_time", time.ctime())
