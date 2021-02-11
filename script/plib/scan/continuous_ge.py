@@ -219,7 +219,7 @@ class CONTGE():
                 Display_status.write("Continuous scan pass "+ '{:02d}'.format(pass_id) +" / "+ '{:02d}'.format(passes))
 
                 ##   eta_calc(exposure, Ypoints, Xpoints, passes, linedelay)
-                self.eta_calc(exposure, Ypoints, Xpoints, passes, linedelay)
+                self.eta_calc(exposure, Ypoints, Xpoints, (1+passes-pass_id), linedelay)
 
                 initial_frame = GE_frameID.read()
 
@@ -433,7 +433,7 @@ class CONTGE():
     ### ETA calculation
     def eta_calc(self, exposure, Ypoints, Xpoints, passes, linedelay):
         bgtime = 2.881 + exposure*1.087
-        linetime = (Ypoints*(exposure+0.35))+1.7+linedelay
+        linetime = (Ypoints*(exposure+0.3))+1.7+linedelay
         passtime = (Xpoints * linetime) + bgtime
         scantime = passes*passtime
         tnow = time.time()
@@ -498,7 +498,7 @@ class CONTGE():
     def scantime_calc(self, exposure=0, Ypoints=0, Xpoints=0, passes=0, linedelay=0):
         ## greateyes
         bgtime = 2.881 + exposure*1.087
-        linetime = (Ypoints*(exposure+0.35))+1.7+linedelay
+        linetime = (Ypoints*(exposure+0.3))+1.7+linedelay
         passtime = (Xpoints * linetime) + bgtime
         scantime = round(passes*passtime)
         sh = int(scantime/3600.0)

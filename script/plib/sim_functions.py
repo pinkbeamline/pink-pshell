@@ -6,7 +6,7 @@ class SIMFUNC():
         else:
             simdetector=detector
 
-        scantimestr = self.__scantime_calc(exposure=exposure, Ypoints=images, Xpoints=1, passes=1, linedelay=0)
+        scantimestr = self.__scantime_calc(exposure=exposure, Ypoints=images, Xpoints=1, passes=1, linedelay=0, detector=detector)
 
         elab_det = ""
         if simdetector=="eiger":
@@ -54,19 +54,25 @@ class SIMFUNC():
         sample_speed = 50.0/sample_exposure
         x_positions = linspace(X0, X1, float(dX))
         num_lines = len(x_positions)
+
+        if detector=="ge":
+            det_deadtime=[0.4, 0.4]
+        else:
+            det_deadtime=[0.1, 0.001]
+
         if det_exposure == "auto" or det_exposure=="AUTO":
             images_per_line = 1
-            det_exposure = ((abs(Y1-Y0))/sample_speed)-0.1
+            det_exposure = ((abs(Y1-Y0))/sample_speed)-det_deadtime[0]
         else:
-            images_per_line = math.floor((abs(Y1-Y0)/sample_speed)/(det_exposure+0.001))
-        sample_l = images_per_line*(det_exposure+0.001)*sample_speed
+            images_per_line = math.floor((abs(Y1-Y0)/sample_speed)/(det_exposure+det_deadtime[1]))
+        sample_l = images_per_line*(det_exposure+det_deadtime[1])*sample_speed
         effic = sample_l/(abs(Y1-Y0))
 
         Xpoints = num_lines
         Ypoints = images_per_line
         exposure = det_exposure
 
-        scantimestr = self.__scantime_calc(exposure=exposure, Ypoints=Ypoints, Xpoints=Xpoints, passes=passes, linedelay=linedelay)
+        scantimestr = self.__scantime_calc(exposure=exposure, Ypoints=Ypoints, Xpoints=Xpoints, passes=passes, linedelay=linedelay, detector=detector)
 
         print("******************************************* ")
         print("                  Filename:  Simulation")
@@ -86,10 +92,14 @@ class SIMFUNC():
         print("******************************************* ")
         return
 
-    def __scantime_calc(self, exposure=0, Ypoints=0, Xpoints=0, passes=0, linedelay=0):
+    def __scantime_calc(self, exposure=0, Ypoints=0, Xpoints=0, passes=0, linedelay=0, detector=None):
         ## eiger
-        bgtime = 0
-        linetime = (Ypoints*(exposure+0.001))+1.7+linedelay
+        if detector=="ge":
+            bgtime = 2.881 + exposure*1.087
+            linetime = (Ypoints*(exposure+0.3))+1.7+linedelay
+        else:
+            bgtime = 0
+            linetime = (Ypoints*(exposure+0.001))+1.7+linedelay
         passtime = (Xpoints * linetime) + bgtime
         scantime = round(passes*passtime)
         sh = int(scantime/3600.0)

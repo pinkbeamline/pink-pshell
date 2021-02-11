@@ -1,15 +1,17 @@
 print("########## ENERGYCALIBRATION ##########")
 caput("PINK:SMA01:m10.VAL", 5000.) #X
-caput("PINK:SMA01:m9.VAL", -4200) #Y
-scan.spot(detector.greateyes(), exposure=1, images=300, sample='Sb La')
-caput("PINK:SMA01:m9.VAL", -6100) #Y
-scan.spot(detector.greateyes(), exposure=1, images=300, sample='KCl Kb')
+caput("PINK:SMA01:m9.VAL", -3500) #Y
+scan.spot(detector.greateyes(), exposure=5, images=100, sample='Sb La')
+caput("PINK:SMA01:m9.VAL", -5500) #Y
+scan.spot(detector.greateyes(), exposure=2, images=200, sample='KCl Kb')
 
-#scan.continuous(detector.greateyes(), det_exposure=1, sample_exposure=2, X0=4000, X1=6600, dX=750, Y0=-2500, Y1=8050, passes=4, sample='KCl', linedelay=0) 
-scan.continuous(detector.greateyes(), det_exposure=1, sample_exposure=2, X0=-13000, X1=-10500, dX=750, Y0=-7100, Y1=8050, passes=4, sample='KI', linedelay=0) 
-scan.continuous(detector.greateyes(), det_exposure=1, sample_exposure=2, X0=39000, X1=41600, dX=750, Y0=-7100, Y1=8050, passes=4, sample='KBr', linedelay=0) 
-caput("PINK:SMA01:m10.VAL", 22500.) #X
-pink.shutter_hard_CLOSE()
-#caput("PINK:PLCVAC:V11close", 1)
-#caput("PINK:PLCVAC:V10close", 1)
-caput("PINK:GEYES:cam1:Temperature", 20)
+scan.continuous(detector.greateyes(), det_exposure=4, sample_exposure=2, X0=3900, X1=6700, dX=800, Y0=-2100, Y1=8100, passes=2, sample='KCl', linedelay=0)
+scan.continuous(detector.greateyes(), det_exposure=4, sample_exposure=0.5, X0=-13700, X1=-10200, dX=800, Y0=-7000, Y1=8100, passes=6, sample='KBr', linedelay=0)
+scan.continuous(detector.greateyes(), det_exposure=4, sample_exposure=0.5, X0=21900, X1=24800, dX=800, Y0=-7000, Y1=8100, passes=6, sample='KCO3', linedelay=0) 
+print("########## DAMAGE SCAN ##########")
+caput("PINK:SMA01:m9.VAL", 3000.) #Y
+caput("PINK:SMA01:m10.VAL", 40000.) #X
+scan.spot(detector.eiger(), exposure=4., images=125, sample='KI')
+caput("PINK:SMA01:m10.VAL", -12000.) #X
+scan.spot(detector.eiger(), exposure=4., images=125, sample='KBr')
+

@@ -308,7 +308,7 @@ class SPOTGE():
     ### ETA calculation
     def eta_calc(self, exposure, Ypoints, Xpoints, passes, linedelay):
         bgtime = 2.881 + exposure*1.087
-        linetime = (Ypoints*(exposure+0.35))+1.7+linedelay
+        linetime = (Ypoints*(exposure+0.3))+1.7+linedelay
         passtime = (Xpoints * linetime) + bgtime
         scantime = passes*passtime
         tnow = time.time()
@@ -373,7 +373,7 @@ class SPOTGE():
     def scantime_calc(self, exposure=0, Ypoints=0, Xpoints=0, passes=0, linedelay=0):
         ## Greateyes
         bgtime = 2.881 + exposure*1.087
-        linetime = (Ypoints*(exposure+0.35))+1.7+linedelay
+        linetime = (Ypoints*(exposure+0.3))+1.7+linedelay
         passtime = (Xpoints * linetime) + bgtime
         scantime = round(passes*passtime)
         sh = int(scantime/3600.0)
