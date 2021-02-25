@@ -233,48 +233,48 @@ class PINKCLASS():
 
     #### Multi player mirror positioning  ############################################################
     def ml_2300ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
+        run("plib/blsetup_class")
+        ml = BLSETUP()
         ml.set(energy=2300)
 
     def ml_3000ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
+        run("plib/blsetup_class")
+        ml = BLSETUP()
         ml.set(energy=3000)
 
     def ml_4000ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
+        run("plib/blsetup_class")
+        ml = BLSETUP()
         ml.set(energy=4000)
 
-    def ml_5000ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
-        ml.set(energy=5000)
+    def ml_5200ev(self):
+        run("plib/blsetup_class")
+        ml = BLSETUP()
+        ml.set(energy=5200)
 
-    def ml_6300ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
-        ml.set(energy=6300)
+    def ml_5800ev(self):
+        run("plib/blsetup_class")
+        ml = BLSETUP()
+        ml.set(energy=5800)
 
     def ml_6800ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
+        run("plib/blsetup_class")
+        ml = BLSETUP()
         ml.set(energy=6800)
 
     def ml_7300ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
+        run("plib/blsetup_class")
+        ml = BLSETUP()
         ml.set(energy=7300)
 
     def ml_8000ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
+        run("plib/blsetup_class")
+        ml = BLSETUP()
         ml.set(energy=8000)
 
     def ml_9500ev(self):
-        run("plib/mlmirror")
-        ml = MLMIRROR()
+        run("plib/blsetup_class")
+        ml = BLSETUP()
         ml.set(energy=9500)
 
     #### Set eiger background  #################################################
