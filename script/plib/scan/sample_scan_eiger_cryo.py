@@ -86,10 +86,14 @@ class SAMPLESCAN():
         # saving pre scan position
         prescan_pos = MOTOR_RBV.read()
 
+        # Move to first position
         MOTOR.write(positionarray[0])
         # wait up to 3 minutes to reach first position
         sleep(0.25)
         MOTOR_DMOV.waitValueInRange(1, 0.5, 180000)
+
+        # Open fast shutter
+        caput("PINK:PLCGAS:ei_B01", 1)
 
         ## Main loop
         for pos in positionarray:
@@ -107,6 +111,9 @@ class SAMPLESCAN():
             sensor.append(SENSOR.take())
             motor.append(MOTOR_RBV.take())
             p1.getSeries(0).setData(motor, sensor)
+
+        # close fast shutter
+        caput("PINK:PLCGAS:ei_B01", 0)
 
         ## Stop eiger
         if Eiger_status.read():
