@@ -10,7 +10,7 @@ class BLSETUP():
             return
 
         ## create filename
-        fname = "pink-pshell/script/config/e{:d}.py".format(energy)
+        fname = "/home/epics/PShell/pink-pshell/script/config/e{:d}.py".format(energy)
         
         ## load lines from file
         try:

@@ -46,7 +46,7 @@ m2rz        = 2300
 m2deltatx   = 10
 m2deltaty   = 5
 m2deltatz   = 10
-m2deltarx   = 5
+m2deltarx   = 2
 m2deltary   = 10
 m2deltarz   = 10
 ## BPM1 cross
@@ -54,8 +54,8 @@ cross1x     = 633
 cross1y     = 678
 ## BPM2 cross
 cross2x     = 670
-cross2y     = 494
+cross2y     = 493
 ## BPM3 cross
 cross3x     = 558
-cross3y     = 462
+cross3y     = 461
 

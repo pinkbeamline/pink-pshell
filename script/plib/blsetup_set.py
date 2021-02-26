@@ -1,8 +1,7 @@
 class BLSETUPSET():
     def set(self, params, energy):
         print("Set up beamline")
-        print("    energy: {} eV".format(energy))    
-
+        print("    energy: {} eV".format(energy))
         ## gap
         if params.has_key("gap"):
             print("Undulator U17")
@@ -96,7 +95,7 @@ class BLSETUPSET():
             self.__move_au3(params)
 
         ## M2 mirror
-        if params.has_key("m2tx") or params.has_key("m2ty") or params.has_key("m2tz") or params.has_key("m2rx") or params.has_key("m2ry") or params.has_key("m2rz") or params.has_key("poix") or params.has_key("poiy"):
+        if params.has_key("m2group") or params.has_key("m2tx") or params.has_key("m2ty") or params.has_key("m2tz") or params.has_key("m2rx") or params.has_key("m2ry") or params.has_key("m2rz") or params.has_key("poix") or params.has_key("poiy"):
             print("M2 mirror")
             if params.has_key("m2group"):
                 try:
@@ -182,7 +181,7 @@ class BLSETUPSET():
 
         run("plib/blsetup_check")
         blchk = BLSETUPCHECK()
-        #blchk.check_gap(params)
+        blchk.check_gap(params)
         #blchk.check_m1(params)
         #blchk.check_filter(params)
         #blchk.check_au1(params)
@@ -193,14 +192,11 @@ class BLSETUPSET():
         #blchk.check_bpm2(params)
         #blchk.check_bpm2(params)
 
-        return
-
-    ### -------------------------------------------------------------
-
+    
     ### move gap
     def __move_gap(self, params):
         #log("move gap")
-        return
+        #return
         if params.has_key("gap"):
             pos = params["gap"]
             try:
@@ -213,7 +209,6 @@ class BLSETUPSET():
     ### move M1
     def __move_m1(self, params):
         #print("move m1")
-        return
         if params.has_key("m1tx"):
             pos = params["m1tx"]
             if params.has_key("m1deltatx"):
@@ -309,8 +304,8 @@ class BLSETUPSET():
     ### move AU1
     def __move_au1(self, params):
         #print("move au1")
-        return
-        deadband = 0.001
+        #return
+        deadband = 0.002
         if params.has_key("au1centery") and params.has_key("au1gapy"):
             aucenter = params["au1centery"]
             augap = params["au1gapy"]
@@ -348,7 +343,8 @@ class BLSETUPSET():
     ### move AU2
     def __move_au2(self, params):
         #print("move au2")
-        return
+        #return
+        deadband = 0.002
         if params.has_key("au2centery") and params.has_key("au2gapy"):
             aucenter = params["au2centery"]
             augap = params["au2gapy"]
@@ -387,7 +383,8 @@ class BLSETUPSET():
     ### move AU3
     def __move_au3(self, params):
         #print("move au3")
-        return
+        #return
+        deadband = 0.002
         if params.has_key("au3centery") and params.has_key("au3gapy"):
             aucenter = params["au3centery"]
             augap = params["au3gapy"]
@@ -405,9 +402,9 @@ class BLSETUPSET():
                     caput("AUY01U112L:AbsM2", auneg)
             except:
                 log("[BL setup] Error while moving AU3 bottom")              
-        if params.has_key("au2centerx") and params.has_key("au2gapx"):
-            aucenter = params["au2centerx"]
-            augap = params["au2gapx"]
+        if params.has_key("au3centerx") and params.has_key("au3gapx"):
+            aucenter = params["au3centerx"]
+            augap = params["au3gapx"]
             aupos = aucenter+abs(augap/2)
             auneg = aucenter-abs(augap/2)
             try:
@@ -426,7 +423,7 @@ class BLSETUPSET():
    ### move M2 group
     def __move_m2(self, params):
         #print("move m2")
-        return
+        #return
         if params.has_key("m2group"):
             try:
                 groupid = int(params["m2group"])
@@ -443,7 +440,6 @@ class BLSETUPSET():
 
     ## move m2 all
     def __move_m2all(self, params):
-        return
         if params.has_key("m2poix") or params.has_key("m2poiy") or params.has_key("m2tx") or params.has_key("m2ty") or params.has_key("m2tz") or params.has_key("m2rx") or params.has_key("m2ry") or params.has_key("m2rz"):
             try:
                 ## disable "run after value set" {0:ON, 1:OFF}
@@ -559,7 +555,7 @@ class BLSETUPSET():
     ### move BPM1 cross
     def __move_bpm1(self, params):
         #print("move bpm1")
-        return
+        #return
         if params.has_key("cross1x"):
             pos = params["cross1x"]
             try:
@@ -576,7 +572,7 @@ class BLSETUPSET():
     ### move BPM2 cross
     def __move_bpm2(self, params):
         #print("move bpm2")           
-        return
+        #return
         if params.has_key("cross2x"):
             pos = params["cross2x"]
             try:
@@ -593,7 +589,7 @@ class BLSETUPSET():
     ### move BPM3 cross
     def __move_bpm3(self, params):
         #print("move bpm3")    
-        return
+        #return
         if params.has_key("cross3x"):
             pos = params["cross3x"]
             try:

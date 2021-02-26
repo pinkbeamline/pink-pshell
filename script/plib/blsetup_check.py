@@ -1,9 +1,8 @@
 class BLSETUPCHECK():
     def check_gap(self, params):
-        #return
         if params.has_key("gap"):
             pos = params["gap"]
-            motor_deadband = 0.02
+            motor_deadband = 0.01
             status="error"
             isworking=True
             try:
@@ -260,7 +259,7 @@ class BLSETUPCHECK():
             print("{0:.<17}[{1:^6}]".format("AU3",status))
 
     def check_m2(self, params):
-        if params.has_key("m2group") or params.has_key("m2poix") or params.has_key("m2poiy") or params.has_key("m2tx") or params.has_key("m2ty") or params.has_key("m2tz") or params.has_key("m2rx") or params.has_key("m2ry") or params.has_key("m2rz")
+        if params.has_key("m2group") or params.has_key("m2poix") or params.has_key("m2poiy") or params.has_key("m2tx") or params.has_key("m2ty") or params.has_key("m2tz") or params.has_key("m2rx") or params.has_key("m2ry") or params.has_key("m2rz"):
             status = "OK"
             if params.has_key("m2group"):
                 try:

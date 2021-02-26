@@ -34,7 +34,7 @@ au3gapy     =
 au3gapx     =
 ## M2 positions
 # group options: 1,2 or 3
-m2group     = 1
+m2group     = 2
 m2poix      =
 m2poiy      =
 m2tx        = 
