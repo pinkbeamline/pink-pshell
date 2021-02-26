@@ -246,9 +246,10 @@ class CONTEIGER():
                 create_dataset("passes/"+passpath+"/station/tfy", 'd', False)
                 create_dataset("passes/"+passpath+"/station/ring_current", 'd', False)
                 create_dataset("passes/"+passpath+"/timestamps", 'd', False)
-                create_dataset("passes/"+passpath+"/positioners/sec_el_x", 'd', False)
-                create_dataset("passes/"+passpath+"/positioners/sec_el_y", 'd', False)
-
+                #create_dataset("passes/"+passpath+"/positioners/sec_el_x", 'd', False)
+                #create_dataset("passes/"+passpath+"/positioners/sec_el_y", 'd', False)
+                create_dataset("passes/"+passpath+"/positioners/sec_el_x", 'd', False, (0, 2))
+                create_dataset("passes/"+passpath+"/positioners/sec_el_y", 'd', False, (0, 2))
                 ## create pressure dataset
                 for pd in pdev:
                     datasetpath = "passes/"+passpath+"/station/pressure/"+pd[0]
@@ -278,8 +279,12 @@ class CONTEIGER():
 
                     ## spot loop
                     for point_id in range(int(Ypoints)):
-                        append_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.take())
-                        append_dataset("passes/"+passpath+"/positioners/sec_el_y", Sec_el_y_RBV.take())
+                        sposx = [0,0]
+                        sposy = [0,0]
+                        sposx[0]=Sec_el_x_RBV.take()                        
+                        sposy[0]=Sec_el_y_RBV.take()                    
+                        #append_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.take())
+                        #append_dataset("passes/"+passpath+"/positioners/sec_el_y", Sec_el_y_RBV.take())
                         Frame_countdown.write(100) # Initiate frame countdown
                         Eiger_Spectra.waitCacheChange(int((exposure*1000)+10000))
                         sleep(0.01)
@@ -293,8 +298,12 @@ class CONTEIGER():
                         append_dataset("passes/"+passpath+"/station/tfy", TFY.take())
                         append_dataset("passes/"+passpath+"/station/ring_current", Ring_current.take())
                         append_dataset("passes/"+passpath+"/timestamps", Eiger_frameID.getTimestampNanos())
-                        append_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.take())
-                        append_dataset("passes/"+passpath+"/positioners/sec_el_y", Sec_el_y_RBV.take())
+                        #append_dataset("passes/"+passpath+"/positioners/sec_el_x", Sec_el_x_RBV.take())
+                        #append_dataset("passes/"+passpath+"/positioners/sec_el_y", Sec_el_y_RBV.take())
+                        sposx[1]=Sec_el_x_RBV.take()
+                        sposy[1]=Sec_el_y_RBV.take()
+                        append_dataset("passes/"+passpath+"/positioners/sec_el_x", to_array(sposx, 'd'))
+                        append_dataset("passes/"+passpath+"/positioners/sec_el_y", to_array(sposy, 'd'))                        
                         ## append to pressure devices
                         for pd in pdev:
                             datasetpath = "passes/"+passpath+"/station/pressure/"+pd[0]

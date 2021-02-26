@@ -271,50 +271,27 @@ class BLSETUPCHECK():
                         if actualpos!=pos:
                             status = "error"
                             log("[BL setup] Error on M2 mirror group") 
-                        else:
-                            self.__move_m2all(params)
                 except:
                     log("[BL setup] Error while checking M2 mirror group") 
 
-        ## wait for end of motion
-        ## check positions
-        
-        print("{0:.<17}[{1:^6}]".format("M2",status))
-
-    def check_bpm1(self, params):
-        status = "OK"
-        print("{0:.<17}[{1:^6}]".format("BPM1",status))
-
-    def check_bpm2(self, params):
-        status = "OK"
-        print("{0:.<17}[{1:^6}]".format("BPM2",status))
-
-    def check_bpm3(self, params):
-        status = "OK"
-        print("{0:.<17}[{1:^6}]".format("BPM3",status))
-
-
-    ## move m2 all
-    def __move_m2all(self, params):
-        if params.has_key("m2poix") or params.has_key("m2poiy") or params.has_key("m2tx") or params.has_key("m2ty") or params.has_key("m2tz") or params.has_key("m2rx") or params.has_key("m2ry") or params.has_key("m2rz"):
-            try:
-                ## disable "run after value set" {0:ON, 1:OFF}
-                caput("HEX2OS12L:hexapod:mbboRunAfterValue", 1)
-            except:
-                log("[BL setup] Error while setting run immediatly option OFF")
-                 
             if params.has_key("m2poix"):
                 pos = params["m2poix"]
                 try:
-                    caput("HEX2OS12L:multiaxis:setPOIx", pos)
+                    rbvpos = caget("HEX2OS12L:multiaxis:getPOIx")
+                    if rbvpos!=pos:
+                        status = "error"
+                        log("[BL setup] M2 POI X does not match")
                 except:
-                    log("[BL setup] Error while setting M2 POI X")
+                    log("[BL setup] Error while checking M2 POI X")
             if params.has_key("m2poiy"):
                 pos = params["m2poiy"]
                 try:
-                    caput("HEX2OS12L:multiaxis:setPOIy", pos)
+                    rbvpos = caget("HEX2OS12L:multiaxis:getPOIy")
+                    if rbvpos!=pos:
+                        status = "error"
+                        log("[BL setup] M2 POI Y does not match")
                 except:
-                    log("[BL setup] Error while setting M2 POI Y") 
+                    log("[BL setup] Error while checking M2 POI Y")
                     
             if params.has_key("m2tx"):
                 pos = params["m2tx"]
@@ -326,9 +303,10 @@ class BLSETUPCHECK():
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseX")
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseX", pos)
+                        status = "error"
+                        log("[BL setup] M2 Tx does not match")
                 except:
-                    log("[BL setup] Error while moving M2 Tx")
+                    log("[BL setup] Error checking moving M2 Tx")                    
             if params.has_key("m2ty"):
                 pos = params["m2ty"]
                 if params.has_key("m2deltaty"):
@@ -339,9 +317,10 @@ class BLSETUPCHECK():
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseY")
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseY", pos)
+                        status = "error"
+                        log("[BL setup] M2 Ty does not match")
                 except:
-                    log("[BL setup] Error while moving M2 Ty") 
+                    log("[BL setup] Error checking moving M2 Ty")
             if params.has_key("m2tz"):
                 pos = params["m2tz"]
                 if params.has_key("m2deltatz"):
@@ -352,9 +331,10 @@ class BLSETUPCHECK():
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseZ")
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseZ", pos)
+                        status = "error"
+                        log("[BL setup] M2 Tz does not match")
                 except:
-                    log("[BL setup] Error while moving M2 Tz")
+                    log("[BL setup] Error checking moving M2 Tz")
             if params.has_key("m2rx"):
                 pos = params["m2rx"]
                 if params.has_key("m2deltarx"):
@@ -365,9 +345,10 @@ class BLSETUPCHECK():
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseA")
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseA", pos)
+                        status = "error"
+                        log("[BL setup] M2 Rx does not match")
                 except:
-                    log("[BL setup] Error while moving M2 Rx")                     
+                    log("[BL setup] Error checking moving M2 Rx")                      
             if params.has_key("m2ry"):
                 pos = params["m2ry"]
                 if params.has_key("m2deltary"):
@@ -378,10 +359,11 @@ class BLSETUPCHECK():
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseB")
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseB", pos)
+                        status = "error"
+                        log("[BL setup] M2 Ry does not match")
                 except:
-                    log("[BL setup] Error while moving M2 Ry")                    
-            if params.has_key("m2rz"):
+                    log("[BL setup] Error checking moving M2 Ry")
+            if params.has_key("m2rx"):
                 pos = params["m2rz"]
                 if params.has_key("m2deltarz"):
                     dpos = params["m2deltarz"]
@@ -391,20 +373,76 @@ class BLSETUPCHECK():
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseC")
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseC", pos)
+                        status = "error"
+                        log("[BL setup] M2 Rz does not match")
                 except:
-                    log("[BL setup] Error while moving M2 Rz")
+                    log("[BL setup] Error checking moving M2 Rz")     
+                    
+        print("{0:.<17}[{1:^6}]".format("M2",status))
 
-            ## execute target pose
-            sleep(1)
+    def check_bpm1(self, params):
+        status = "OK"
+        if params.has_key("cross1x"):
+            pos = params["cross1x"]
             try:
-                caput("HEX2OS12L:multiaxis:run", 1)
+                rbvpos = caget("PINK:PG01:Over1:5:CenterX_RBV")
+                if rbvpos!=pos:
+                    status = "error"
+                    log("[BL setup] BPM1 cross X does not match")
             except:
-                log("[BL setup] Error while executing M2 move all")
-            sleep(1)
+                log("[BL setup] Error while checking BPM 1 cross X")
+        if params.has_key("cross1y"):
+            pos = params["cross1y"]
             try:
-                ## enable "run after value set" {0:ON, 1:OFF}
-                caput("HEX2OS12L:hexapod:mbboRunAfterValue", 0)
+                rbvpos = caget("PINK:PG01:Over1:5:CenterY_RBV")
+                if rbvpos!=pos:
+                    status = "error"
+                    log("[BL setup] BPM1 cross Y does not match")
             except:
-                log("[BL setup] Error while setting M2 run immediatly option ON")          
-    
+                log("[BL setup] Error while checking BPM 1 cross Y")
+        print("{0:.<17}[{1:^6}]".format("BPM1",status))
+
+    def check_bpm2(self, params):
+        status = "OK"
+        if params.has_key("cross2x"):
+            pos = params["cross2x"]
+            try:
+                rbvpos = caget("PINK:PG04:Over1:5:CenterX_RBV")
+                if rbvpos!=pos:
+                    status = "error"
+                    log("[BL setup] BPM2 cross X does not match")
+            except:
+                log("[BL setup] Error while checking BPM 2 cross X")
+        if params.has_key("cross2y"):
+            pos = params["cross2y"]
+            try:
+                rbvpos = caget("PINK:PG04:Over1:5:CenterY_RBV")
+                if rbvpos!=pos:
+                    status = "error"
+                    log("[BL setup] BPM2 cross Y does not match")
+            except:
+                log("[BL setup] Error while checking BPM 2 cross Y")        
+        print("{0:.<17}[{1:^6}]".format("BPM2",status))
+
+    def check_bpm3(self, params):
+        status = "OK"
+        if params.has_key("cross3x"):
+            pos = params["cross3x"]
+            try:
+                rbvpos = caget("PINK:PG03:Over1:5:CenterX_RBV")
+                if rbvpos!=pos:
+                    status = "error"
+                    log("[BL setup] BPM3 cross X does not match")
+            except:
+                log("[BL setup] Error while checking BPM 3 cross X")
+        if params.has_key("cross3y"):
+            pos = params["cross3y"]
+            try:
+                rbvpos = caget("PINK:PG03:Over1:5:CenterY_RBV")
+                if rbvpos!=pos:
+                    status = "error"
+                    log("[BL setup] BPM3 cross Y does not match")
+            except:
+                log("[BL setup] Error while checking BPM 3 cross Y")          
+        print("{0:.<17}[{1:^6}]".format("BPM3",status))
+

@@ -2,19 +2,6 @@
 energy      = 6800
 ## Undulator gap
 gap         = 
-## M1 positions
-m1tx        = 
-m1ty        = 
-m1rx        = 
-m1ry        = 
-m1rz        = 
-## M1 delta values
-m1deltatx   = 
-m1deltaty   = 
-m1deltatz   = 
-m1deltarx   = 
-m1deltary   = 
-m1deltarz   = 
 ## foil filter: 0,5,10,20
 foil        =
 ## AU1
