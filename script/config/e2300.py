@@ -1,11 +1,11 @@
 ### Energy group ####
 energy      = 2300
 ## Undulator gap
-gap         = 
+#gap         = 21.5
 ## foil filter: 0,5,10,20
 foil        =
 ## AU1
-au1centery  =
+au1centery  = 
 au1centerx  =
 au1gapy     =
 au1gapx     =
@@ -21,7 +21,7 @@ au3gapy     =
 au3gapx     =
 ## M2 positions
 # group options: 1,2 or 3
-m2group     = 1
+m2group     = 2
 m2poix      =
 m2poiy      =
 m2tx        = 

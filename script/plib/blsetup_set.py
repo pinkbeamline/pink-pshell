@@ -5,13 +5,16 @@ class BLSETUPSET():
 
         ## Set filter calculation energy
         self.__setenergy(energy)
+
+        ## Send DCM and PGM home
+        self.__dcm_pgm_home()
         
         ## gap
         if params.has_key("gap"):
             print("Undulator U17")
             print("    gap: {} mm".format(params["gap"]))
             # move motors
-            #self.__move_gap(params)
+            self.__move_gap(params)
 
         ## M1 mirror
         if params.has_key("m1tx") or params.has_key("m1ty") or params.has_key("m1rx") or params.has_key("m1ry") or params.has_key("m1rz"):
@@ -25,7 +28,7 @@ class BLSETUPSET():
             if params.has_key("m1ty"):
                 if params.has_key("m1deltaty"): 
                     delta = "+- {}".format(params["m1deltaty"]) 
-                else: 
+                else:
                     delta = ""
                 print("    Ty: {} um {}".format(params["m1ty"], delta))
             if params.has_key("m1rx"):
@@ -47,14 +50,14 @@ class BLSETUPSET():
                     delta = ""             
                 print("    Rz: {} um {}".format(params["m1rz"], delta))
             ## move motors
-            #self.__move_m1(params)
+            self.__move_m1(params)
 
         ## filter foil
         if params.has_key("foil"):
             print("Filter foil")
             print("    filter: {} um C".format(params["foil"]))
             ## move motors
-            #self.__move_filter(params)            
+            self.__move_filter(params)            
 
         ## AU1 aperture
         if params.has_key("au1centery") or params.has_key("au1centerx") or params.has_key("au1gapy") or params.has_key("au1gapx"):
@@ -68,7 +71,7 @@ class BLSETUPSET():
             if params.has_key("au1gapx"):   
                 print("    gap X: {} mm".format(params["au1gapx"]))
             ## move motors
-            #self.__move_au1(params)
+            self.__move_au1(params)
             
         ## AU2 aperture
         if params.has_key("au2centery") or params.has_key("au2centerx") or params.has_key("au2gapy") or params.has_key("au2gapx"):
@@ -82,7 +85,7 @@ class BLSETUPSET():
             if params.has_key("au2gapx"):   
                 print("    gap X: {} mm".format(params["au2gapx"]))
             ## move motors
-            #self.__move_au2(params)
+            self.__move_au2(params)
 
         ## AU3 aperture
         if params.has_key("au3centery") or params.has_key("au3centerx") or params.has_key("au3gapy") or params.has_key("au3gapx"):
@@ -96,7 +99,7 @@ class BLSETUPSET():
             if params.has_key("au3gapx"):   
                 print("    gap X: {} mm".format(params["au3gapx"]))
             ## move motors
-            #self.__move_au3(params)
+            self.__move_au3(params)
 
         ## M2 mirror
         if params.has_key("m2group") or params.has_key("m2tx") or params.has_key("m2ty") or params.has_key("m2tz") or params.has_key("m2rx") or params.has_key("m2ry") or params.has_key("m2rz") or params.has_key("poix") or params.has_key("poiy"):
@@ -149,7 +152,7 @@ class BLSETUPSET():
                     delta = ""             
                 print("    Rz: {} um {}".format(params["m2rz"], delta))
             ## move motors
-            #self.__move_m2(params)
+            self.__move_m2(params)
 
         ## BPM1 cross position
         if params.has_key("cross1x") or params.has_key("cross1y"):
@@ -189,6 +192,7 @@ class BLSETUPSET():
         blchk.check_gap(params)
         blchk.check_m1(params)
         blchk.check_filter(params)
+        blchk.check_dcm_pgm(params)
         blchk.check_au1(params)
         blchk.check_au2(params)
         blchk.check_au3(params)
@@ -353,6 +357,8 @@ class BLSETUPSET():
                     return
                 rbvposid = caget("u171dcm1:PH_2_GETN", type='i')
                 if rbvposid!=posid:
+                    caput("u171dcm1:PH_2_GON", 0)
+                    sleep(2)
                     caput("u171dcm1:PH_2_GON", posid)
             except:
                 log("[BL setup] Error while moving foil")
@@ -491,10 +497,10 @@ class BLSETUPSET():
                     if actualpos!=pos:
                         caput("HEX2OS12L:hexapod:mbboMirrorChoicerRun", pos)
                         self.__m2wait()
-            except:
+            except Exception, errmsg:
                 log("[BL setup] Error while setting M2 mirror group")
+                log(errmsg)
                 
-        ## set M2 pose
         if params.has_key("m2poix") or params.has_key("m2poiy") or params.has_key("m2tx") or params.has_key("m2ty") or params.has_key("m2tz") or params.has_key("m2rx") or params.has_key("m2ry") or params.has_key("m2rz"):
             m2execute = False
             try:
@@ -508,12 +514,14 @@ class BLSETUPSET():
                 pos = params["m2poix"]
                 try:
                     caput("HEX2OS12L:multiaxis:setPOIx", pos)
+                    sleep(1)
                 except:
                     log("[BL setup] Error while setting M2 POI X")
             if params.has_key("m2poiy"):
                 pos = params["m2poiy"]
                 try:
                     caput("HEX2OS12L:multiaxis:setPOIy", pos)
+                    sleep(1)
                 except:
                     log("[BL setup] Error while setting M2 POI Y") 
                     
@@ -528,6 +536,7 @@ class BLSETUPSET():
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
                         caput("HEX2OS12L:hexapod:setPoseX", pos)
+                        sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Tx")
@@ -542,6 +551,7 @@ class BLSETUPSET():
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
                         caput("HEX2OS12L:hexapod:setPoseY", pos)
+                        sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Ty") 
@@ -556,6 +566,7 @@ class BLSETUPSET():
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
                         caput("HEX2OS12L:hexapod:setPoseZ", pos)
+                        sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Tz")
@@ -570,6 +581,7 @@ class BLSETUPSET():
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
                         caput("HEX2OS12L:hexapod:setPoseA", pos)
+                        sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Rx")                     
@@ -584,6 +596,7 @@ class BLSETUPSET():
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
                         caput("HEX2OS12L:hexapod:setPoseB", pos)
+                        sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Ry")                    
@@ -598,6 +611,7 @@ class BLSETUPSET():
                     errpos = abs(rbvpos-pos)
                     if errpos>dpos:
                         caput("HEX2OS12L:hexapod:setPoseC", pos)
+                        sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Rz")
@@ -607,6 +621,7 @@ class BLSETUPSET():
             if m2execute:
                 try:
                     caput("HEX2OS12L:multiaxis:run", 1)
+                    self.__m2wait()
                 except:
                     log("[BL setup] Error while executing M2 move all")
                 sleep(1)
@@ -632,7 +647,7 @@ class BLSETUPSET():
                 caput("PINK:PG01:Over1:5:CenterY", pos)
             except:
                 log("[BL setup] Error while setting BPM 1 cross Y")
-                
+        sleep(0.5)
     ### move BPM2 cross
     def __move_bpm2(self, params):
         #print("move bpm2")           
@@ -649,7 +664,7 @@ class BLSETUPSET():
                 caput("PINK:PG04:Over1:5:CenterY", pos)
             except:
                 log("[BL setup] Error while setting BPM 2 cross Y")
-                
+        sleep(0.5)                
     ### move BPM3 cross
     def __move_bpm3(self, params):
         #print("move bpm3")    
@@ -666,6 +681,7 @@ class BLSETUPSET():
                 caput("PINK:PG03:Over1:5:CenterY", pos)
             except:
                 log("[BL setup] Error while setting BPM 3 cross Y")
+        sleep(0.5)                
 
     ### -----------------------------------------------------------------------------
 
@@ -687,14 +703,38 @@ class BLSETUPSET():
                 donecount+=1
             else:
                 donecount=0
-            sleep(2)
+            sleep(1)
 
-def __m2wait(self):
-    donecount=0
-    while(donecount<=2):
-        m2running = int(caget("HEX2OS12L:multiaxis:running"))
-        if m2running:
-            donecount=0
-        else:
-            donecount+=1
-        sleep(1)   
+    def __m2wait(self):
+        #log("[BL Setup] Waiting M2...")
+        set_status("Waiting for M2 to finish motion...")
+        donecount=0
+        while(donecount<=2):
+            m2running = int(caget("HEX2OS12L:multiaxis:running"))
+            if m2running:
+                donecount=0
+            else:
+                donecount+=1
+            sleep(1)   
+        #log("[BL Setup] Done Waiting M2.")
+        set_status("Running...")
+
+
+    ## Send DCM and PGM home
+    def __dcm_pgm_home(self):
+        # dcm {0:--, 4:home}
+        try:
+            caput("u171dcm1:PH_0_GON", 0)
+            sleep(2)
+            caput("u171dcm1:PH_0_GON", 4)
+        except:
+            log("[BL Setup] Error settting DCM position")
+        # pgm {0:--, 2:home}
+        try:
+            caput("u171pgm1:PH_0_GON", 0)
+            sleep(2)
+            caput("u171dcm1:PH_0_GON", 2)
+        except:
+            log("[BL Setup] Error settting PGM position")            
+            
+            

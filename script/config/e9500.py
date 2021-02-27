@@ -1,7 +1,7 @@
 ### Energy group ####
 energy      = 9500
 ## Undulator gap
-gap         = 6.03
+#gap         = 6.03
 ## foil filter: 0,5,10,20
 foil        = 20
 ## AU1
@@ -34,7 +34,7 @@ m2rz        = 2350
 m2deltatx   = 10
 m2deltaty   = 5
 m2deltatz   = 10
-m2deltarx   = 5
+m2deltarx   = 10
 m2deltary   = 10
 m2deltarz   = 10
 ## BPM1 cross

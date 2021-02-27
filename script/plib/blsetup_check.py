@@ -25,9 +25,34 @@ class BLSETUPCHECK():
                 log("[BL setup] Error while moving undulator")        
             print("{0:.<17}[{1:^6}]".format("gap",status))
 
+    def check_dcm_pgm(self, params):
+        # DCM
+        if caget("u171dcm1:axis6:running", type='i'):
+            set_status("Waiting for DCM to finish motion...")
+            while(caget("u171dcm1:axis6:running", type='i')):
+                sleep(1)
+            set_status("Running...")
+        posid = caget("u171dcm1:PH_0_GETN", type='i')
+        if posid==4:
+            status="OK"
+        else:
+            status="error"
+        print("{0:.<17}[{1:^6}]".format("DCM",status))
+        # PGM
+        if caget("u171pgm1:axis3:running", type='i'):
+            set_status("Waiting for PGM to finish motion...")
+            while(caget("u171pgm1:axis3:running", type='i')):
+                sleep(1)
+            set_status("Running...")
+        posid = caget("u171pgm1:PH_0_GETN", type='i')
+        if posid==2:
+            status="OK"
+        else:
+            status="error"
+        print("{0:.<17}[{1:^6}]".format("PGM",status))        
+            
     def check_m1(self, params):
         #return
-        status="OK"
         if params.has_key("m1tx") or params.has_key("m1ty") or params.has_key("m1rx") or params.has_key("m1ry") or params.has_key("m1rz"):
             status="OK"
             if params.has_key("m1tx"):
@@ -127,6 +152,10 @@ class BLSETUPCHECK():
                 else:
                     return
                 rbvposid = caget("u171dcm1:PH_2_GETN", type='i')
+                set_status("Waiting for filter foil to finish motion...")
+                while(caget("u171dcm1:axis8:running", type='i')):
+                    sleep(1)
+                set_status("Running...")
                 if rbvposid!=posid:
                     log("[BL setup] Error on filter position")
                 else:
@@ -164,15 +193,25 @@ class BLSETUPCHECK():
             if params.has_key("au1gapy"):
                 pos = params["au1gapy"]
                 try:
-                    caput("PINK:AU1:apertureY", pos)
+                    rbvpos = caget("PINK:AU1:apertureY_RBV")
+                    err=abs(rbvpos-pos)
+                    if err>dead_band:
+                        status="error"
+                        log("[BL setup] Error on AU1 gap Y")
                 except:
-                    log("[BL setup] Error while moving AU1 aperture Y")
+                    status="error"
+                    log("[BL setup] Error while checking AU1 gap Y")
             if params.has_key("au1gapx"):
                 pos = params["au1gapx"]
                 try:
-                    caput("PINK:AU1:apertureX", pos)
+                    rbvpos = caget("PINK:AU1:apertureX_RBV")
+                    err=abs(rbvpos-pos)
+                    if err>dead_band:
+                        status="error"
+                        log("[BL setup] Error on AU1 gap X")
                 except:
-                    log("[BL setup] Error while moving AU1 aperture X")
+                    status="error"
+                    log("[BL setup] Error while checking AU1 gap X")
                     
             print("{0:.<17}[{1:^6}]".format("AU1",status))
 
@@ -205,15 +244,25 @@ class BLSETUPCHECK():
             if params.has_key("au2gapy"):
                 pos = params["au2gapy"]
                 try:
-                    caput("PINK:AU2:apertureY", pos)
+                    rbvpos = caget("PINK:AU2:apertureY_RBV")
+                    err=abs(rbvpos-pos)
+                    if err>dead_band:
+                        status="error"
+                        log("[BL setup] Error on AU2 gap Y")
                 except:
-                    log("[BL setup] Error while moving AU2 aperture Y")
+                    status="error"
+                    log("[BL setup] Error while checking AU2 gap Y")
             if params.has_key("au2gapx"):
                 pos = params["au2gapx"]
                 try:
-                    caput("PINK:AU2:apertureX", pos)
+                    rbvpos = caget("PINK:AU2:apertureX_RBV")
+                    err=abs(rbvpos-pos)
+                    if err>dead_band:
+                        status="error"
+                        log("[BL setup] Error on AU2 gap X")
                 except:
-                    log("[BL setup] Error while moving AU2 aperture X")
+                    status="error"
+                    log("[BL setup] Error while checking AU2 gap X")
                     
             print("{0:.<17}[{1:^6}]".format("AU2",status))
 
@@ -246,15 +295,25 @@ class BLSETUPCHECK():
             if params.has_key("au3gapy"):
                 pos = params["au3gapy"]
                 try:
-                    caput("PINK:AU3:apertureY", pos)
+                    rbvpos = caget("PINK:AU3:apertureY_RBV")
+                    err=abs(rbvpos-pos)
+                    if err>dead_band:
+                        status="error"
+                        log("[BL setup] Error on AU3 gap Y")
                 except:
-                    log("[BL setup] Error while moving AU3 aperture Y")
+                    status="error"
+                    log("[BL setup] Error while checking AU3 gap Y")
             if params.has_key("au3gapx"):
                 pos = params["au3gapx"]
                 try:
-                    caput("PINK:AU3:apertureX", pos)
+                    rbvpos = caget("PINK:AU3:apertureX_RBV")
+                    err=abs(rbvpos-pos)
+                    if err>dead_band:
+                        status="error"
+                        log("[BL setup] Error on AU3 gap X")
                 except:
-                    log("[BL setup] Error while moving AU3 aperture X")
+                    status="error"
+                    log("[BL setup] Error while checking AU3 gap X")
                     
             print("{0:.<17}[{1:^6}]".format("AU3",status))
 
@@ -378,71 +437,75 @@ class BLSETUPCHECK():
                 except:
                     log("[BL setup] Error checking moving M2 Rz")     
                     
-        print("{0:.<17}[{1:^6}]".format("M2",status))
+            print("{0:.<17}[{1:^6}]".format("M2",status))
 
     def check_bpm1(self, params):
-        status = "OK"
-        if params.has_key("cross1x"):
-            pos = params["cross1x"]
-            try:
-                rbvpos = caget("PINK:PG01:Over1:5:CenterX_RBV")
-                if rbvpos!=pos:
-                    status = "error"
-                    log("[BL setup] BPM1 cross X does not match")
-            except:
-                log("[BL setup] Error while checking BPM 1 cross X")
-        if params.has_key("cross1y"):
-            pos = params["cross1y"]
-            try:
-                rbvpos = caget("PINK:PG01:Over1:5:CenterY_RBV")
-                if rbvpos!=pos:
-                    status = "error"
-                    log("[BL setup] BPM1 cross Y does not match")
-            except:
-                log("[BL setup] Error while checking BPM 1 cross Y")
-        print("{0:.<17}[{1:^6}]".format("BPM1",status))
+        if params.has_key("cross1x") or params.has_key("cross1y"):
+            status = "OK"
+            if params.has_key("cross1x"):
+                pos = params["cross1x"]
+                try:
+                    rbvpos = caget("PINK:PG01:Over1:5:CenterX_RBV")
+                    if rbvpos!=pos:
+                        status = "error"
+                        log("[BL setup] BPM1 cross X does not match")
+                except:
+                    log("[BL setup] Error while checking BPM 1 cross X")
+            if params.has_key("cross1y"):
+                pos = params["cross1y"]
+                try:
+                    rbvpos = caget("PINK:PG01:Over1:5:CenterY_RBV")
+                    if rbvpos!=pos:
+                        status = "error"
+                        log("[BL setup] BPM1 cross Y does not match")
+                except:
+                    log("[BL setup] Error while checking BPM 1 cross Y")
+            print("{0:.<17}[{1:^6}]".format("BPM1",status))
 
     def check_bpm2(self, params):
-        status = "OK"
-        if params.has_key("cross2x"):
-            pos = params["cross2x"]
-            try:
-                rbvpos = caget("PINK:PG04:Over1:5:CenterX_RBV")
-                if rbvpos!=pos:
-                    status = "error"
-                    log("[BL setup] BPM2 cross X does not match")
-            except:
-                log("[BL setup] Error while checking BPM 2 cross X")
-        if params.has_key("cross2y"):
-            pos = params["cross2y"]
-            try:
-                rbvpos = caget("PINK:PG04:Over1:5:CenterY_RBV")
-                if rbvpos!=pos:
-                    status = "error"
-                    log("[BL setup] BPM2 cross Y does not match")
-            except:
-                log("[BL setup] Error while checking BPM 2 cross Y")        
-        print("{0:.<17}[{1:^6}]".format("BPM2",status))
+        if params.has_key("cross2x") or params.has_key("cross2y"):
+            status = "OK"
+            if params.has_key("cross2x"):
+                pos = params["cross2x"]
+                try:
+                    rbvpos = caget("PINK:PG04:Over1:5:CenterX_RBV")
+                    if rbvpos!=pos:
+                        status = "error"
+                        log("[BL setup] BPM2 cross X does not match")
+                except:
+                    log("[BL setup] Error while checking BPM 2 cross X")
+            if params.has_key("cross2y"):
+                pos = params["cross2y"]
+                try:
+                    rbvpos = caget("PINK:PG04:Over1:5:CenterY_RBV")
+                    if rbvpos!=pos:
+                        status = "error"
+                        log("[BL setup] BPM2 cross Y does not match")
+                except:
+                    log("[BL setup] Error while checking BPM 2 cross Y")        
+            print("{0:.<17}[{1:^6}]".format("BPM2",status))
 
     def check_bpm3(self, params):
-        status = "OK"
-        if params.has_key("cross3x"):
-            pos = params["cross3x"]
-            try:
-                rbvpos = caget("PINK:PG03:Over1:5:CenterX_RBV")
-                if rbvpos!=pos:
-                    status = "error"
-                    log("[BL setup] BPM3 cross X does not match")
-            except:
-                log("[BL setup] Error while checking BPM 3 cross X")
-        if params.has_key("cross3y"):
-            pos = params["cross3y"]
-            try:
-                rbvpos = caget("PINK:PG03:Over1:5:CenterY_RBV")
-                if rbvpos!=pos:
-                    status = "error"
-                    log("[BL setup] BPM3 cross Y does not match")
-            except:
-                log("[BL setup] Error while checking BPM 3 cross Y")          
-        print("{0:.<17}[{1:^6}]".format("BPM3",status))
+        if params.has_key("cross3x") or params.has_key("cross3y"):
+            status = "OK"
+            if params.has_key("cross3x"):
+                pos = params["cross3x"]
+                try:
+                    rbvpos = caget("PINK:PG03:Over1:5:CenterX_RBV")
+                    if rbvpos!=pos:
+                        status = "error"
+                        log("[BL setup] BPM3 cross X does not match")
+                except:
+                    log("[BL setup] Error while checking BPM 3 cross X")
+            if params.has_key("cross3y"):
+                pos = params["cross3y"]
+                try:
+                    rbvpos = caget("PINK:PG03:Over1:5:CenterY_RBV")
+                    if rbvpos!=pos:
+                        status = "error"
+                        log("[BL setup] BPM3 cross Y does not match")
+                except:
+                    log("[BL setup] Error while checking BPM 3 cross Y")          
+            print("{0:.<17}[{1:^6}]".format("BPM3",status))
 
+    
