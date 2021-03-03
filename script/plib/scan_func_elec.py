@@ -180,6 +180,15 @@ class SCANFUNC():
         gapscan.scan(source, start=start, end=end, step=step, exposure=exposure, fit=False)
         del gapscan
 
+    def dcm(self, source, start=0, end=0, step=0, exposure=1):
+        if isinstance(source, SOURCES):
+            print("!! Please use source. to see list of options !!")
+            return
+        run("plib/dcm_scans.py")
+        dcmscan = DCMSCAN()
+        dcmscan.scan(source, start=start, end=end, step=step, exposure=exposure, fit=False)
+        del dcmscan
+
     def sample_scan(self, axis, detector, start=0, end=0, step=0, exposure=1):
         if isinstance(axis, SAMPLEAXIS):
             print('!! Please use "axis." to see list of options !!')
