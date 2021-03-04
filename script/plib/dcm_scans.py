@@ -10,8 +10,8 @@ class DCMSCAN():
 
     def scan(self, source, start=0, end=0, step=0, exposure=0.0, fit=False):
         #print(source)
-        print("* DCM scan *")
-        return
+        #print("* DCM scan *")
+        #return
         
         if exposure==0:
             print("abort: exposure = 0")
@@ -44,11 +44,11 @@ class DCMSCAN():
         #MOTOR_RBV.setMonitored(True)
         #motor_deadband = 0.02
 
-        #MOTOR = create_channel_device("u171dcm1:monoSetEnergy")
-        #MOTOR_RBV = create_channel_device("u171dcm1:monoGetEnergy")
-        #MOTOR_RBV.setMonitored(True)
-        #MOTOR_DMOV = create_channel_device("u171dcm1:axis6:running", type='i')
-        #MOTOR_DMOV.setMonitored(True)
+        MOTOR = create_channel_device("u171dcm1:monoSetEnergy")
+        MOTOR_RBV = create_channel_device("u171dcm1:monoGetEnergy")
+        MOTOR_RBV.setMonitored(True)
+        MOTOR_DMOV = create_channel_device("u171dcm1:GK_STATUS", type='i')
+        MOTOR_DMOV.setMonitored(True)
 
         ## variables
         sensor = []
@@ -272,6 +272,8 @@ class DCMSCAN():
 
     def __waitdcm(self):
         #set_status("Waiting for dcm...")
-        while(MOTOR_DMOV.take()==0):
-            sleep(0.25)
+        log("Waiting for dcm...")
+        while(caget("u171dcm1:GK_STATUS", type='i')):
+            sleep(1)
+        sleep(10)
         
