@@ -1,7 +1,7 @@
 ### Energy group ####
 energy      = 7300
 ## Undulator gap
-#gap         = 6.52
+gap         = 6.52
 ## foil filter: 0,5,10,20
 foil        = 20
 ## AU1
