@@ -176,6 +176,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU1 center Y")
+                    else:
+                        caput("PINK:AU1:centerY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU1 center Y")
@@ -187,6 +189,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU1 center X")
+                    else:
+                        caput("PINK:AU1:centerX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU1 center X")
@@ -198,6 +202,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU1 gap Y")
+                    else:
+                        caput("PINK:AU1:apertureY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU1 gap Y")
@@ -209,6 +215,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU1 gap X")
+                    else:
+                        caput("PINK:AU1:apertureX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU1 gap X")
@@ -227,6 +235,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU2 center Y")
+                    else:
+                        caput("PINK:AU1:centerY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU2 center Y")
@@ -238,6 +248,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU2 center X")
+                    else:
+                        caput("PINK:AU1:centerX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU2 center X")
@@ -249,6 +261,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU2 gap Y")
+                    else:
+                        caput("PINK:AU1:apertureY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU2 gap Y")
@@ -260,6 +274,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU2 gap X")
+                    else:
+                        caput("PINK:AU1:apertureX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU2 gap X")
@@ -278,6 +294,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU3 center Y")
+                    else:
+                        caput("PINK:AU1:centerY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU3 center Y")
@@ -289,6 +307,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU3 center X")
+                    else:
+                        caput("PINK:AU1:centerX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU3 center X")
@@ -300,6 +320,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU3 gap Y")
+                    else:
+                        caput("PINK:AU1:apertureY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU3 gap Y")
@@ -311,6 +333,8 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU3 gap X")
+                    else:
+                        caput("PINK:AU1:apertureX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU3 gap X")

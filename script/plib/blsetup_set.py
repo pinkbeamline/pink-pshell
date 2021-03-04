@@ -514,14 +514,14 @@ class BLSETUPSET():
                 pos = params["m2poix"]
                 try:
                     caput("HEX2OS12L:multiaxis:setPOIx", pos)
-                    sleep(1)
+                    sleep(0.25)
                 except:
                     log("[BL setup] Error while setting M2 POI X")
             if params.has_key("m2poiy"):
                 pos = params["m2poiy"]
                 try:
                     caput("HEX2OS12L:multiaxis:setPOIy", pos)
-                    sleep(1)
+                    sleep(0.25)
                 except:
                     log("[BL setup] Error while setting M2 POI Y") 
                     
@@ -534,9 +534,10 @@ class BLSETUPSET():
                 try:
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseX")
                     errpos = abs(rbvpos-pos)
+                    caput("HEX2OS12L:hexapod:setPoseX", pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseX", pos)
-                        sleep(0.5)
+                        #caput("HEX2OS12L:hexapod:setPoseX", pos)
+                        #sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Tx")
@@ -549,9 +550,10 @@ class BLSETUPSET():
                 try:
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseY")
                     errpos = abs(rbvpos-pos)
+                    caput("HEX2OS12L:hexapod:setPoseY", pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseY", pos)
-                        sleep(0.5)
+                        #caput("HEX2OS12L:hexapod:setPoseY", pos)
+                        #sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Ty") 
@@ -564,9 +566,10 @@ class BLSETUPSET():
                 try:
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseZ")
                     errpos = abs(rbvpos-pos)
+                    caput("HEX2OS12L:hexapod:setPoseZ", pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseZ", pos)
-                        sleep(0.5)
+                        #caput("HEX2OS12L:hexapod:setPoseZ", pos)
+                        #sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Tz")
@@ -579,9 +582,10 @@ class BLSETUPSET():
                 try:
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseA")
                     errpos = abs(rbvpos-pos)
+                    caput("HEX2OS12L:hexapod:setPoseA", pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseA", pos)
-                        sleep(0.5)
+                        #caput("HEX2OS12L:hexapod:setPoseA", pos)
+                        #sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Rx")                     
@@ -594,9 +598,10 @@ class BLSETUPSET():
                 try:
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseB")
                     errpos = abs(rbvpos-pos)
+                    caput("HEX2OS12L:hexapod:setPoseB", pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseB", pos)
-                        sleep(0.5)
+                        #caput("HEX2OS12L:hexapod:setPoseB", pos)
+                        #sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Ry")                    
@@ -609,9 +614,10 @@ class BLSETUPSET():
                 try:
                     rbvpos = caget("HEX2OS12L:hexapod:getReadPoseC")
                     errpos = abs(rbvpos-pos)
+                    caput("HEX2OS12L:hexapod:setPoseC", pos)
                     if errpos>dpos:
-                        caput("HEX2OS12L:hexapod:setPoseC", pos)
-                        sleep(0.5)
+                        #caput("HEX2OS12L:hexapod:setPoseC", pos)
+                        #sleep(0.5)
                         m2execute = True
                 except:
                     log("[BL setup] Error while moving M2 Rz")
@@ -620,6 +626,9 @@ class BLSETUPSET():
             sleep(1)
             if m2execute:
                 try:
+                    caput("HEX2OS12L:multiaxis:run", 1)
+                    self.__m2wait()
+                    sleep(2)
                     caput("HEX2OS12L:multiaxis:run", 1)
                     self.__m2wait()
                 except:
