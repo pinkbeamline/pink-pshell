@@ -176,7 +176,9 @@ class BPM():
         ss.setData(xvecabs, gauss)
         self.__setup_file(fname=filename)
         self.__Save_Data(label, myCF, a, b, amp, com, com+pos0, sigma, sigma*self.sig2fwmh, sigma*myCF, sigma*self.sig2fwmh*myCF, xvecabs, vecb, gauss)
-
+        ## save beamline/station snapshot
+        pink_save_bl_snapshot()
+        print("Done")
 
     def __setup_file(self, fname="bpm"):
         set_exec_pars(open=False, name=fname, reset=True)
