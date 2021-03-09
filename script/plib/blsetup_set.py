@@ -8,7 +8,7 @@ class BLSETUPSET():
 
         ## Send DCM and PGM home
         self.__dcm_pgm_home()
-        
+
         ## gap
         if params.has_key("gap"):
             print("Undulator U17")
@@ -20,34 +20,34 @@ class BLSETUPSET():
         if params.has_key("m1tx") or params.has_key("m1ty") or params.has_key("m1rx") or params.has_key("m1ry") or params.has_key("m1rz"):
             print("M1 mirror")
             if params.has_key("m1tx"):
-                if params.has_key("m1deltatx"): 
-                    delta = "+- {}".format(params["m1deltatx"]) 
-                else: 
+                if params.has_key("m1deltatx"):
+                    delta = "+- {}".format(params["m1deltatx"])
+                else:
                     delta = ""
                 print("    Tx: {} um {}".format(params["m1tx"], delta))
             if params.has_key("m1ty"):
-                if params.has_key("m1deltaty"): 
-                    delta = "+- {}".format(params["m1deltaty"]) 
+                if params.has_key("m1deltaty"):
+                    delta = "+- {}".format(params["m1deltaty"])
                 else:
                     delta = ""
                 print("    Ty: {} um {}".format(params["m1ty"], delta))
             if params.has_key("m1rx"):
-                if params.has_key("m1deltarx"): 
-                    delta = "+- {}".format(params["m1deltarx"]) 
-                else: 
-                    delta = ""            
+                if params.has_key("m1deltarx"):
+                    delta = "+- {}".format(params["m1deltarx"])
+                else:
+                    delta = ""
                 print("    Rx: {} um {}".format(params["m1rx"], delta))
             if params.has_key("m1ry"):
-                if params.has_key("m1deltary"): 
+                if params.has_key("m1deltary"):
                     delta = "+- {}".format(params["m1deltary"]) 
-                else: 
-                    delta = ""             
-                print("    Ry: {} um {}".format(params["m1ry"], delta))                
+                else:
+                    delta = ""
+                print("    Ry: {} um {}".format(params["m1ry"], delta))
             if params.has_key("m1rz"):
-                if params.has_key("m1deltarz"): 
-                    delta = "+- {}".format(params["m1deltarz"]) 
-                else: 
-                    delta = ""             
+                if params.has_key("m1deltarz"):
+                    delta = "+- {}".format(params["m1deltarz"])
+                else:
+                    delta = ""
                 print("    Rz: {} um {}".format(params["m1rz"], delta))
             ## move motors
             self.__move_m1(params)
@@ -57,7 +57,7 @@ class BLSETUPSET():
             print("Filter foil")
             print("    filter: {} um C".format(params["foil"]))
             ## move motors
-            self.__move_filter(params)            
+            self.__move_filter(params)
 
         ## AU1 aperture
         if params.has_key("au1centery") or params.has_key("au1centerx") or params.has_key("au1gapy") or params.has_key("au1gapx"):
@@ -72,7 +72,7 @@ class BLSETUPSET():
                 print("    gap X: {} mm".format(params["au1gapx"]))
             ## move motors
             self.__move_au1(params)
-            
+
         ## AU2 aperture
         if params.has_key("au2centery") or params.has_key("au2centerx") or params.has_key("au2gapy") or params.has_key("au2gapx"):
             print("AU2 aperture")
@@ -212,7 +212,7 @@ class BLSETUPSET():
             caput("PINK:FILTER:BeamEnergy", energy)
         except:
             log("[BL setup] Error while setting filter energy")
-    
+
     ### move gap
     def __move_gap(self, params):
         #log("move gap")
@@ -220,8 +220,10 @@ class BLSETUPSET():
         if params.has_key("gap"):
             pos = params["gap"]
             try:
+                caput("U17IT6R:BaseCmdLswitch", 0)
+                sleep(1)
                 caput("U17IT6R:BaseParGapsel.B", pos)
-                sleep(0.2)
+                sleep(0.5)
                 caput("U17IT6R:BaseCmdCalc.PROC", 1)
             except:
                 log("[BL setup] Error while moving undulator")
@@ -254,11 +256,11 @@ class BLSETUPSET():
             if params.has_key("m1deltaty"):
                 dpos = params["m1deltaty"]
             else:
-                dpos = 0            
+                dpos = 0
             try:
                 rbvpos = caget("U17_M1:rdTy")
                 errpos = abs(rbvpos-pos)
-                if errpos>dpos:            
+                if errpos>dpos:
                     setpos = caget("U17_M1:TyAbs")
                     if setpos==pos:
                         #mirror rbv>set
@@ -274,7 +276,7 @@ class BLSETUPSET():
             if params.has_key("m1deltarx"):
                 dpos = params["m1deltarx"]
             else:
-                dpos = 0             
+                dpos = 0
             try:
                 rbvpos = caget("U17_M1:rdRx")
                 errpos = abs(rbvpos-pos)
@@ -731,19 +733,26 @@ class BLSETUPSET():
 
     ## Send DCM and PGM home
     def __dcm_pgm_home(self):
-        # dcm {0:--, 4:home}
+        
         try:
-            caput("u171dcm1:PH_0_GON", 0)
-            sleep(2)
-            caput("u171dcm1:PH_0_GON", 4)
+            # dcm {0:--, 4:home}
+            #caput("u171dcm1:PH_0_GON", 0)
+            #sleep(2)
+            #caput("u171dcm1:PH_0_GON", 4)
+            # home: 0 mm
+            caput("u171dcm1:PH_0_SET", 0)
         except:
             log("[BL Setup] Error settting DCM position")
-        # pgm {0:--, 2:home}
         try:
-            caput("u171pgm1:PH_0_GON", 0)
-            sleep(2)
-            caput("u171dcm1:PH_0_GON", 2)
+            # pgm {0:--, 2:home}
+            #caput("u171pgm1:PH_0_GON", 0)
+            #sleep(2)
+            #caput("u171dcm1:PH_0_GON", 2)
+            ## grating translation
+            # home: 60
+            #caput("u171pgm1:PH_1_SET", 60)
+            ## mirror translation
+            # home: 770 mm
+            caput("u171pgm1:PH_0_SET", 770)
         except:
-            log("[BL Setup] Error settting PGM position")            
-            
-            
+            log("[BL Setup] Error settting PGM position")

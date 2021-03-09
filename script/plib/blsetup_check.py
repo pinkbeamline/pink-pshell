@@ -6,23 +6,26 @@ class BLSETUPCHECK():
             status="error"
             isworking=True
             try:
+                log("[BL Check] waiting for Undulator" )
+                while(caget("U17IT6R:BaseStatISLbl", type='i')!=1):
+                    sleep(1)
+                #err=abs(caget("U17IT6R:BasePmGap.A")-pos)
+                #if err<=motor_deadband:
+                #    isworking=False
+                #    status="OK"
+                #while(isworking):
+                #    sleep(2)
+                #    newerr=abs(caget("U17IT6R:BasePmGap.A")-pos)
+                #    if newerr<err:
+                #        err=newerr
+                #        log("[BL setup] gap is in motion")
+                #    else:
+                #        isworking=False
                 err=abs(caget("U17IT6R:BasePmGap.A")-pos)
                 if err<=motor_deadband:
-                    isworking=False
                     status="OK"
-                while(isworking):
-                    sleep(2)
-                    newerr=abs(caget("U17IT6R:BasePmGap.A")-pos)
-                    if newerr<err:
-                        err=newerr
-                        log("[BL setup] gap is in motion")
-                    else:
-                        isworking=False
-                err=abs(caget("U17IT6R:BasePmGap.A")-pos)
-                if err<=motor_deadband:
-                    status="OK"                 
             except:
-                log("[BL setup] Error while moving undulator")        
+                log("[BL setup] Error while moving undulator")
             print("{0:.<17}[{1:^6}]".format("gap",status))
 
     def check_dcm_pgm(self, params):
@@ -32,25 +35,41 @@ class BLSETUPCHECK():
             while(caget("u171dcm1:axis6:running", type='i')):
                 sleep(1)
             set_status("Running...")
-        posid = caget("u171dcm1:PH_0_GETN", type='i')
-        if posid==4:
+            sleep(5)
+        #posid = caget("u171dcm1:PH_0_GETN", type='i')
+        #if posid==4:
+        #    status="OK"
+        #else:
+        #    status="error"
+        pos = caget("u171dcm1:PH_0_GET")
+        err=abs(0-pos)
+        if err < 5.0:
             status="OK"
         else:
             status="error"
+
         print("{0:.<17}[{1:^6}]".format("DCM",status))
-        # PGM
+        # PGM mirror
         if caget("u171pgm1:axis3:running", type='i'):
             set_status("Waiting for PGM to finish motion...")
             while(caget("u171pgm1:axis3:running", type='i')):
                 sleep(1)
             set_status("Running...")
-        posid = caget("u171pgm1:PH_0_GETN", type='i')
-        if posid==2:
+            sleep(5)
+        #posid = caget("u171pgm1:PH_0_GETN", type='i')
+        #if posid==2:
+        #    status="OK"
+        #else:
+        #    status="error"
+        pos = caget("u171pgm1:PH_0_GET")
+        err=abs(770-pos)
+        if err < 5.0:
             status="OK"
         else:
             status="error"
-        print("{0:.<17}[{1:^6}]".format("PGM",status))        
-            
+
+        print("{0:.<17}[{1:^6}]".format("PGM",status))
+
     def check_m1(self, params):
         #return
         if params.has_key("m1tx") or params.has_key("m1ty") or params.has_key("m1rx") or params.has_key("m1ry") or params.has_key("m1rz"):
@@ -176,8 +195,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU1 center Y")
-                    else:
-                        caput("PINK:AU1:centerY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU1 center Y")
@@ -189,8 +206,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU1 center X")
-                    else:
-                        caput("PINK:AU1:centerX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU1 center X")
@@ -202,8 +217,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU1 gap Y")
-                    else:
-                        caput("PINK:AU1:apertureY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU1 gap Y")
@@ -215,12 +228,10 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU1 gap X")
-                    else:
-                        caput("PINK:AU1:apertureX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU1 gap X")
-                    
+
             print("{0:.<17}[{1:^6}]".format("AU1",status))
 
     def check_au2(self, params):
@@ -235,8 +246,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU2 center Y")
-                    else:
-                        caput("PINK:AU1:centerY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU2 center Y")
@@ -248,8 +257,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU2 center X")
-                    else:
-                        caput("PINK:AU1:centerX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU2 center X")
@@ -261,8 +268,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU2 gap Y")
-                    else:
-                        caput("PINK:AU1:apertureY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU2 gap Y")
@@ -274,12 +279,10 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU2 gap X")
-                    else:
-                        caput("PINK:AU1:apertureX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU2 gap X")
-                    
+
             print("{0:.<17}[{1:^6}]".format("AU2",status))
 
     def check_au3(self, params):
@@ -294,8 +297,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU3 center Y")
-                    else:
-                        caput("PINK:AU1:centerY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU3 center Y")
@@ -307,8 +308,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU3 center X")
-                    else:
-                        caput("PINK:AU1:centerX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU3 center X")
@@ -320,8 +319,6 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU3 gap Y")
-                    else:
-                        caput("PINK:AU1:apertureY",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU3 gap Y")
@@ -333,12 +330,10 @@ class BLSETUPCHECK():
                     if err>dead_band:
                         status="error"
                         log("[BL setup] Error on AU3 gap X")
-                    else:
-                        caput("PINK:AU1:apertureX",pos)
                 except:
                     status="error"
                     log("[BL setup] Error while checking AU3 gap X")
-                    
+
             print("{0:.<17}[{1:^6}]".format("AU3",status))
 
     def check_m2(self, params):
