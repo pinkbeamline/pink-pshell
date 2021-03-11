@@ -227,12 +227,12 @@ class SCANFUNCRYO():
             samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure)
             del samplescan
             return
-    #     if detector=="ge":
-    #         run("plib/scan/sample_scan_ge.py")
-    #         samplescan = SAMPLESCAN()
-    #         samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure)
-    #         del samplescan
-    #         return
+        elif detector=="bpm3":
+            run("plib/scan/sample_scan_bpm3_cryo.py")
+            samplescan = SAMPLESCAN()
+            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure)
+            del samplescan
+            return
         else:
             print("Not available")
         return

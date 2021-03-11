@@ -6,6 +6,8 @@ class DETEC():
         return "eiger"
     def mythen(self):
         return "mythen"
+    def direct_diode_BPM3(self):
+        return "bpm3"        
 #    def greateyes_eiger(self):
 #        return "ge+eiger"
 #    def greateyes_mythen(self):
