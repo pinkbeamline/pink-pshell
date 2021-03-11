@@ -53,13 +53,13 @@ class SCANFUNCRYO():
             del myscan
             print("OK")
             return
-        # elif detector=="ge":
-        #     run("plib/scan/spot_ge.py")
-        #     myscan = SPOTGE()
-        #     myscan.scan(exposure, images, sample)
-        #     del myscan
-        #     print("OK")
-        #     return
+        elif detector=="ge":
+            run("plib/scan/spot_ge_cryo.py")
+            myscan = SPOTGE()
+            myscan.scan(exposure, images, sample)
+            del myscan
+            print("OK")
+            return
         # elif detector=="mythen":
         #     run("plib/scan/spot_mythen.py")
         #     myscan = SPOTMYTHEN()
@@ -109,13 +109,13 @@ class SCANFUNCRYO():
             del myscan
             print("OK")
             return
-        # if detector=="ge":
-        #     run("plib/scan/zigzag_ge.py")
-        #     myscan = ZIGZAGGE()
-        #     myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
-        #     del myscan
-        #     print("OK")
-        #     return
+        elif detector=="ge":
+            run("plib/scan/zigzag_ge_cryo_abs.py")
+            myscan = ZIGZAGGE()
+            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
+            del myscan
+            print("OK")
+            return
         # if detector=="eiger":
         #     if(get_setting("chamber")=="cryo"):
         #         run("plib/scan/zigzag_eiger_cryo.py")
