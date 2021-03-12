@@ -64,7 +64,7 @@ class SPOTEIGER():
         #Sample_pos_y.setMonitored(True)
         Sample_rel_x_RBV = create_channel_device("PINK:CRYO:rbvx", type='d')
         Sample_rel_y_RBV = create_channel_device("PINK:CRYO:rbvy", type='d')
-        Holder_number = create_channel_device("PINK:CRYO:samplenumber", type='d')
+        #Holder_number = create_channel_device("PINK:CRYO:samplenumber", type='d')
 
         ## create pressure channels
         run("config/pressure_devices.py")
@@ -168,27 +168,30 @@ class SPOTEIGER():
         ## Setup trigger switch
         ## A=Delaygen Trigger Source [0:OFF, 1:CCD, 2:mythen, 3:eiger]
         ## B=Caenels Trigger Source [0:OFF, 1:Delaygen, 2:Output A]
+        if DEBUG: log("Setup RPISW", data_file = False)
         caput("PINK:RPISW:select_A", 3)
         caput("PINK:RPISW:select_B", 2)
 
         caput("PINK:GEYES:Scan:progress", 0) # Reset pass progress
         caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
         caput("PINK:EIGER:specsum_reset", 0) # clean spectrum sum
-        caput("PINK:EIGER:specsum_reset", 1) # enable spectrum sum
+        caput("PINK:EIGER:specsum_reset", 1)
 
         Display_status.write("Spot scan running...")
 
         ## eta_calc(exposure, Ypoints, Xpoints, passes, linedelay)
+        if DEBUG: log("Calc ETA", data_file = False)
         self.eta_calc(exposure, images, 1, 1, 0)
 
         initial_frame = Eiger_frameID.read()
 
+        if DEBUG: log("Save data", data_file = False)
         ## save pre scan data
         #save_dataset("passes/pass01/detector/eiger/raw/bg_image", Convert.reshape(GE_raw_array.read(), GE_Y, GE_X))
         #save_dataset("passes/pass01/detector/d_ccd/processed/bg_spectrum", GE_Spectra.read())
         save_dataset("passes/pass01/positioners/sample_pos_x", Sample_pos_x.read())
         save_dataset("passes/pass01/positioners/sample_pos_y", Sample_pos_y.read())
-        save_dataset("passes/pass01/positioners/holder_number", Holder_number.read())
+        save_dataset("passes/pass01/positioners/holder_number", caget("PINK:CRYO:samplenumber", type='i'))
         save_dataset("passes/pass01/positioners/sample_relative_x", Sample_rel_x_RBV.read())
         save_dataset("passes/pass01/positioners/sample_relative_y", Sample_rel_y_RBV.read())
 
@@ -213,6 +216,7 @@ class SPOTEIGER():
             create_dataset(datasetpath, 'd', False)
             set_attribute(datasetpath, "DESC", pd[2])
 
+        if DEBUG: log("Start ACQ", data_file = False)
         ## start acquisition
         Eiger_acquire.write(1)
         try:
