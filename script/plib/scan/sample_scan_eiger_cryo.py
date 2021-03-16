@@ -1,5 +1,5 @@
 class SAMPLESCAN():
-    def scan(self, axis, start, end, step, exposure):
+    def scan(self, axis, start, end, step, exposure, moveback):
         print("Sample scan for eiger")
 
         ## variables 
@@ -149,10 +149,11 @@ class SAMPLESCAN():
         save_dataset("scan/finish_time", time.ctime())
 
         ## Move back to original position
-        MOTOR.write(prescan_pos)
-        sleep(0.25)
-        #MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
-        MOTOR_DMOV.waitValueInRange(1, 0.5, 180000)
+        if (moveback!=0):
+            MOTOR.write(prescan_pos)
+            sleep(0.25)
+            #MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
+            MOTOR_DMOV.waitValueInRange(1, 0.5, 180000)
 
         ## save beamline/station snapshot
         pink_save_bl_snapshot()

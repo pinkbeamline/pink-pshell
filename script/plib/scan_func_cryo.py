@@ -98,21 +98,21 @@ class SCANFUNCRYO():
     #     else:
     #         print("Not yet coded")
 
-    def zigzag_absolute(self, detector, exposure=1, X0=0, dX=100, Xpoints=1, Y0=0, dY=100, Ypoints=1, passes=1, sample="", linedelay=0):
+    def zigzag_absolute(self, detector, exposure=1, X0=0, dX=100, Xpoints=1, Y0=0, dY=100, Ypoints=1, passes=1, sample="", linedelay=0, moveback=1):
         if isinstance(detector, DETEC):
             print("!! Please use detector. to see list of detectors !!")
             return
         if detector=="eiger":
             run("plib/scan/zigzag_eiger_cryo_abs.py")
             myscan = ZIGZAGEIGER()
-            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
+            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay, moveback)
             del myscan
             print("OK")
             return
         elif detector=="ge":
             run("plib/scan/zigzag_ge_cryo_abs.py")
             myscan = ZIGZAGGE()
-            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
+            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay, moveback)
             del myscan
             print("OK")
             return
@@ -136,14 +136,14 @@ class SCANFUNCRYO():
         else:
             print("Not yet coded")
 
-    def zigzag_relative(self, detector, exposure=1, X0=0, dX=100, Xpoints=1, Y0=0, dY=100, Ypoints=1, passes=1, sample="", linedelay=0):
+    def zigzag_relative(self, detector, exposure=1, X0=0, dX=100, Xpoints=1, Y0=0, dY=100, Ypoints=1, passes=1, sample="", linedelay=0, moveback=1):
         if isinstance(detector, DETEC):
             print("!! Please use detector. to see list of detectors !!")
             return
         if detector=="eiger":
             run("plib/scan/zigzag_eiger_cryo_rel.py")
             myscan = ZIGZAGEIGER()
-            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay)
+            myscan.scan(exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay, moveback)
             del myscan
             print("OK")
             return
@@ -208,7 +208,7 @@ class SCANFUNCRYO():
         dcmscan.scan(source, start=start, end=end, step=step, exposure=exposure, fit=False)
         del dcmscan
 
-    def sample_scan(self, axis, detector, start=0, end=0, step=0, exposure=1):
+    def sample_scan(self, axis, detector, start=0, end=0, step=0, exposure=1, moveback=1):
         if isinstance(axis, SAMPLEAXIS):
             print('!! Please use "axis." to see list of options !!')
             return
@@ -224,13 +224,13 @@ class SCANFUNCRYO():
         if detector=="eiger":
             run("plib/scan/sample_scan_eiger_cryo.py")
             samplescan = SAMPLESCAN()
-            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure)
+            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure, moveback=moveback)
             del samplescan
             return
         elif detector=="bpm3":
             run("plib/scan/sample_scan_bpm3_cryo.py")
             samplescan = SAMPLESCAN()
-            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure)
+            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure, moveback=moveback)
             del samplescan
             return
         else:

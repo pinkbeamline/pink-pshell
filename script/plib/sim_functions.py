@@ -92,6 +92,71 @@ class SIMFUNC():
         print("******************************************* ")
         return
 
+
+
+    ## zigzag
+    def zigzag_absolute(self, detector, exposure=1, X0=0, dX=100, Xpoints=1, Y0=0, dY=100, Ypoints=1, passes=1, sample='', linedelay=0, moveback=1):
+        #if moveback: print("moveback")
+
+        if isinstance(detector, DETEC):
+            #print("Warning: detector not defined.")
+            simdetector="not defined"
+        else:
+            simdetector=detector
+
+        x_positions = linspace(X0,X0+((Xpoints-1)*dX),Xpoints)
+        y_positions = linspace(Y0,Y0+((Ypoints-1)*dY),Ypoints)
+
+        scantimestr = self.__zigzagtime(Xpoints, Ypoints, passes, exposure)
+
+        print("******************************************* ")
+        print("             Filename:  Simulation")
+        print("               Sample:  " + sample)
+        print("            Scan type:  zigzag")
+        print("             Detector:  " + simdetector)
+        print("    Number of lines X:  " + '{:d}'.format(Xpoints))
+        print("  Position of lines X:  " + str(x_positions))
+        print("    Number of lines Y:  " + '{:d}'.format(int(Ypoints)))
+        print("  Position of lines Y:  " + str(y_positions))
+        print("     Number of passes:  " + '{:d}'.format(int(passes)))
+        print("    Detector exposure:  " + '{:.1f}'.format(exposure) + " seconds")
+        print("  Total spot exposure:  " + '{:.2f}'.format(exposure*passes) + " seconds")
+        print("      Total scan time:  " + scantimestr)
+        print("******************************************* ")
+        print(" ")        
+
+    def zigzag_relative(self, detector, exposure=1, X0=0, dX=100, Xpoints=1, Y0=0, dY=100, Ypoints=1, passes=1, sample='', linedelay=0, moveback=1):
+        #print("sim zigzag")
+
+        if isinstance(detector, DETEC):
+            #print("Warning: detector not defined.")
+            simdetector="not defined"
+        else:
+            simdetector=detector
+
+        x_positions = linspace(X0,X0+((Xpoints-1)*dX),Xpoints)
+        y_positions = linspace(Y0,Y0+((Ypoints-1)*dY),Ypoints)
+
+        scantimestr = self.__zigzagtime(Xpoints, Ypoints, passes, exposure)
+
+        print("******************************************* ")
+        print("             Filename:  Simulation")
+        print("               Sample:  " + sample)
+        print("            Scan type:  zigzag")
+        print("             Detector:  " + simdetector)
+        print("    Number of lines X:  " + '{:d}'.format(Xpoints))
+        print("  Position of lines X:  " + str(x_positions))
+        print("    Number of lines Y:  " + '{:d}'.format(int(Ypoints)))
+        print("  Position of lines Y:  " + str(y_positions))
+        print("     Number of passes:  " + '{:d}'.format(int(passes)))
+        print("    Detector exposure:  " + '{:.1f}'.format(exposure) + " seconds")
+        print("  Total spot exposure:  " + '{:.2f}'.format(exposure*passes) + " seconds")
+        print("      Total scan time:  " + scantimestr)
+        print("******************************************* ")
+        print(" ")       
+    
+    #### local functions ###
+
     def __scantime_calc(self, exposure=0, Ypoints=0, Xpoints=0, passes=0, linedelay=0, detector=None):
         ## eiger
         if detector=="ge":
@@ -119,3 +184,28 @@ class SIMFUNC():
             SS = ""
         msg = SH + SM + SS
         return msg
+
+    #def __zigzagsim()
+
+    def __zigzagtime(self, Xpoints, Ypoints, passes, exposure):
+        scantime = passes*Xpoints*Ypoints*(1.75+exposure)
+        sh = int(scantime/3600.0)
+        #sm = int(scantime/60)%60
+        sm = int(math.ceil(scantime/60))%60
+        #ss = int(scantime%60)
+        ss = 0
+        if sh>0:
+            SH = "{:02d}h ".format(sh)
+        else:
+            SH = ""
+        if sm>0:
+            SM = "{:02d}m ".format(sm)
+        else:
+            SM = ""
+        if ss>0:
+            SS = "{:02d}s ".format(ss)
+        else:
+            SS = ""
+        msg = SH + SM + SS
+        return msg        
+        

@@ -1,7 +1,7 @@
 ## zigazag scan for greateyes
 class ZIGZAGEIGER():
 
-    def scan(self, exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay):
+    def scan(self, exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay, moveback):
         print("Zigzag scan for eiger. Cryo chamber with absolute coordenates.")
 
         def motionsuccess(channel, timeout):
@@ -386,8 +386,9 @@ class ZIGZAGEIGER():
         caput("PINK:EIGER:cam1:ManualTrigger", 0)
 
         ## Return motors to pre scan positions
-        cryo_x.write(prescan_pos_x)
-        cryo_y.write(prescan_pos_y)
+        if (moveback!=0):
+            cryo_x.write(prescan_pos_x)
+            cryo_y.write(prescan_pos_y)
 
         if scan_abort:
             Display_status.write("scan aborted - " + tnow)
