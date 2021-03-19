@@ -2,8 +2,8 @@
 class ZIGZAGGE():
 
     def scan(self, exposure, X0, dX, Xpoints, Y0, dY, Ypoints, passes, sample, linedelay, moveback):
-        print("Zigzag scan for Greateyes. Cryo chamber with absolute coordenates.")
-        return
+        #print("Zigzag scan for Greateyes. Cryo chamber with absolute coordenates.")
+        #return
         
         def motionsuccess(channel, timeout):
             res = False
@@ -383,7 +383,8 @@ class ZIGZAGGE():
                             datasetpath = "passes/"+passpath+"/station/pressure/"+pd[0]
                             append_dataset(datasetpath, pd[1].take())
 
-                        Progress.write(self.calc_progress(initial_frame, Eiger_frameID.take(), Xpoints*Ypoints))
+                        #Progress.write(self.calc_progress(initial_frame, Eiger_frameID.take(), Xpoints*Ypoints))
+                        Progress.write(self.calc_progress(initial_frame, GE_frameID.take(), Xpoints*Ypoints))
                         ## end of spot loop
 
                     scan_dir = abs(scan_dir-1)
