@@ -233,6 +233,12 @@ class SCANFUNCRYO():
             samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure, moveback=moveback)
             del samplescan
             return
+        elif detector=="ge":
+            run("plib/scan/sample_scan_ge_cryo.py")
+            samplescan = SAMPLESCAN()
+            samplescan.scan(axis=axis, start=start, end=end, step=step, exposure=exposure, moveback=moveback)
+            del samplescan
+            return            
         else:
             print("Not available")
         return
