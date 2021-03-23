@@ -1,14 +1,14 @@
 ### Energy ####
 energy      = 4000
 ## Undulator gap
-gap         = 6.42
+gap         = 6.43
 ## foil filter: 0,5,10,20
 foil        = 10
 ## AU1
 au1centery  = 0.6
-au1centerx  = -0.3
+au1centerx  = -0.2
 au1gapy     = 0.8
-au1gapx     = 1.6
+au1gapx     = 1.4
 ## AU2
 au2centery  = 0.75
 au2centerx  = 0.5
@@ -27,9 +27,9 @@ m2poiy      = 2000
 m2tx        = 24500
 m2ty        = 2000
 m2tz        = 0
-m2rx        = -1855
+m2rx        = -1850
 m2ry        = 500
-m2rz        = 2300
+m2rz        = 2160
 ## M2 delta values
 m2deltatx   = 10
 m2deltaty   = 5
@@ -41,8 +41,8 @@ m2deltarz   = 10
 cross1x     = 633
 cross1y     = 678
 ## BPM2 cross
-cross2x     = 670
-cross2y     = 493
+cross2x     = 660
+cross2y     = 490
 ## BPM3 cross
 cross3x     = 558
 cross3y     = 461

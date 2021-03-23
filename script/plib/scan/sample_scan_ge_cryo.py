@@ -1,5 +1,5 @@
 class SAMPLESCAN():
-    def scan(self, axis, start, end, step, exposure):
+    def scan(self, axis, start, end, step, exposure, moveback):
         print("Sample scan for ge")
 
         ## variables
@@ -95,7 +95,7 @@ class SAMPLESCAN():
         for pos in positionarray:
             MOTOR.write(pos)
             sleep(0.25)
-            MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
+            #MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
             MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
             GE_acquire.write(1)
             #resp = SENSOR.waitCacheChange(1000*int(exposure+2))
@@ -107,6 +107,9 @@ class SAMPLESCAN():
             sensor.append(SENSOR.take())
             motor.append(MOTOR_RBV.take())
             p1.getSeries(0).setData(motor, sensor)
+
+        # close fast shutter
+        caput("PINK:PLCGAS:ei_B01", 0)            
 
         ## Save data
         save_dataset("raw/sensor", sensor)
@@ -132,7 +135,7 @@ class SAMPLESCAN():
         ## Move back to original position
         if (moveback!=0):
             MOTOR.write(prescan_pos)
-            MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
+            #MOTOR_RBV.waitValueInRange(pos, 1.0, 60000)
             MOTOR_DMOV.waitValueInRange(1, 0.5, 60000)
 
         ## save beamline/station snapshot
