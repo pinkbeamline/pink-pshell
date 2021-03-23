@@ -287,8 +287,8 @@ class ZIGZAGGE():
 
                 caput("PINK:GEYES:Scan:progress", 0) # Reset pass progress
                 caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
-                caput("PINK:EIGER:specsum_reset", 0) # clean spectrum sum
-                caput("PINK:EIGER:specsum_reset", 1) # enable spectrum sum
+                caput("PINK:GEYES:specsum_reset", 0) # clean spectrum sum
+                caput("PINK:GEYES:specsum_reset", 1) # enable spectrum sum
 
                 Display_status.write("Zigzag scan pass "+ '{:02d}'.format(pass_id) +" / "+ '{:02d}'.format(passes))
 

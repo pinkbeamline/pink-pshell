@@ -76,6 +76,9 @@ class SAMPLESCAN():
         caput("PINK:GEYES:cam1:AcquireTime", exposure)
         caput("PINK:GEYES:cam1:ImageMode", 0) # single image
 
+        ## take GE background image
+        self.save_GE_BG(exposure)        
+
         print("Scanning...")
 
         # saving pre scan position
@@ -127,8 +130,10 @@ class SAMPLESCAN():
         pink_save_bl_snapshot()
 
         print("Scan complete")
-
-
+        
+    ##################################
+    ###  Extra functions  ############
+    ##################################
     def setup_delaygen(self, mode, ch1, ch2, ch3, ch4):
         ## Trigger mode
         caput("PINK:DG01:TriggerSourceMO", mode)
@@ -149,3 +154,29 @@ class SAMPLESCAN():
         ## extra channel exposure
         caput("PINK:DG01:HDelayAO", ch4[1])
 
+    ### GE save background image function
+    def save_GE_BG(self, exposure):
+        DEBUG=0
+        if DEBUG: log("Saving GE background", data_file = False)
+        caput("PINK:AUX:ps_status", "Acquiring background image")
+
+        ## Stop GE acquisition
+        if caget("PINK:GEYES:cam1:DetectorState_RBV", type='i'):
+            caputq("PINK:GEYES:cam1:Acquire", 0)
+            if DEBUG: log("GE Stop", data_file = False)
+            while(caget("PINK:GEYES:cam1:DetectorState_RBV", type='i')):
+                sleep(1)
+            if DEBUG: log("GE Idle", data_file = False)
+
+        caput("PINK:PLCGAS:ei_B01", 0) # Close fast shutter
+        caput("PINK:GEYES:cam1:ImageMode", 0) # GE single image
+        caput("PINK:AUX:countdown.B", exposure) # setup frame countdown
+        caput("PINK:GEYES:Proc1:EnableBackground",0) #Disable GE BG Processing
+        sleep(1)
+        caput("PINK:AUX:countdown.VAL", 100) # Initiate frame countdown
+        caput("PINK:GEYES:cam1:Acquire", 1) # acquire 1 image
+        caput("PINK:GEYES:savebg", 1) # copy bg image to record
+        caput("PINK:GEYES:Proc1:SaveBackground", 1) # save BG image into process record
+        caput("PINK:GEYES:Proc1:EnableBackground",1) # Enable GE BG Processing
+        caput("PINK:AUX:ps_status", "Background image OK")
+        if DEBUG: log("Saving GE background OK", data_file = False)
