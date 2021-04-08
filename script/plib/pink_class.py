@@ -342,9 +342,13 @@ class PINKCLASS():
         global scan
         set_setting("chamber","cryo")
         scan = SCANFUNCRYO()
+        # Set PLC safety rules for cryo chamber
+        caput("PINK:PLCVAC:ei_B03", 1)
         print("PINK sample chamber set to Cryogenic SEC")
     def set_Chamber_Electro(self):
         global scan
         set_setting("chamber","elec")
         scan = SCANFUNC()
+        # Set PLC safety rules for elec chamber
+        caput("PINK:PLCVAC:ei_B03", 0)
         print("PINK sample chamber set to Electro SEC")

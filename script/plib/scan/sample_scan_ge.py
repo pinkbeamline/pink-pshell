@@ -72,12 +72,13 @@ class SAMPLESCAN():
                 sleep(1)
             if DEBUG: log("GE Idle", data_file = False)
 
+
+        ## take GE background image
+        self.save_GE_BG(exposure)  
+
         ## setup greateyes
         caput("PINK:GEYES:cam1:AcquireTime", exposure)
         caput("PINK:GEYES:cam1:ImageMode", 0) # single image
-
-        ## take GE background image
-        self.save_GE_BG(exposure)        
 
         print("Scanning...")
 
