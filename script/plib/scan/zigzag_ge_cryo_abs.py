@@ -455,9 +455,9 @@ class ZIGZAGGE():
         #caput("PINK:EIGER:cam1:ManualTrigger", 0)
 
         ## Return motors to pre scan positions
-        if (moveback!=0):
-            cryo_x.write(prescan_pos_x)
-            cryo_y.write(prescan_pos_y)
+        #if (moveback!=0):
+        #    cryo_x.write(prescan_pos_x)
+        #    cryo_y.write(prescan_pos_y)
 
         if scan_abort:
             Display_status.write("scan aborted - " + tnow)
